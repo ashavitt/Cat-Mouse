@@ -1,0 +1,11 @@
+1.add files to be pushed to the server/local git:
+git add FILENAME
+
+2.check the files we are adding
+git status
+
+3.commit the changes locally
+git commit -m '[commit description]'
+
+4.push the commits to the server
+git push -u origin master
