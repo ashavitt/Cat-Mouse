@@ -69,7 +69,7 @@ int load_game(game* gamep, FILE* file) {
 	CHECK(error)
 	
 	// get the second line
-	line = strtok(buffer, delim);
+	line = strtok(NULL, delim);
 	if (line == NULL) { //this SHOULDN'T happen, we assume validity
 		perror("Error: world file is not valid");
 		return 1;
@@ -77,7 +77,7 @@ int load_game(game* gamep, FILE* file) {
 	gamep->player = strcmp("cat\n",line) ? MOUSE : CAT; //set the next player
 
 	// get the next lines
-	line = strtok(buffer, delim);
+	line = strtok(NULL, delim);
 	for (int i = SIZE-1; i >= 0; i--) { // Y coordinate
 		if (line == NULL) { //this SHOULDN'T happen, we assume validity
 			perror("Error: world file is not valid");
@@ -87,7 +87,7 @@ int load_game(game* gamep, FILE* file) {
 			gamep->board->board[j][i] = line[j];
 		}
 		//we move to the next line of the board
-		line = strtok(buffer, delim);
+		line = strtok(NULL, delim);
 	}
 		
 	//now we will look for the mouse, cat, and cheese in the board
