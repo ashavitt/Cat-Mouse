@@ -14,7 +14,7 @@ int save_game(game* gamep, FILE* file) {
 	tempboard.board[gamep->mouse_x][gamep->mouse_y] = MOUSE;
 	tempboard.board[gamep->cheese_x][gamep->cheese_y] = CHEESE;
 	// print the board
-	for (int i = BOARD_SIZE-1; i >= 0; i++) { // Y coordinate
+	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
@@ -54,41 +54,36 @@ void find_obj(game* gamep, char obj) {
 
 int load_game(game* gamep, FILE* file) {
 	int error;
-	const char delim[2] = "\n";
-	char* line;
-	char buffer[128]; // a buffer to read the file into
-	if (fgets(buffer, 128, file) == NULL) {
-		perror("Error: reading the world file failed");
-	}
-	// get the first line
-	line = strtok(buffer, delim);
-	if (line == NULL) { //this SHOULDN'T happen, we assume validity
-		perror("Error: world file is not valid");
+	char* checker;
+	char buffer[16]; // a buffer to read the file into
+	buffer[15] = EOF;
+	if (fgets(buffer, 16, file) == NULL) {
+		perror("Error: reading the world file failed\n");
 		return 1;
 	}
-	error = sscanf(line, "%hhu", &(gamep->turns)); //load the number of turns left
+	// get the first line
+	error = sscanf(buffer, "%hhu", &(gamep->turns)); //load the number of turns left
 	CHECK(error)
 	
 	// get the second line
-	line = strtok(NULL, delim);
-	if (line == NULL) { //this SHOULDN'T happen, we assume validity
-		perror("Error: world file is not valid");
+	if (fgets(buffer, 8, file) == NULL) {
+		perror("Error: reading the world file failed\n");
 		return 1;
 	}
-	gamep->player = strcmp("cat\n",line) ? MOUSE : CAT; //set the next player
+	gamep->player = strcmp("cat\n",buffer) ? MOUSE : CAT; //set the next player
 
 	// get the next lines
-	line = strtok(NULL, delim);
+	checker = fgets(buffer, 8, file);
 	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
-		if (line == NULL) { //this SHOULDN'T happen, we assume validity
-			perror("Error: world file is not valid");
+		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
+			perror("Error: world file is not valid\n");
 			return 1;
 		}
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
-			gamep->board->board[j][i] = line[j];
+			gamep->board->board[j][i] = buffer[j];
 		}
 		//we move to the next line of the board
-		line = strtok(NULL, delim);
+		checker = fgets(buffer, 8, file);
 	}
 		
 	//now we will look for the mouse, cat, and cheese in the board
