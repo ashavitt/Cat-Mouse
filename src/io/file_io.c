@@ -2,7 +2,7 @@
 
 int save_game(game* gamep, FILE* file) {
 	int error;
-	struct board = (gamep->board)*;
+	struct board tempboard = (gamep->board)*;
 	// print the number of turns left
 	error = fprintf(file, "%d\n", gamep->turns);
 	CHECK(error)
@@ -10,13 +10,13 @@ int save_game(game* gamep, FILE* file) {
 	error = fprintf(file, gamep->player == CAT ? "cat\n" : "mouse\n");
 	CHECK(error)
 	// add the mouse, cheese, and cat to the board
-	board[gamep->cat_x][gamep->cat_y] = CAT;
-	board[gamep->mouse_x][gamep->mouse_y] = MOUSE;
-	board[gamep->cheese_x][gamep->cheese_y] = CHEESE;
+	tempboard[gamep->cat_x][gamep->cat_y] = CAT;
+	tempboard[gamep->mouse_x][gamep->mouse_y] = MOUSE;
+	tempboard[gamep->cheese_x][gamep->cheese_y] = CHEESE;
 	// print the board
 	for (int i = SIZE-1; i >= 0; i++) { // Y coordinate
 		for (int j = 0; j < SIZE; j++) { // X coordinate
-			error = fprintf(file, "%c", board[j][i];
+			error = fprintf(file, "%c", tempboard[j][i];
 			CHECK(error)
 		}
 		error = fprintf(file, "\n");  //FIXME what about the last line break?
