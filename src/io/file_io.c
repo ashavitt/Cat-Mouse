@@ -17,19 +17,23 @@ int save_game(game* gamep, FILE* file) {
 	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			error = fprintf(file, "%c", tempboard.board[j][i]);
+			printf("%c", tempboard.board[j][i]);
 			CHECK(error)
 		}
 		error = fprintf(file, "\n");  //FIXME what about the last line break?
+		printf("\n");
 		CHECK(error)
 	}
 	return 0;
 }
 
 void find_obj(game* gamep, char obj) {
+	int count = 0;
 	int x = 0, y = 0;
 	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			if (gamep->board->board[j][i] == obj) {
+				count++;
 				x = j;
 				y = i;
 				gamep->board->board[j][i] = EMPTY; //empty the cell
@@ -37,6 +41,7 @@ void find_obj(game* gamep, char obj) {
 			break;
 		}
 	}
+	printf("occ: %d\n", count);
 	// set the obj coordinates
 	if (obj == CAT) {
 		gamep->cat_x = x;
@@ -52,12 +57,13 @@ void find_obj(game* gamep, char obj) {
 	}
 }
 
+#define BFLEN = 9
 int load_game(game* gamep, FILE* file) {
 	int error;
 	char* checker;
-	char buffer[16]; // a buffer to read the file into
-	buffer[15] = EOF;
-	if (fgets(buffer, 16, file) == NULL) {
+	char buffer[BFLEN]; // a buffer to read the file into
+	buffer[BFLEN-1] = EOF;
+	if (fgets(buffer, BFLEN, file) == NULL) {
 		perror("Error: reading the world file failed\n");
 		return 1;
 	}
@@ -66,24 +72,26 @@ int load_game(game* gamep, FILE* file) {
 	CHECK(error)
 	
 	// get the second line
-	if (fgets(buffer, 8, file) == NULL) {
+	if (fgets(buffer, BFLEN, file) == NULL) {
 		perror("Error: reading the world file failed\n");
 		return 1;
 	}
 	gamep->player = strcmp("cat\n",buffer) ? MOUSE : CAT; //set the next player
 
 	// get the next lines
-	checker = fgets(buffer, 8, file);
+	checker = fgets(buffer, BFLEN, file);
 	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
 		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
 			perror("Error: world file is not valid\n");
 			return 1;
 		}
+		printf("%d: %s\n", i, buffer);
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			gamep->board->board[j][i] = buffer[j];
 		}
+		printf("middle column: %c\n", gamep->board->board[3][i]);
 		//we move to the next line of the board
-		checker = fgets(buffer, 8, file);
+		checker = fgets(buffer, BFLEN, file);
 	}
 		
 	//now we will look for the mouse, cat, and cheese in the board
