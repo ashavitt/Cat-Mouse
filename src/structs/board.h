@@ -2,7 +2,7 @@
 #define BOARD_H_
 
 /* Includes */
-#include "ListUtils.h"
+//#include "ListUtils.h"
 
 /* Defines */
 typedef unsigned char byte;
@@ -56,8 +56,8 @@ typedef struct game {
 
 /* Functions */
 
-ListRef getChildren(game game);
+//ListRef getChildren(game game);
 
-int evaluateGame(game* game);
+//int evaluateGame(game* game);
 
 #endif /* GAME_UTILS_H_ */
