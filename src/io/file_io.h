@@ -15,3 +15,4 @@
 int save_game(game* gamep, FILE* file);
 
 int load_game(game* gamep, FILE* file);
+#endif /* FILE_IO_H_ */
