@@ -3,7 +3,7 @@
 
 /* Includes */
 #include <stdio.h>
-#include "board.h"
+#include "../structs/board.h"
 #include <string.h>
 
 /* Macros */
@@ -12,6 +12,6 @@
 
 /* Functions */
 
-int save_game(Game* game, FILE* file);
+int save_game(game* gamep, FILE* file);
 
-int load_game(Game* game, FILE* file);
+int load_game(game* gamep, FILE* file);
