@@ -2,7 +2,7 @@
 #define BOARD_H_
 
 /* Includes */
-//#include "ListUtils.h"
+#include "ListUtils.h"
 
 /* Defines */
 typedef unsigned char byte;
@@ -14,6 +14,16 @@ typedef unsigned char byte;
 #define CHEESE 'P'
 
 #define BOARD_SIZE 7
+
+//directions for the cat&mouse to move
+#define UP 0
+#define RIGHT 1
+#define DOWN 2
+#define LEFT 3
+
+/* Macros */
+#define LIFT(x) if ((x) == NULL) { return NULL; }
+#define SWITCH(x) ((x) == CAT) ? MOUSE : CAT
 
 /* Structures */
 
@@ -56,7 +66,7 @@ typedef struct game {
 
 /* Functions */
 
-//ListRef getChildren(game game);
+ListRef getChildren(game game);
 
 //int evaluateGame(game* game);
 
