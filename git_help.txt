@@ -4,8 +4,11 @@ git add FILENAME
 2.check the files we are adding
 git status
 
-3.commit the changes locally
+3.lookover the changes
+git diff --cached
+
+4.commit the changes locally
 git commit -m '[commit description]'
 
-4.push the commits to the server
+5.push the commits to the server
 git push -u origin master
