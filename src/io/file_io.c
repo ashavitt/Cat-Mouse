@@ -4,10 +4,10 @@ int save_game(game* gamep, FILE* file) {
 	int error;
 	struct board tempboard = *(gamep->board);
 	// print the number of turns left
-	error = fprintf(file, "%d\n", gamep->turns);
+	error = fprintf(file, "%d\r\n", gamep->turns);
 	CHECK(error)
 	// print the player
-	error = fprintf(file, gamep->player == CAT ? "cat\n" : "mouse\n");
+	error = fprintf(file, gamep->player == CAT ? "cat\r\n" : "mouse\r\n");
 	CHECK(error)
 	// add the mouse, cheese, and cat to the board
 	tempboard.board[gamep->cat_x][gamep->cat_y] = CAT;
@@ -17,11 +17,9 @@ int save_game(game* gamep, FILE* file) {
 	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			error = fprintf(file, "%c", tempboard.board[j][i]);
-			printf("%c", tempboard.board[j][i]);
 			CHECK(error)
 		}
-		error = fprintf(file, "\n");  //FIXME what about the last line break?
-		printf("\n");
+		error = fprintf(file, (i != 0 ? "\r\n" : ""));
 		CHECK(error)
 	}
 	return 0;
@@ -30,18 +28,18 @@ int save_game(game* gamep, FILE* file) {
 void find_obj(game* gamep, char obj) {
 	int count = 0;
 	int x = 0, y = 0;
-	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
-		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
+	int flag = 1;
+	for (int i = 0; i < BOARD_SIZE && flag; i++) { // Y coordinate
+		for (int j = 0; j < BOARD_SIZE && flag; j++) { // X coordinate
 			if (gamep->board->board[j][i] == obj) {
 				count++;
 				x = j;
 				y = i;
 				gamep->board->board[j][i] = EMPTY; //empty the cell
+				flag = 0;
 			}
-			break;
 		}
 	}
-	printf("occ: %d\n", count);
 	// set the obj coordinates
 	if (obj == CAT) {
 		gamep->cat_x = x;
@@ -57,7 +55,7 @@ void find_obj(game* gamep, char obj) {
 	}
 }
 
-#define BFLEN = 9
+#define BFLEN 10
 int load_game(game* gamep, FILE* file) {
 	int error;
 	char* checker;
@@ -76,7 +74,7 @@ int load_game(game* gamep, FILE* file) {
 		perror("Error: reading the world file failed\n");
 		return 1;
 	}
-	gamep->player = strcmp("cat\n",buffer) ? MOUSE : CAT; //set the next player
+	gamep->player = (strstr(buffer, "cat") == NULL) ? MOUSE : CAT; //set the next player
 
 	// get the next lines
 	checker = fgets(buffer, BFLEN, file);
@@ -85,11 +83,9 @@ int load_game(game* gamep, FILE* file) {
 			perror("Error: world file is not valid\n");
 			return 1;
 		}
-		printf("%d: %s\n", i, buffer);
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			gamep->board->board[j][i] = buffer[j];
 		}
-		printf("middle column: %c\n", gamep->board->board[3][i]);
 		//we move to the next line of the board
 		checker = fgets(buffer, BFLEN, file);
 	}
