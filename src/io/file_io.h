@@ -3,7 +3,7 @@
 
 /* Includes */
 #include <stdio.h>
-#include "../structs/board.h"
+#include "../core/board.h"
 #include <string.h>
 
 /* Macros */
