@@ -3,6 +3,7 @@
 
 /* Includes */
 #include "../main/ListUtils.h"
+#include <stdlib.h>
 
 /* Defines */
 typedef unsigned char byte;
@@ -66,7 +67,7 @@ typedef struct game {
 
 /* Functions */
 
-ListRef getChildren(game game);
+ListRef getChildren(void* gamep);
 
 //int evaluateGame(game* game);
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 int main(int argc, char* argv[]) {
-	char* dest_child_name[128];
+	char dest_child_name[128];
 	int child_num;
 	ListRef children;
 	FILE* testfile;
@@ -41,9 +41,9 @@ int main(int argc, char* argv[]) {
 		//save the children
 		child_num = 0;
 		do {
-			sprintf(dest_child_namem "%d\0", child_num);
+			sprintf(dest_child_name, "%d", child_num);
 			dest_file_name = strrchr(argv[i], '/') + 1; //returns the file name without the path
-			dest_child_name = strcat(dest_child_name, dest_file_name); //dest file name: $child_num$dest_file_name
+			dest_file_name = strcat(dest_child_name, dest_file_name); //dest file name: $child_num$dest_file_name
 			testfile = fopen(dest_file_name, "w");
 			if (testfile == NULL) {
 				perror("Error: fopen failed.\n");

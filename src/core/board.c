@@ -84,12 +84,12 @@ int dir_is_valid(game* gamep, int dir) {
 				break;
 			case DOWN:
 				//check if the cell is empty
-				if (gamep->mouse_x == gamep->cat_x && gamep->mouse_y == gamep->cat_y + 1) {
+				if (gamep->mouse_x == gamep->cat_x && gamep->mouse_y == gamep->cat_y - 1) {
 					return 0;
 				}
 				break;
 			case LEFT:
-				if (gamep->mouse_x == gamep->cat_x && gamep->mouse_y == gamep->cat_y + 1) {
+				if (gamep->mouse_x == gamep->cat_x - 1 && gamep->mouse_y == gamep->cat_y) {
 					return 0;
 				}
 				break;
@@ -115,12 +115,12 @@ int dir_is_valid(game* gamep, int dir) {
 				break;
 			case DOWN:
 				//check if the cell is empty
-				if (gamep->cat_x == gamep->mouse_x && gamep->cat_y == gamep->mouse_y + 1) {
+				if (gamep->cat_x == gamep->mouse_x && gamep->cat_y == gamep->mouse_y - 1) {
 					return 0;
 				}
 				break;
 			case LEFT:
-				if (gamep->cat_x == gamep->mouse_x && gamep->cat_y == gamep->mouse_y + 1) {
+				if (gamep->cat_x == gamep->mouse_x - 1 && gamep->cat_y == gamep->mouse_y) {
 					return 0;
 				}
 				break;
