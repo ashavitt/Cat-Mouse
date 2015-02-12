@@ -14,9 +14,12 @@ ListUtilsDemo: ListUtilsDemo.o ListUtils.o
 MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
 	gcc -o $@ $^ $(CFLAGS)
 
-test: file_io_test
+test: file_io_test getChildren_test
 
 file_io_test: file_io_test.o file_io.o board.o
+	gcc -o $@ $^ $(CFLAGS)
+
+getChildren_test: getChildren_test.o file_io.o board.o ListUtils.o
 	gcc -o $@ $^ $(CFLAGS)
 
 ListUtilsDemo.o: ListUtilsDemo.c  ListUtils.h
@@ -40,8 +43,5 @@ file_io.o: file_io.c file_io.h board.h
 board.o: board.c board.h
 	gcc -c $(CFLAGS) $<
 
-io.o: io.c io.h GameUtils.h
-	gcc -c $(CFLAGS) $<
-
-GameUtils.o: GameUtils.c GameUtils.h ListUtils.h
+getChildren_test.o: getChildren_test.c
 	gcc -c $(CFLAGS) $<
