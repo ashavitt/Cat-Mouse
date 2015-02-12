@@ -2,7 +2,7 @@
 #define BOARD_H_
 
 /* Includes */
-#include "ListUtils.h"
+#include "../main/ListUtils.h"
 
 /* Defines */
 typedef unsigned char byte;
