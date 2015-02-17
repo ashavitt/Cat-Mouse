@@ -211,3 +211,30 @@ ListRef getChildren(void* gameVoid) {
 	}
 	return children;
 }
+
+/** checks if game has end
+ * returns negative if game hasn't ended yet
+ */
+int check_end_game(game* gamep) {
+	int dx[] = {0,1,0,-1};
+	int dy[] = {1,0,-1,0};
+	for (int i = 0; i < 4; i++) {
+		//check if cat won
+		if (gamep->cat_x + dx[i] == gamep->mouse_x) {
+			if (gamep->cat_y + dy[i] == gamep->mouse_y) {
+				return CAT_WIN;
+			}
+		}
+		//check if mouse won
+		if (gamep->cheese_x + dx[i] == gamep->mouse_x) {
+			if (gamep->cheese_y + dy[i] == gamep->mouse_y) {
+				return MOUSE_WIN;
+			}
+		}
+	}
+	//tie, no more turns left
+	if (gamep->turns == 0) {
+		return TIE;
+	}
+	return -1;
+}

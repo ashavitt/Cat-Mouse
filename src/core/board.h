@@ -22,6 +22,12 @@ typedef unsigned char byte;
 #define DOWN 2
 #define LEFT 3
 
+//results to check_end_game
+#define CAT_WIN 2
+#define MOUSE_WIN 1
+#define TIE 0
+
+
 /* Macros */
 #define LIFT(x) if ((x) == NULL) { return NULL; }
 #define SWITCH(x) ((x) == CAT) ? MOUSE : CAT
@@ -70,5 +76,7 @@ typedef struct game {
 ListRef getChildren(void* gamep);
 
 //int evaluateGame(game* game);
+
+int check_end_game(game* gamep);
 
 #endif /* GAME_UTILS_H_ */
