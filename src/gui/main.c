@@ -32,10 +32,10 @@ int load_images(SDL_Surface* texts, SDL_Surface* buttons) {
 }
 
 
-int cleanup() {
+void cleanup() {
 	//Quit SDL
 	SDL_Quit();
-	return 0;
+	exit(0);
 }
 
 
@@ -58,7 +58,11 @@ int run_gui() {
 	while (!quit) {
 		//looping on the events
 		while (SDL_PollEvent(event)) {
-
+			switch (event->type) {
+				case SDL_QUIT:
+					cleanup();
+					break;
+			}
 		}
 	}
 	cleanup();
