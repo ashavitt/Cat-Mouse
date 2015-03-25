@@ -16,7 +16,7 @@ MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
 
 test: file_io_test getChildren_test gui_main_test
 
-gui_main_test: main_test.o
+gui_main_test: main_test.o main.o
 	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
 
 file_io_test: file_io_test.o file_io.o board.o ListUtils.o
@@ -50,4 +50,7 @@ getChildren_test.o: getChildren_test.c
 	gcc -c $(CFLAGS) $<
 
 main_test.o: main_test.c
+	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+
+main.o: main.c
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`

@@ -59,4 +59,5 @@ int run_gui() {
 		}
 	}
 	cleanup();
+	return 0;
 }
