@@ -1,7 +1,7 @@
 CFLAGS=-Wall -g -std=c99 -pedantic-errors -lm
 O_FILES=MiniMax.o ListUtils.o
 H_FILES=ListUtils.h MiniMax.h
-VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:test/core/:test/gui/
+VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:src/gui/:test/core/:test/gui/
 
 all: ListUtilsDemo MiniMaxDemo 
 
@@ -52,5 +52,5 @@ getChildren_test.o: getChildren_test.c
 main_test.o: main_test.c
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
-main.o: main.c
+main.o: main.c main.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`

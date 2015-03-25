@@ -35,6 +35,7 @@ int load_images(SDL_Surface* texts, SDL_Surface* buttons) {
 int cleanup() {
 	//Quit SDL
 	SDL_Quit();
+	return 0;
 }
 
 
