@@ -14,7 +14,10 @@ ListUtilsDemo: ListUtilsDemo.o ListUtils.o
 MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
 	gcc -o $@ $^ $(CFLAGS)
 
-test: file_io_test getChildren_test
+test: file_io_test getChildren_test gui_main_test
+
+gui_main_test: main_test.o
+	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
 
 file_io_test: file_io_test.o file_io.o board.o ListUtils.o
 	gcc -o $@ $^ $(CFLAGS)
@@ -45,3 +48,6 @@ board.o: board.c board.h
 
 getChildren_test.o: getChildren_test.c
 	gcc -c $(CFLAGS) $<
+
+main_test.o: main_test.c
+	gcc -c $(CFLAGS) $< `sdl-config --cflags`
