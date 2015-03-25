@@ -1,7 +1,7 @@
 CFLAGS=-Wall -g -std=c99 -pedantic-errors -lm
 O_FILES=MiniMax.o ListUtils.o
 H_FILES=ListUtils.h MiniMax.h
-VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:test/core/
+VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:test/core/:test/gui/
 
 all: ListUtilsDemo MiniMaxDemo 
 
