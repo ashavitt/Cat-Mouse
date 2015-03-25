@@ -41,8 +41,10 @@ int cleanup() {
 
 int run_gui() {
 	//variables declaration
-	SDL_Surface* screen = NULL, texts = NULL, buttons = NULL;
-	SDL_Event event = NULL;
+	SDL_Surface* screen = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+	SDL_Surface* texts = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+	SDL_Surface* buttons = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
 	int quit = 0;
 
 	if (init(screen)) {
@@ -55,7 +57,7 @@ int run_gui() {
 	//main loop
 	while (!quit) {
 		//looping on the events
-		while (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(event)) {
 
 		}
 	}
