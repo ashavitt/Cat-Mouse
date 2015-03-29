@@ -60,7 +60,7 @@ int run_gui() {
 		while (SDL_PollEvent(event)) {
 			switch (event->type) {
 				case SDL_QUIT:
-					cleanup();
+					quit = 1;
 					break;
 			}
 		}
