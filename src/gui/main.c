@@ -64,6 +64,8 @@ int run_gui() {
 					break;
 			}
 		}
+
+		SDL_Delay(10);
 	}
 	cleanup();
 	return 0;
