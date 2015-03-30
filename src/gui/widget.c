@@ -52,3 +52,27 @@ int draw_widget(Widget* widget, Widget* window, SDL_Rect abs_pos) {
 
 	return 0;
 }
+
+
+// TODOOOOO!!!!
+void freeWidget(void* data) {
+	Widget* widget = (Widget*) data;
+	ListRef children;
+	if (data==NULL) {
+		return;
+	}
+
+	children = widget->children;
+	if (children == NULL) {
+		free(widget);
+		return;
+	}
+	// while (children != NULL) { //we run over the list of children
+	// 	freeWidget((void*) headData(children));
+	// 	children = tail(children); //cutting the head
+	// }
+	distroyList(children,&freeWidget);
+
+	free(widget);
+	return;
+}

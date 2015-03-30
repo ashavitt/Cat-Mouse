@@ -3,6 +3,7 @@
 
 // includes
 #include "main.h"
+#include "../main/ListUtils.h"
 
 typedef unsigned char byte;
 
@@ -30,4 +31,5 @@ typedef struct widget
 	int (*onclick)(struct widget*);
 } Widget;
 
+void freeWidget(void* data);
 #endif
