@@ -1,7 +1,7 @@
 #include "board.h"
 
-game* game_malloc() {
-	game* gamep = (game*) malloc (sizeof(game));
+Game* game_malloc() {
+	Game* gamep = (Game*) malloc (sizeof(Game));
 	if (gamep == NULL) {
 		return NULL;
 	}
@@ -63,7 +63,7 @@ int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y,
 	return 1;
 }
 
-int dir_is_valid(game* gamep, int dir) {
+int dir_is_valid(Game* gamep, int dir) {
 	if (gamep->player == CAT) {
 		//check if we are out of bounds or cell is a wall or cell is cheese
 		if (!check_bounds_walls_cheese(dir, gamep->cat_x, gamep->cat_y, gamep->cheese_x, gamep->cheese_y, gamep->board)) {
@@ -130,7 +130,7 @@ int dir_is_valid(game* gamep, int dir) {
 }
 
 ListRef getChildren(void* gameVoid) {
-	game* gamep = (game*) gameVoid;
+	Game* gamep = (Game*) gameVoid;
 	ListRef children = newList(NULL); // Creates an empty list
 
 	LIFT(children); // if malloc fails
@@ -139,12 +139,12 @@ ListRef getChildren(void* gameVoid) {
 	// Run over all directions
 	for(int i = 0; i < 4; i++) {
 		if (dir_is_valid(gamep, i)) { // Direction is valid
-			game* child = game_malloc(); // Allocate memory for child
+			Game* child = game_malloc(); // Allocate memory for child
 			if (child == NULL) { // malloc failed
 				destroyList(children, free);
 				return NULL;
 		  	}
-			// game settings
+			// Game settings
 			child->num_steps = gamep->num_steps;
 			// Switch the player for next turn
 			child->player = SWITCH(gamep->player);
@@ -215,7 +215,7 @@ ListRef getChildren(void* gameVoid) {
 /** checks if game has end
  * returns negative if game hasn't ended yet
  */
-int check_end_game(game* gamep) {
+int check_end_game(Game* gamep) {
 	int dx[] = {0,1,0,-1};
 	int dy[] = {1,0,-1,0};
 	for (int i = 0; i < 4; i++) {

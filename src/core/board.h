@@ -53,10 +53,11 @@ struct board {
  *
  *
  */
-typedef struct game {
+typedef struct Game {
 	// pointer to the board (constant)
 	struct board* board;
 	// cat mouse cheese coordinates
+	// 7 or larger for doesn't appear
 	byte cat_x;
 	byte cat_y;
 	byte mouse_x;
@@ -69,14 +70,14 @@ typedef struct game {
 	byte turns;
 	// number of steps in the minimax algorithm
 	byte num_steps;
-} game;
+} Game;
 
 /* Functions */
 
 ListRef getChildren(void* gamep);
 
-//int evaluateGame(game* game);
+//int evaluateGame(Game* game);
 
-int check_end_game(game* gamep);
+int check_end_game(Game* gamep);
 
 #endif /* GAME_UTILS_H_ */
