@@ -15,7 +15,11 @@ int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 }
 
 int draw_widget(Widget* widget, Widget* window, SDL_Rect abs_pos) {
+	ListRef children;
 	int err;
+	if (widget == NULL) {
+		return ERROR_NO_WIDGET;
+	}
 	if (window == NULL) {
 		//check if I'm root
 		if (widget->type == WINDOW) {
@@ -33,10 +37,18 @@ int draw_widget(Widget* widget, Widget* window, SDL_Rect abs_pos) {
 		}
 	}
 
-	if ((err = add_rect(abs_pos,widget->pos)) != 0) {
+	if ((err = add_rect(&abs_pos,widget->pos)) != 0) {
 		return err;
 	}
 	
-	
+	children = widget->children;
 	//run over children
+	while (children != NULL) { //we run over the list of children
+		if ((err = draw_widget((Widget*) headData(children), window, abs_pos)) != 0) {
+			return err;
+		}
+		children = tail(children); //cutting the head
+	}
+
+	return 0;
 }
