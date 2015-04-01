@@ -76,3 +76,35 @@ void freeWidget(void* data) {
 	free(widget);
 	return;
 }
+
+// widget is pre-malloced for size(Widget)
+// returns widget
+Widget* widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
+	Widget* parent, ListRef children, byte focused, byte updated) {
+	//Widget* widget = (Widget*) malloc(sizeof(Widget));
+	widget->id = id;
+	widget->type = type;
+	widget->dims = dims;
+	widget->pos = pos;
+	widget->imgsrc = imgsrc;
+	widget->parent = parent;
+	widget->children = children;
+	widget->focused = focused;
+	widget->updated = updated;
+	
+	// errors?
+	return widget;
+}
+
+// widget is pre-malloced for size(Widget)
+Widget* graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
+	Widget* parent, ListRef children, byte focused, byte updated) {
+	widget_type type = GRAPHIC;
+	return widgetFactory(widget, id, type, dims, pos, imgsrc, parent, children, focused, updated);
+}
+
+// mallocs the widget!
+Widget* newGraphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc) {
+	Widget* widget = (Widget*) malloc(sizeof(Widget));
+	return graphicFactory(widget, id, GRAPHIC, dims, pos, imgsrc, NULL, NULL, 0, 0); // WHAT IS UPDATED?
+}
