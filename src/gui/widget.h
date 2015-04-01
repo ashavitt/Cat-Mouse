@@ -21,7 +21,7 @@ typedef struct widget
 	SDL_Rect pos; // destination position - should be relative to parent
 	SDL_Surface* imgsrc;
 
-	struct widget parent;
+	struct widget* parent;
 
 	ListRef children; // of struct widget
 
