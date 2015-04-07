@@ -97,6 +97,10 @@ int run_gui() {
 			quit = ERROR_BUILD_UI_FAILED;
 			break;
 		}
+		if (draw_widget(window, screen, window_rect) != 0) {
+			quit = ERROR_DRAW_WIDGET_FAILED;
+			break;
+		}
 		//looping on the events
 		while (SDL_PollEvent(event)) {
 			switch (event->type) {

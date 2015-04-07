@@ -1,4 +1,5 @@
 #include "widget.h"
+#include <stdio.h>
 
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	if (rect1 == NULL) {

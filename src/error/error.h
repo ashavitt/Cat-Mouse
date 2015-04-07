@@ -27,6 +27,7 @@
 /* run_gui */
 #define ERROR_BUILD_UI_FAILED 30
 #define ERROR_WIDGET_FACTORY_FAILED 31
+#define ERROR_DRAW_WIDGET_FAILED 32
 
 /*** General ***/
 #define ERROR_MALLOC_FAILED 100
