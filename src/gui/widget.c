@@ -14,20 +14,14 @@ int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	//maybe change w,h
 }
 
-int draw_widget(Widget* widget, Widget* window, SDL_Rect abs_pos) {
+int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	ListRef children;
 	int err;
 	if (widget == NULL) {
 		return ERROR_NO_WIDGET;
 	}
 	if (window == NULL) {
-		//check if I'm root
-		if (widget->type == WINDOW) {
-			return draw_widget(widget, widget, abs_pos);
-		}
-		else {
-			return ERROR_NO_WINDOW;
-		}
+		return ERROR_NO_WINDOW;
 	}
 	if (widget->type == GRAPHIC || widget->type == BUTTON) {
 		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
@@ -54,7 +48,7 @@ int draw_widget(Widget* widget, Widget* window, SDL_Rect abs_pos) {
 }
 
 
-// TODOOOOO!!!!
+// TODO
 void freeWidget(void* data) {
 	Widget* widget = (Widget*) data;
 	ListRef children;
@@ -79,7 +73,7 @@ void freeWidget(void* data) {
 
 // widget is pre-malloced for size(Widget)
 // returns widget
-Widget* widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
+int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
 	Widget* parent, ListRef children, byte focused, byte updated) {
 	//Widget* widget = (Widget*) malloc(sizeof(Widget));
 	widget->id = id;
@@ -88,23 +82,33 @@ Widget* widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, S
 	widget->pos = pos;
 	widget->imgsrc = imgsrc;
 	widget->parent = parent;
+	if (children == NULL) {
+		children = newList(NULL);
+		if (children == NULL) {
+			return ERROR_MALLOC_FAILED;
+		}
+	}
 	widget->children = children;
 	widget->focused = focused;
 	widget->updated = updated;
 	
-	// errors?
-	return widget;
+	return 0;
 }
 
 // widget is pre-malloced for size(Widget)
-Widget* graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
+int graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
 	Widget* parent, ListRef children, byte focused, byte updated) {
 	widget_type type = GRAPHIC;
 	return widgetFactory(widget, id, type, dims, pos, imgsrc, parent, children, focused, updated);
 }
 
 // mallocs the widget!
-Widget* newGraphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc) {
+Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
-	return graphicFactory(widget, id, GRAPHIC, dims, pos, imgsrc, NULL, NULL, 0, 0); // WHAT IS UPDATED?
+	if (widget == NULL) {
+		//TODO error message
+		return NULL;
+	}
+	graphicFactory(widget, id, dims, pos, imgsrc, parent, NULL, 0, 1);
+	return widget;
 }

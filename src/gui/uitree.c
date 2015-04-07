@@ -11,7 +11,10 @@ int build_main_menu(Widget* window, game_state* state) {
 	// Create the first graphic figure, taken from the spritesheet imgsrc - TODO add it somewhere
 	SDL_Rect dims = {30,30,100,20}; //x y w h
 	SDL_Rect pos = {30,30,100,20};
-	append(children, newGraphic(id, dims, pos, SDL_Surface* imgsrc));
+	if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {
+		return ERROR_APPEND_FAILED;
+	}
+	return 0;
 }
 
  //another parameter should be (array) SDL_Surface** sprite sheets? Or they should be global

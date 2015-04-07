@@ -2,7 +2,7 @@
 #define __WIDGET__
 
 // includes
-#include "main.h"
+#include "shared.h"
 #include "../main/ListUtils.h"
 
 typedef unsigned char byte;
@@ -32,4 +32,8 @@ typedef struct widget
 } Widget;
 
 void freeWidget(void* data);
+
+Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent);
+
+int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
 #endif

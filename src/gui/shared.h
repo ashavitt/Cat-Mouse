@@ -1,16 +1,5 @@
-#include "SDL.h"
-#include "../core/board.h"
-#include "../main/ListUtils.h"
-#include "shared.h"
-#include "widget.h"
-#include "uitree.h"
-
-//Screen attributes
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
-#define BPP 32 //bits per pixel
-
-
+#ifndef __SHARED_H__
+#define __SHARED_H__
 typedef enum  {
 	MAIN_MENU, CHOOSE_PLAYER, CHOOSE_SKILL, IN_GAME, SELECT_GAME, GAME_EDIT, ERROR_DIALOG
 } state_type;
@@ -32,5 +21,4 @@ extern SDL_Surface* mouse;
 extern SDL_Surface* tiles;
 extern SDL_Surface* grid;
 #endif
-
-int run_gui();
+#endif
