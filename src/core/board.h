@@ -6,7 +6,10 @@
 #include <stdlib.h>
 
 /* Defines */
+#ifndef __BYTE__
+#define __BYTE__
 typedef unsigned char byte;
+#endif
 
 #define WALL 'W'
 #define EMPTY '#'

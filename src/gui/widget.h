@@ -6,7 +6,10 @@
 #include "../main/ListUtils.h"
 #include "../error/error.h"
 
+#ifndef __BYTE__
+#define __BYTE__
 typedef unsigned char byte;
+#endif
 
 typedef enum {
 	WINDOW, PANEL, GRAPHIC, BUTTON
