@@ -4,6 +4,7 @@
 #include "shared.h"
 #include "widget.h"
 #include "uitree.h"
+#include "../error/error.h"
 
 //Screen attributes
 #define SCREEN_WIDTH 800

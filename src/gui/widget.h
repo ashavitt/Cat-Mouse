@@ -4,6 +4,7 @@
 // includes
 #include "shared.h"
 #include "../main/ListUtils.h"
+#include "../error/error.h"
 
 typedef unsigned char byte;
 
