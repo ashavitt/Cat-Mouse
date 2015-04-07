@@ -1,7 +1,7 @@
 CFLAGS=-Wall -g -std=c99 -pedantic-errors -lm
 O_FILES=MiniMax.o ListUtils.o
 H_FILES=ListUtils.h MiniMax.h
-VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:src/gui/:error/:test/core/:test/gui/
+VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:src/gui/:src/error/:test/core/:test/gui/
 
 all: ListUtilsDemo MiniMaxDemo 
 
@@ -56,7 +56,7 @@ main.o: main.c main.h shared.h widget.h uitree.h error.h board.h ListUtils.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
 widget.o: widget.c widget.h shared.h ListUtils.h error.h
-	gcc -c $(CFLAGS) $< 'sdl-config --cflags'
+	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
 uitree.o: uitree.c uitree.h shared.h widget.h ListUtils.h error.h
-	gcc -c $(CFLAGS) $< 'sdl-config --cflags'
+	gcc -c $(CFLAGS) $< `sdl-config --cflags`

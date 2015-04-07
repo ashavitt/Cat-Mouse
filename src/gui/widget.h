@@ -40,4 +40,7 @@ void freeWidget(void* data);
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent);
 
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
+
+int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
+	Widget* parent, ListRef children, byte focused, byte updated);
 #endif

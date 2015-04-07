@@ -74,7 +74,7 @@ int run_gui() {
 	grid = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
 	int quit = -1;
-	state_type game_state = MAIN_MENU;
+	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
 	//TODO check mallocs
@@ -89,10 +89,12 @@ int run_gui() {
 	if (widgetFactory(window, 0, WINDOW, window_rect, window_rect, NULL, NULL, NULL, 0, 1) != 0) {
 		return ERROR_WIDGET_FACTORY_FAILED;
 	}
+	
+	state.type = MAIN_MENU;
 
 	//main loop
 	while (quit != -1) {
-		if (build_ui(window, game_state) != 0) {
+		if (build_ui(window, &state) != 0) {
 			quit = ERROR_BUILD_UI_FAILED;
 			break;
 		}

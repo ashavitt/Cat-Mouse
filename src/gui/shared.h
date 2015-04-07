@@ -1,5 +1,7 @@
 #ifndef __SHARED_H__
 #define __SHARED_H__
+#include "SDL.h"
+#include "../core/board.h"
 typedef enum  {
 	MAIN_MENU, CHOOSE_PLAYER, CHOOSE_SKILL, IN_GAME, SELECT_GAME, GAME_EDIT, ERROR_DIALOG
 } state_type;

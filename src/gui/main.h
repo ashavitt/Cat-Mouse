@@ -1,5 +1,4 @@
 #include "SDL.h"
-#include "../core/board.h"
 #include "../main/ListUtils.h"
 #include "shared.h"
 #include "widget.h"

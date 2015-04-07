@@ -25,13 +25,13 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	}
 	if (widget->type == GRAPHIC || widget->type == BUTTON) {
 		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
-			SDL_FreeSurface(img);
+			//SDL_FreeSurface(img);
 			printf("ERROR: failed to blit image: %s\n", SDL_GetError());
 			return ERROR_BLIT_FAIL; //TODO
 		}
 	}
 
-	if ((err = add_rect(&abs_pos,widget->pos)) != 0) {
+	if ((err = add_rect(&abs_pos,&(widget->pos))) != 0) {
 		return err;
 	}
 	
@@ -65,7 +65,7 @@ void freeWidget(void* data) {
 	// 	freeWidget((void*) headData(children));
 	// 	children = tail(children); //cutting the head
 	// }
-	distroyList(children,&freeWidget);
+	destroyList(children,&freeWidget);
 
 	free(widget);
 	return;
