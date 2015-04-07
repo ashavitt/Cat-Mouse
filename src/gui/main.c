@@ -1,7 +1,6 @@
 #define __main_c__
 #include "main.h"
 
-
 SDL_Surface* texts;
 SDL_Surface* buttons;
 SDL_Surface* cat;
@@ -93,7 +92,7 @@ int run_gui() {
 	state.type = MAIN_MENU;
 
 	//main loop
-	while (quit != -1) {
+	while (quit == -1) {
 		if (build_ui(window, &state) != 0) {
 			quit = ERROR_BUILD_UI_FAILED;
 			break;
