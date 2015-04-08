@@ -15,6 +15,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
+	window->children = children;
 	return 0;
 }
 
