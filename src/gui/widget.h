@@ -35,6 +35,8 @@ typedef struct widget
 	int (*onclick)(struct widget*);
 } Widget;
 
+int add_rect(SDL_Rect* rect1, SDL_Rect* rect2);
+
 void freeWidget(void* data);
 
 SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size);

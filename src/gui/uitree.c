@@ -69,11 +69,11 @@ int build_main_menu(Widget* window, game_state* state) {
 		printf("Error in add_rect: %d\n", err);
 		return ERROR_ADD_RECT_FAILED;
 	}
-	text_dims.x = MAIN_MENU_T_X_START + WL_BUTTON_W;
+	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	button = build_text_button(NEW_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(LOAD_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
@@ -86,9 +86,10 @@ int build_main_menu(Widget* window, game_state* state) {
 			button = ((Widget*)headData(buttons));
 			if (button->id == state->focused) {
 				//set the correct color for the button
-				(Widget*)headData(button->children)->dims = button_dims;
+				((Widget*)headData(button->children))->dims = button_dims;
 			}
 		}
+		buttons = tail(buttons);
 	}
 
 
