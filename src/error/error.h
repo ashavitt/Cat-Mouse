@@ -19,7 +19,7 @@
 
 /* handlers */
 #define ERROR_NO_SDLEVENT 13
-
+#define ERROR_FOCUSED_ID 14
 /** UITree **/
 
 /* build_ui */
