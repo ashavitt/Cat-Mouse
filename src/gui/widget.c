@@ -24,7 +24,7 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	if (window == NULL) {
 		return ERROR_NO_WINDOW;
 	}
-	if (widget->type == GRAPHIC || widget->type == BUTTON) {
+	if (widget->type == GRAPHIC) {
 		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
 			//SDL_FreeSurface(img);
 			printf("ERROR: failed to blit image: %s\n", SDL_GetError());
