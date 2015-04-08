@@ -9,7 +9,6 @@ int build_main_menu(Widget* window, game_state* state) {
 
 	children = newList(NULL);
 
-	// Create the first graphic figure, taken from the spritesheet imgsrc - TODO add it somewhere
 	SDL_Rect dims = {30,30,100,20}; //x y w h
 	SDL_Rect pos = {30,30,100,20};
 	if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {

@@ -79,7 +79,7 @@ void freeWidget(void* data) {
 // widget is pre-malloced for size(Widget)
 // returns widget
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
-	Widget* parent, ListRef children, byte focused, byte updated) {
+	Widget* parent, ListRef children, byte focused, byte updated, int (*onClick)(Widget*)) {
 	//Widget* widget = (Widget*) malloc(sizeof(Widget));
 	widget->id = id;
 	widget->type = type;
@@ -96,6 +96,7 @@ int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_R
 	widget->children = children;
 	widget->focused = focused;
 	widget->updated = updated;
+	widget->onclick = onClick;
 	
 	return 0;
 }
@@ -104,7 +105,7 @@ int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_R
 int graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
 	Widget* parent, ListRef children, byte focused, byte updated) {
 	widget_type type = GRAPHIC;
-	return widgetFactory(widget, id, type, dims, pos, imgsrc, parent, children, focused, updated);
+	return widgetFactory(widget, id, type, dims, pos, imgsrc, parent, children, focused, updated, NULL);
 }
 
 // mallocs the widget!
@@ -114,6 +115,29 @@ Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, W
 		//TODO error message
 		return NULL;
 	}
-	graphicFactory(widget, id, dims, pos, imgsrc, parent, NULL, 0, 1);
+	if (graphicFactory(widget, id, dims, pos, imgsrc, parent, NULL, 0, 1) != 0) {
+		printf("graphicFactory failed.\n");
+		return NULL;
+	}
+	return widget;
+}
+
+int buttonFactory(Widget* widget, int id, SDL_Rect dims, SDL_Rect pos, Widget* parent,
+	ListRef children, byte focused, byte updated, int (*onClick)(Widget*)) {
+	widget_type type = BUTTON;
+	return widgetFactory(widget, id, type, dims, pos, NULL, parent, children, focused, updated, onClick);
+}
+
+Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, ListRef children,
+	byte focused, byte updated, int (*onClick)(Widget*)) {
+	Widget* widget = (Widget*) malloc(sizeof(Widget));
+	if (widget == NULL) {
+		//TODO error message
+		return NULL;
+	}
+	if (buttonFactory(widget, id, dims, pos, parent, NULL, 0, 1, onClick) != 0) {
+		printf("buttonFactory failed.\n");
+		return NULL;
+	}
 	return widget;
 }
