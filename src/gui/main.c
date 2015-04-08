@@ -114,6 +114,7 @@ int run_gui() {
 	}
 	
 	state.type = MAIN_MENU;
+	state.focused = NEW_GAME_B;
 
 	//main loop
 	while (quit == -1) {
@@ -136,7 +137,7 @@ int run_gui() {
 					quit = 0;
 					break;
 				case SDL_MOUSEBUTTONUP:
-					handle_mouse_click(event, window, state);
+					handle_mouse_click(event, window, &state);
 					break;
 			}
 		}

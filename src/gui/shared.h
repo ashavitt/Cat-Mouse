@@ -13,7 +13,7 @@ typedef struct game_state_struct {
 	// if focused>99 then focused = 1xy in world editing
 	int number; //skill_level or world_id
 	Game* game; // for world editing
-	game_state_struct* previous_state;
+	struct game_state_struct* previous_state;
 } game_state;
 
 #ifndef __main_c__

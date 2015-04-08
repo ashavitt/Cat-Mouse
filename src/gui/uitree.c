@@ -71,9 +71,43 @@ int build_main_menu(Widget* window, game_state* state) {
 	}
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	text_dims.w = WL_T_W;
-	text_dims.h = WL_T_H;
 	button = build_text_button(LOAD_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
+	if (append(panel->children, button) == NULL) {
+		return ERROR_APPEND_FAILED;
+	}
+
+	//create game
+	if ((err = add_rect(&button_pos, &button_offset)) != 0) {
+		printf("Error in add_rect: %d\n", err);
+		return ERROR_ADD_RECT_FAILED;
+	}
+	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
+	text_dims.y = MAIN_MENU_T_Y_START;
+	button = build_text_button(CREATE_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
+	if (append(panel->children, button) == NULL) {
+		return ERROR_APPEND_FAILED;
+	}
+
+	//edit game
+	if ((err = add_rect(&button_pos, &button_offset)) != 0) {
+		printf("Error in add_rect: %d\n", err);
+		return ERROR_ADD_RECT_FAILED;
+	}
+	text_dims.x = MAIN_MENU_T_X_START;
+	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
+	button = build_text_button(EDIT_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
+	if (append(panel->children, button) == NULL) {
+		return ERROR_APPEND_FAILED;
+	}
+
+	//quit
+	if ((err = add_rect(&button_pos, &button_offset)) != 0) {
+		printf("Error in add_rect: %d\n", err);
+		return ERROR_ADD_RECT_FAILED;
+	}
+	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
+	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
+	button = build_text_button(QUIT_B, button_pos, button_dims, text_dims, panel, NULL);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
