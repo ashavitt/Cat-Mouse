@@ -52,13 +52,13 @@ getChildren_test.o: getChildren_test.c
 main_test.o: main_test.c
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
-main.o: main.c main.h shared.h widget.h uitree.h error.h board.h ListUtils.h
+main.o: main.c main.h shared.h widget.h uitree.h handlers.h error.h board.h ListUtils.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
 widget.o: widget.c widget.h shared.h ListUtils.h error.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
-uitree.o: uitree.c uitree.h shared.h widget.h ListUtils.h error.h handlers.h actions.h
+uitree.o: uitree.c uitree.h shared.h widget.h ListUtils.h error.h actions.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
 handlers.o: handlers.c shared.h widget.h ListUtils.h error.h
