@@ -75,6 +75,12 @@ int load_images() {
 
 
 void cleanup() {
+	SDL_FreeSurface(texts);
+	SDL_FreeSurface(buttons);
+	SDL_FreeSurface(cat);
+	SDL_FreeSurface(mouse);
+	SDL_FreeSurface(tiles);
+	SDL_FreeSurface(grid);
 	//Quit SDL
 	SDL_Quit();
 }
