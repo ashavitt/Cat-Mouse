@@ -80,6 +80,8 @@ SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size) {
 	SDL_Rect children_pos;
 	children_pos.x = parent_dims.x/2 - size.x/2;
 	children_pos.y = parent_dims.y/2 - size.y/2;
+	children_pos.w = size.w;
+	children_pos.h = size.h;
 	return children_pos;
 }
 
@@ -135,6 +137,11 @@ int buttonFactory(Widget* widget, int id, SDL_Rect dims, SDL_Rect pos, Widget* p
 	return widgetFactory(widget, id, type, dims, pos, NULL, parent, children, focused, updated, onClick);
 }
 
+int panelFactory(Widget* widget, int id, SDL_Rect pos, Widget* parent, ListRef children, byte focused, byte updated) {
+	widget_type type = PANEL;
+	return widgetFactory(widget, id, type, pos, pos, NULL, parent, children, focused, updated, NULL);
+}
+
 Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, ListRef children,
 	byte focused, byte updated, int (*onClick)(Widget*)) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
@@ -147,4 +154,16 @@ Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, ListRef 
 		return NULL;
 	}
 	return widget;
+}
+
+Widget* new_panel(int id, SDL_Rect pos, Widget* parent) {
+	Widget* widget = (Widget*) malloc(sizeof(Widget));
+	if (widget == NULL) {
+		//TODO
+		return NULL;
+	}
+	if (panelFactory(widget, id, pos, parent, NULL, 0, 1) != 0) {
+		printf("panelFactory failed.\n");
+		return NULL;
+	}
 }
