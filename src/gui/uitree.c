@@ -5,9 +5,11 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 	Widget* bg;
 	Widget* text;
 	SDL_Rect zeros = {0,0,0,0};
+	
 	//set the position of the text in the center of the button graphic
 	SDL_Rect text_pos = get_center(bg_dims, text_dims);
 	//printf("%d,%d\n", text_pos.x, text_pos.y);
+	
 	//create the widgets
 	clickable = new_button(id, main_pos, main_pos, parent, onClick);
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
@@ -17,6 +19,7 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 		//TODO print error
 		return NULL;
 	}
+	
 	//add the widgets to the list of childrens
 	if (append(clickable->children, bg) == NULL) {
 		return NULL;
@@ -51,7 +54,7 @@ int build_main_menu(Widget* window, game_state* state) {
 		return ERROR_APPEND_FAILED;
 	}
 	
-	//-----creating the buttons-----
+	/*-----creating main menu buttons-----*/
 	//new game
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
@@ -126,18 +129,10 @@ int build_main_menu(Widget* window, game_state* state) {
 		buttons = tail(buttons);
 	}
 
-
-
-	//SDL_Rect dims = {30,30,100,20}; //x y w h
-	//SDL_Rect pos = {30,30,100,20};
-	//if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {
-	//	return ERROR_APPEND_FAILED;
-	//}
 	window->children = children;
 	return 0;
 }
 
- //another parameter should be (array) SDL_Surface** sprite sheets? Or they should be global
 int build_ui(Widget* window, game_state* state) {
 	switch (state->type) {
 		case MAIN_MENU:
