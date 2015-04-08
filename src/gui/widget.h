@@ -11,6 +11,7 @@
 typedef unsigned char byte;
 #endif
 
+
 typedef enum {
 	WINDOW, PANEL, GRAPHIC, BUTTON
 } widget_type;
@@ -32,8 +33,10 @@ typedef struct widget
 	byte focused;
 	byte updated;
 
-	int (*onclick)(struct widget*);
+	int (*onclick)(struct widget*, game_state*);
 } Widget;
+
+typedef int (*onclick)(Widget*, game_state*);
 
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2);
 
@@ -43,12 +46,12 @@ SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size);
 
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent);
 
-Widget* new_button(int id,  SDL_Rect dims, SDL_Rect pos, Widget* parent, int (*onClick)(Widget*));
+Widget* new_button(int id,  SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick onClick);
 
 Widget* new_panel(int id, SDL_Rect pos, Widget* parent);
 
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
 
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
-	Widget* parent, ListRef children, byte focused, byte updated, int (*onClick)(Widget*));
+	Widget* parent, ListRef children, byte focused, byte updated, onclick onClick);
 #endif

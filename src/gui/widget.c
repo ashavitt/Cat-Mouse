@@ -94,7 +94,7 @@ SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size) {
 // widget is pre-malloced for size(Widget)
 // returns widget
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
-	Widget* parent, ListRef children, byte focused, byte updated, int (*onClick)(Widget*)) {
+	Widget* parent, ListRef children, byte focused, byte updated, onclick onClick) {
 	//Widget* widget = (Widget*) malloc(sizeof(Widget));
 	widget->id = id;
 	widget->type = type;
@@ -138,7 +138,7 @@ Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, W
 }
 
 int buttonFactory(Widget* widget, int id, SDL_Rect dims, SDL_Rect pos, Widget* parent,
-	ListRef children, byte focused, byte updated, int (*onClick)(Widget*)) {
+	ListRef children, byte focused, byte updated, onclick onClick) {
 	widget_type type = BUTTON;
 	return widgetFactory(widget, id, type, dims, pos, NULL, parent, children, focused, updated, onClick);
 }
@@ -148,7 +148,7 @@ int panelFactory(Widget* widget, int id, SDL_Rect pos, Widget* parent, ListRef c
 	return widgetFactory(widget, id, type, pos, pos, NULL, parent, children, focused, updated, NULL);
 }
 
-Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, int (*onClick)(Widget*)) {
+Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick onClick) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
 		//TODO error message

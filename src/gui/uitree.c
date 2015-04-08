@@ -1,6 +1,6 @@
 #include "uitree.h"
 
-Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, int (*onClick)(Widget*)) {
+Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, onclick onClick) {
 	Widget* clickable;
 	Widget* bg;
 	Widget* text;
