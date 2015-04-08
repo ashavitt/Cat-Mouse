@@ -43,6 +43,8 @@ Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, W
 
 Widget* new_button(int id,  SDL_Rect dims, SDL_Rect pos, Widget* parent, int (*onClick)(Widget*));
 
+Widget* new_panel(int id, SDL_Rect pos, Widget* parent);
+
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
 
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
