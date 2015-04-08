@@ -8,10 +8,56 @@
 
 int build_ui(Widget*, game_state*);
 
+/*** Sprites ***/
+
+/** Buttons **/
+//WL - Wide long, NL - Narrow long, WS - (very) Wide short, NS - Narrow short
+#define WL_BUTTON_W 282
+#define WL_BUTTON_H 57
+#define NL_BUTTON_W 141
+#define NL_BUTTON_H 57
+#define WS_BUTTON_W WL_BUTTON_W
+#define WS_BUTTON_H 25
+
+/** Text **/
+#define WL_T_W 264
+#define WL_T_H 51
+#define NL_T_W 132
+#define NL_T_H 51
+
+/* Titles */
+#define TITLES_T_X_START 528
+#define TITLES_T_Y_START 271
+
+/* Numbers */
+// Small Numbers (starts with braces () )
+#define S_NUM_T_X_START 0
+#define S_NUM_T_Y_START 102
+#define S_NUM_T_W 10
+#define S_NUM_T_H 16
+// Medium Numbers (starts with 0)
+#define M_NUM_T_X_START 0
+#define M_NUM_T_Y_START 577
+#define M_NUM_T_W 11
+#define M_NUM_T_H 15
+// Large Numbers (starts with 0)
+#define L_NUM_T_X_START 0
+#define L_NUM_T_Y_START 592
+#define L_NUM_T_W 14
+#define L_NUM_T_H 20
+
+/* Main Menu */
+// 5 buttons, 3 in a row
+#define MAIN_MENU_T_X_START 0
+#define MAIN_MENU_T_Y_START 118
+
+/* Messages */
+
 /** General **/
 #define BACK_B 1
 #define QUIT_B 6
 #define DONE_B 12
+#define UNFOCUSABLE 100
 
 /** Main Menu **/
 #define NEW_GAME_B 2
