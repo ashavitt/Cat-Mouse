@@ -39,7 +39,13 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	children = widget->children;
 	//run over children
 	while (children != NULL) { //we run over the list of children
+		if (headData(children) == NULL) {
+			printf("no headdata\n");
+			fflush(stdout);
+			continue;
+		}
 		if ((err = draw_widget((Widget*) headData(children), window, abs_pos)) != 0) {
+			printf("error drawing child\n");
 			return err;
 		}
 		children = tail(children); //cutting the head
