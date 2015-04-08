@@ -25,7 +25,8 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 		return ERROR_NO_WINDOW;
 	}
 	if (widget->type == GRAPHIC) {
-		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
+		//if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
+		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &abs_pos) != 0) {
 			//SDL_FreeSurface(img);
 			printf("ERROR: failed to blit image: %s\n", SDL_GetError());
 			return ERROR_BLIT_FAIL; //TODO
@@ -34,6 +35,12 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 
 	if ((err = add_rect(&abs_pos,&(widget->pos))) != 0) {
 		return err;
+	}
+
+	//TODO later we should cut the graphics to fit in the panel
+	if (widget->type == PANEL) {
+		abs_pos.w = (widget->pos).w;
+		abs_pos.h = (widget->pos).h;
 	}
 	
 	children = widget->children;
@@ -78,8 +85,8 @@ void freeWidget(void* data) {
 // returns a position which centerizes the child within the parent
 SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size) {
 	SDL_Rect children_pos;
-	children_pos.x = parent_dims.x/2 - size.x/2;
-	children_pos.y = parent_dims.y/2 - size.y/2;
+	children_pos.x = parent_dims.w/2 - size.w/2;
+	children_pos.y = parent_dims.h/2 - size.h/2;
 	children_pos.w = size.w;
 	children_pos.h = size.h;
 	return children_pos;
