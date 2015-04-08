@@ -37,6 +37,8 @@ typedef struct widget
 
 void freeWidget(void* data);
 
+SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size);
+
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent);
 
 Widget* new_button(int id,  SDL_Rect dims, SDL_Rect pos, Widget* parent, int (*onClick)(Widget*));

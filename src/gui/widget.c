@@ -52,7 +52,6 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	return 0;
 }
 
-
 // TODO
 void freeWidget(void* data) {
 	Widget* widget = (Widget*) data;
@@ -74,6 +73,14 @@ void freeWidget(void* data) {
 
 	free(widget);
 	return;
+}
+
+// returns a position which centerizes the child within the parent
+SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size) {
+	SDL_Rect children_pos;
+	children_pos.x = parent_dims.x/2 - size.x/2;
+	children_pos.y = parent_dims.y/2 - size.y/2;
+	return children_pos;
 }
 
 // widget is pre-malloced for size(Widget)
