@@ -57,6 +57,7 @@ int build_ui(Widget*, game_state*);
 #define BACK_B 1
 #define QUIT_B 6
 #define DONE_B 12
+#define UNFOCUSABLE 100
 
 /** Main Menu **/
 #define NEW_GAME_B 2
