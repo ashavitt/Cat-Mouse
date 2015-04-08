@@ -1,5 +1,27 @@
 #include "uitree.h"
 
+Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, int (*onClick)(Widget*)) {
+	Widget* clickable;
+	Widget* bg;
+	Widget* text;
+	SDL_Rect zeros = {0,0,0,0};
+	//set the position of the text in the center of the button graphic
+	SDL_Rect text_pos = get_center(bg_dims, text_dims);
+	//create the widgets
+	clickable = new_button(id, main_pos, main_pos, parent, onClick);
+	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
+	text = new_graphic(UNFOCUSABLE, text_dims, text_pos, texts, bg);
+	//check everything worked
+	if (clickable == NULL || bg == NULL || text == NULL) {
+		//TODO print error
+		return NULL;
+	}
+	//add the widgets to the list of childrens
+	append(clickable->children, bg);
+	append(bg->children, text);
+	return clickable;
+}
+
 int build_main_menu(Widget* window, game_state* state) {
 	int id = 2; //TODO change this
 	ListRef children;
