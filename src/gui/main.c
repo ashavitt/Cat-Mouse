@@ -62,11 +62,11 @@ int load_images() {
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
-	cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0xFF, 0xFF);
+	cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0x00, 0x00);
 	SDL_SetColorKey(cat,SDL_SRCCOLORKEY, cat_colorkey);
-	mouse_colorkey = SDL_MapRGB(mouse->format, 0xFF, 0xFF, 0xFF);
+	mouse_colorkey = SDL_MapRGB(mouse->format, 0xFF, 0x00, 0x00);
 	SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, mouse_colorkey);
-	tiles_colorkey = SDL_MapRGB(tiles->format, 0xFF, 0xFF, 0xFF);
+	tiles_colorkey = SDL_MapRGB(tiles->format, 0x00, 0xFF, 0x00);
 	SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey);
 	grid_colorkey = SDL_MapRGB(grid->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(grid,SDL_SRCCOLORKEY, grid_colorkey);
