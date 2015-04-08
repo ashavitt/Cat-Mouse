@@ -17,19 +17,24 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 		return NULL;
 	}
 	//add the widgets to the list of childrens
-	append(clickable->children, bg);
-	append(bg->children, text);
+	if (append(clickable->children, bg) == NULL) {
+		return NULL;
+	}
+	if (append(bg->children, text) == NULL) {
+		return NULL;
+	}
 	return clickable;
 }
 
 int build_main_menu(Widget* window, game_state* state) {
-	int id = 2; //TODO change this
+	//int id = 2; //TODO change this
 	Widget* panel;
 	Widget* button;
 	//height is height of 5 buttons + 0.5 button per spacing between buttons
 	SDL_Rect panel_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H*7};
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect button_pos = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
+	//SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
 	
 	ListRef children;
@@ -49,13 +54,16 @@ int build_main_menu(Widget* window, game_state* state) {
 	text_dims.x = MAIN_MENU_T_X_START;
 	text_dims.y = MAIN_MENU_T_Y_START;
 	button = build_text_button(NEW_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
-
-
-	SDL_Rect dims = {30,30,100,20}; //x y w h
-	SDL_Rect pos = {30,30,100,20};
-	if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {
+	if (append(children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
+
+
+	//SDL_Rect dims = {30,30,100,20}; //x y w h
+	//SDL_Rect pos = {30,30,100,20};
+	//if (append(children, new_graphic(id, dims, pos, texts, window)) == NULL) {
+	//	return ERROR_APPEND_FAILED;
+	//}
 	window->children = children;
 	return 0;
 }

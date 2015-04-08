@@ -48,5 +48,5 @@ Widget* new_panel(int id, SDL_Rect pos, Widget* parent);
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
 
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
-	Widget* parent, ListRef children, byte focused, byte updated);
+	Widget* parent, ListRef children, byte focused, byte updated, int (*onClick)(Widget*));
 #endif

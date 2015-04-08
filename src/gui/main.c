@@ -85,7 +85,7 @@ int run_gui() {
 		return -2;
 	}
 
-	if (widgetFactory(window, 0, WINDOW, window_rect, window_rect, NULL, NULL, NULL, 0, 1) != 0) {
+	if (widgetFactory(window, 0, WINDOW, window_rect, window_rect, NULL, NULL, NULL, 0, 1, NULL) != 0) {
 		return ERROR_WIDGET_FACTORY_FAILED;
 	}
 	

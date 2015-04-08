@@ -142,8 +142,7 @@ int panelFactory(Widget* widget, int id, SDL_Rect pos, Widget* parent, ListRef c
 	return widgetFactory(widget, id, type, pos, pos, NULL, parent, children, focused, updated, NULL);
 }
 
-Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, ListRef children,
-	byte focused, byte updated, int (*onClick)(Widget*)) {
+Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, int (*onClick)(Widget*)) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
 		//TODO error message
@@ -166,4 +165,5 @@ Widget* new_panel(int id, SDL_Rect pos, Widget* parent) {
 		printf("panelFactory failed.\n");
 		return NULL;
 	}
+	return widget;
 }
