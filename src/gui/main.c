@@ -8,16 +8,16 @@ SDL_Surface* mouse;
 SDL_Surface* tiles;
 SDL_Surface* grid;
 
-int init(SDL_Surface* screen) {
+int init(SDL_Surface**  screen) {
 	//initialize SDL
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) == -1) {
 		return -1;
 	}
 
 	//set up screen
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, BPP, SDL_SWSURFACE);
+	*screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, BPP, SDL_SWSURFACE);
 	//check for errors
-	if (screen == NULL) {
+	if (*screen == NULL) {
 		return -1;
 	}
 
@@ -64,7 +64,7 @@ void cleanup() {
 
 int run_gui() {
 	//variables declaration
-	SDL_Surface* screen = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+	SDL_Surface* screen; // = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	texts = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	buttons = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	cat = (SDL_Surface*) malloc(sizeof(SDL_Surface));
@@ -78,7 +78,7 @@ int run_gui() {
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
 	//TODO check mallocs
 
-	if (init(screen)) {
+	if (init(&screen)) {
 		return -1;
 	}
 	if (load_images()) {
@@ -101,6 +101,10 @@ int run_gui() {
 			quit = ERROR_DRAW_WIDGET_FAILED;
 			break;
 		}
+		if (SDL_Flip(screen) != 0) {
+			quit = 25; // TODO
+			break;
+		}
 		//looping on the events
 		while (SDL_PollEvent(event)) {
 			switch (event->type) {
@@ -110,7 +114,7 @@ int run_gui() {
 			}
 		}
 
-		SDL_Delay(10);
+		SDL_Delay(100);
 	}
 	cleanup();
 	return quit;
