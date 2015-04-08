@@ -117,7 +117,7 @@ int run_gui() {
 	state.focused = NEW_GAME_B;
 
 	//main loop
-	while (quit == -1) {
+	while (quit == 0) {
 		if (build_ui(window, &state) != 0) {
 			quit = ERROR_BUILD_UI_FAILED;
 			break;
@@ -131,13 +131,13 @@ int run_gui() {
 			break;
 		}
 		//looping on the events
-		while (SDL_PollEvent(event)) {
+		while (SDL_PollEvent(event) && quit == 0) {
 			switch (event->type) {
 				case SDL_QUIT:
-					quit = 0;
+					quit = 1;
 					break;
 				case SDL_MOUSEBUTTONUP:
-					handle_mouse_click(event, window, &state);
+					quit = handle_mouse_click(event, window, &state);
 					break;
 			}
 		}
