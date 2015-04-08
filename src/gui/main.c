@@ -129,6 +129,9 @@ int run_gui() {
 				case SDL_QUIT:
 					quit = 0;
 					break;
+				case SDL_MOUSEBUTTONUP:
+					handle_mouse_click(event, window, state);
+					break;
 			}
 		}
 
