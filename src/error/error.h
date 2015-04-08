@@ -17,6 +17,9 @@
 #define ERROR_NO_WINDOW 11
 #define ERROR_BLIT_FAIL 12
 
+/* handlers */
+#define ERROR_NO_SDLEVENT 13
+
 /** UITree **/
 
 /* build_ui */
