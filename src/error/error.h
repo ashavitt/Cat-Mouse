@@ -21,7 +21,7 @@
 
 /* build_ui */
 #define ERROR_APPEND_FAILED 20
-
+#define ERROR_ADD_RECT_FAILED 21
 /** main **/
 
 /* run_gui */
