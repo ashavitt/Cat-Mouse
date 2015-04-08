@@ -81,6 +81,32 @@ void freeWidget(void* data) {
 	return;
 }
 
+Widget* find_widget_by_id(Widget* root, int id) {
+	ListRef children;
+	int err;
+	Widget* found == NULL;
+	if (root == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	
+	if (root->id == id) {
+		return root;
+	}
+	
+	children = widget->children;
+	
+	while (children != NULL) {
+		if (isEmpty(children)) {
+			break;
+		}
+		if ((found = find_widget_by_id((Widget*) headData(children), id)) != NULL) {
+			return found;
+		}
+		children = tail(children); //cutting the head
+	}
+	return 0;
+}
+
 // returns a position which centerizes the child within the parent
 SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size) {
 	SDL_Rect children_pos;
