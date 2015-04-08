@@ -8,6 +8,19 @@
 
 int build_ui(Widget*, game_state*);
 
+/** Sprites **/
+
+/* Buttons */
+//WL - Wide long, NL - Narrow long, WS - Wide short, NS - Narrow short
+#define WL_BUTTON_W 282
+#define WL_BUTTON_H 57
+#define NL_BUTTON_W 141
+#define NL_BUTTON_H 57
+#define WS_BUTTON_W WL_BUTTON_W
+#define WS_BUTTON_H 25
+
+/* Text */
+
 /** General **/
 #define BACK_B 1
 #define QUIT_B 6
