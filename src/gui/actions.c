@@ -1,7 +1,7 @@
 #include "actions.h"
 
 onclick quit_action(Widget* widget, game_state* state) {
-	return QUIT_ACTION;
+	return 1;
 }
 
 onclick back_action(Widget* widget, game_state* state) {
