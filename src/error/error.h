@@ -9,8 +9,8 @@
 
 
 /* add_rect */
-#define ERROR_NO_RECT1 1
-#define ERROR_NO_RECT2 2
+#define ERROR_NO_RECT1 2
+#define ERROR_NO_RECT2 3
 
 /* draw_widget */
 #define ERROR_NO_WIDGET 10

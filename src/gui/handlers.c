@@ -14,12 +14,6 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 		printf("Error in add_rect, %d\n",err);
 		return err;
 	}
-	if (widget->type == GRAPHIC) {
-		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &abs_pos) != 0) {
-			printf("ERROR: failed to blit image: %s\n", SDL_GetError());
-			return ERROR_BLIT_FAIL; //TODO
-		}
-	}
 
 	if (widget->type == BUTTON) {
 		if ((e.button.x > abs_pos.x) && (e.button.x < abs_pos.x + dims.w) 
