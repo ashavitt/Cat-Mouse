@@ -28,6 +28,12 @@ int init(SDL_Surface**  screen) {
 }
 
 int load_images() {
+	Uint32 text_colorkey;
+	Uint32 buttons_colorkey;
+	Uint32 cat_colorkey;
+	Uint32 mouse_colorkey;
+	Uint32 tiles_colorkey;
+	Uint32 grid_colorkey;
 	texts = SDL_LoadBMP("images/texts.bmp");
 	buttons = SDL_LoadBMP("images/buttons.bmp");
 	cat = SDL_LoadBMP("images/cat.bmp");
@@ -52,6 +58,18 @@ int load_images() {
 	if (grid == NULL) {
 		return -2;
 	}
+	text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
+	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
+	cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(cat,SDL_SRCCOLORKEY, cat_colorkey);
+	mouse_colorkey = SDL_MapRGB(mouse->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, mouse_colorkey);
+	tiles_colorkey = SDL_MapRGB(tiles->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey);
+	grid_colorkey = SDL_MapRGB(grid->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(grid,SDL_SRCCOLORKEY, grid_colorkey);
 	return 0;
 }
 
