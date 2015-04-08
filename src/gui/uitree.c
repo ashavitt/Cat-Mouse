@@ -7,6 +7,7 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 	SDL_Rect zeros = {0,0,0,0};
 	//set the position of the text in the center of the button graphic
 	SDL_Rect text_pos = get_center(bg_dims, text_dims);
+	//printf("%d,%d\n", text_pos.x, text_pos.y);
 	//create the widgets
 	clickable = new_button(id, main_pos, main_pos, parent, onClick);
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
@@ -56,8 +57,8 @@ int build_main_menu(Widget* window, game_state* state) {
 	button_dims.y = WL_BUTTON_H;
 	text_dims.x = MAIN_MENU_T_X_START;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	text_dims.w = WL_BUTTON_W;
-	text_dims.h = WL_BUTTON_H;
+	text_dims.w = WL_T_W;
+	text_dims.h = WL_T_H;
 	button = build_text_button(NEW_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
