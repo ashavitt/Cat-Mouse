@@ -81,6 +81,14 @@ int load_images() {
 	return 0;
 }
 
+void free_state(game_state state) {
+	if (state.previous_state != NULL) {
+		free_state(*(state.previous_state));
+	}
+	free(state.previous_state);
+	return;
+}
+
 
 void cleanup() {
 	SDL_FreeSurface(texts);
@@ -118,6 +126,7 @@ int run_gui() {
 	
 	state.type = MAIN_MENU;
 	state.focused = 0;
+	state.previous_state = NULL;
 
 	//main loop
 	while (quit == 0) {
@@ -159,6 +168,8 @@ int run_gui() {
 	}
 	free(event);
 	freeWidget(window);
+	SDL_FreeSurface(screen);
+	free_state(state);
 	cleanup();
 	return quit;
 }
