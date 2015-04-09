@@ -43,6 +43,8 @@ int choose_action(Widget* widget, game_state* state) {
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	state->previous_state = old_state;
+
+	state->focused = 0;
 	
 	if (state->type == CHOOSE_PLAYER) {
 		if (state->catormouse == CAT) {
