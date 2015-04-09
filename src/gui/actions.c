@@ -65,9 +65,7 @@ int choose_action(Widget* widget, game_state* state) {
 				//still mouse
 			}
 		}
-	}
-	
-	if (state->type == CHOOSE_SKILL) {
+	} else if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) {
 			state->game->num_steps_cat = state->number;
 			state->type = CHOOSE_PLAYER;
