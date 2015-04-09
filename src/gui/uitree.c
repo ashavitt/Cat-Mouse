@@ -51,10 +51,11 @@ int build_main_menu(Widget* window, game_state* state) {
 	//create the title
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	text_dims.x = MAIN_MENU_T_X_START;
-	text_dims.y = TITLES_T_Y_START + WL_T_H;
+	text_dims.x = TITLES_T_X_START;
+	text_dims.y = TITLES_T_Y_START;
 	title_pos = get_center(window->dims, text_dims);
-	title_pos.y -= 5*WL_BUTTON_H;
+	//title_pos.y -= 5*WL_BUTTON_H;
+	title_pos.y = WL_BUTTON_H;
 	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
 	if (append(children, title) == NULL) {
 		return ERROR_APPEND_FAILED;
