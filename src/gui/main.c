@@ -97,12 +97,6 @@ void cleanup() {
 int run_gui() {
 	//variables declaration
 	SDL_Surface* screen; // = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	texts = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	buttons = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	cat = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	mouse = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	tiles = (SDL_Surface*) malloc(sizeof(SDL_Surface));
-	grid = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
 	int quit = 0;
 	game_state state;
