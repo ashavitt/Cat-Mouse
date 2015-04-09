@@ -1,5 +1,43 @@
 #include "handlers.h"
 
+byte get_obj_count(state_type type) {
+	switch (type) {
+		case MAIN_MENU:
+			return MAIN_MENU_OBJS;
+		case CHOOSE_PLAYER:
+			return CHOOSE_PLAYER_OBJS;
+		case CHOOSE_SKILL:
+			return CHOOSE_SKILL_OBJS;
+		case IN_GAME:
+			return GAME_SCREEN_OBJS;
+		case SELECT_GAME:
+			return LOAD_GAME_OBJS;
+		case GAME_EDIT:
+			return CREATE_GAME_OBJS;
+		case ERROR_DIALOG:
+			return ERROR_MESSAGE_OBJS;
+	}
+}
+
+byte[] get_objs_arr(state_type type) {
+	switch (type) {
+		case MAIN_MENU:
+			return main_menu_ids;
+		case CHOOSE_PLAYER:
+			return choose_player_ids;
+		case CHOOSE_SKILL:
+			return choose_skill_ids;
+		case IN_GAME:
+			return game_screen_ids;
+		case SELECT_GAME:
+			return load_game_ids;
+		case GAME_EDIT:
+			return create_game_ids;
+		case ERROR_DIALOG:
+			return error_message_ids;
+	}
+}
+
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {
 	ListRef children;
 	int err;
