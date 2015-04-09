@@ -161,7 +161,7 @@ int run_gui() {
 			}
 		}
 
-		SDL_Delay(100);
+		SDL_Delay(10);
 	}
 	cleanup();
 	return quit;
