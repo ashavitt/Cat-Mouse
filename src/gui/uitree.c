@@ -194,7 +194,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	button_dims.y = WL_BUTTON_H;
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action(state->catormouse,0));
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
@@ -206,7 +206,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	}
 	text_dims.x = 0;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, choose_action(state->catormouse,-1));
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
