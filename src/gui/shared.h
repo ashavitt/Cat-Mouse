@@ -14,6 +14,7 @@ typedef struct game_state_struct {
 	int number; //skill_level or world_id
 	Game* game; // for world editing
 	struct game_state_struct* previous_state;
+	char catormouse; // CAT 'C' or MOUSE 'M'
 } game_state;
 
 #define MAIN_MENU_OBJS 5

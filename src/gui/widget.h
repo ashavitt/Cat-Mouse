@@ -32,6 +32,7 @@ typedef struct widget
 
 	byte focused;
 	byte updated;
+	byte disabled; // for buttons
 
 	int (*onclick)(struct widget*, game_state*);
 } Widget;
