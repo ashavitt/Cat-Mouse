@@ -108,7 +108,9 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			}
 			if ((err = (widget->onclick)(widget, state)) != 0) {
 				// "NULL pointer exception"
-				printf("Error in onclick func of widget, code %d\n",err);
+				if (err != 1) { // if it is 1, then its just clean closing
+					printf("Error in onclick func of widget, code %d\n",err);
+				}
 				return err;
 			}
 			break;
