@@ -60,7 +60,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_ESCAPE:
 			return 1;
 		case SDLK_RETURN:
-			widget = find_widget_by_id(window, state->focused);
+			widget = find_widget_by_id(window, get_objs_arr(state->type)[state->focused]);
 			if (widget == NULL) {
 				// focused widget must exist
 				printf("ERROR no widget with id:%d was found",state->focused);
@@ -73,7 +73,11 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			}
 			break;
 		case SDLK_TAB:
-			// move to next focusable
+			if (state == NULL) {
+				printf("Error state is null");
+				return ERROR_NO_STATE;
+			}
+			state->focused = (state->focused + 1) % get_obj_count(state->type);
 			break;
 		case SDLK_UP:
 		case SDLK_DOWN:
