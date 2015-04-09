@@ -104,7 +104,7 @@ int run_gui() {
 	tiles = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	grid = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
-	int quit = -1;
+	int quit = 0;
 	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};

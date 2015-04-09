@@ -16,7 +16,9 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 		if ((e->button.x > abs_pos.x) && (e->button.x < abs_pos.x + dims.w) 
 			&& (e->button.y > abs_pos.y) && (e->button.y < abs_pos.y + dims.h)) {
 			if ((err = (widget->onclick)(widget, state)) != 0) {
-				printf("Error in onclick func of widget, code %d\n",err);
+				if (err != 1) {
+					printf("Error in onclick func of widget, code %d\n",err);
+				}
 				return err;
 			}
 		}
@@ -35,7 +37,9 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			break;
 		}
 		if ((err = handle_mouse_click_rec(e, (Widget*) headData(children), state, abs_pos)) != 0) {
-			printf("error handling click for child\n");
+			if (err != 1) {
+				printf("error handling click for child\n");
+			}
 			return err;
 		}
 		children = tail(children); //cutting the head

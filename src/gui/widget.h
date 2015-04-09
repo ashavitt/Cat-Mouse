@@ -36,7 +36,7 @@ typedef struct widget
 	int (*onclick)(struct widget*, game_state*);
 } Widget;
 
-typedef int (*onclick)(Widget*, game_state*);
+typedef int (onclick)(Widget*, game_state*);
 
 Widget* find_widget_by_id(Widget* root, int id);
 
