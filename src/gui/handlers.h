@@ -7,4 +7,5 @@
 
 int handle_mouse_click(SDL_Event* event, Widget* window, game_state* state);
 
+int handle_keyboard(SDL_Event* event, Widget* window, game_state* state);
 #endif

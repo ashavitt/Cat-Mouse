@@ -3,10 +3,10 @@
 
 const byte main_menu_ids[MAIN_MENU_OBJS] = {NEW_GAME_B, LOAD_GAME_B, CREATE_GAME_B, EDIT_GAME_B, QUIT_B};
 const byte choose_player_ids[CHOOSE_PLAYER_OBJS] = {HUMAN_B, MACHINE_B, BACK_B};
-const byte choose_skill_ids[CHOOSE_SKILL_OBJS] = {LEVEL_CHOOSER_B, DONE_B, BACK_B};
+const byte choose_skill_ids[CHOOSE_SKILL_OBJS] = {LEVEL_CHOOSER, DONE_B, BACK_B};
 const byte game_screen_ids[GAME_SCREEN_OBJS] = {PAUSE_B, RECONF_MOUSE_B, RECONF_CAT_B, RESTART_GAME_B, GOTO_MAIN_MENU_B, QUIT_B, GRID_B};
 const byte create_game_ids[CREATE_GAME_OBJS] = {GRID_B, PLACE_MOUSE_B, PLACE_CAT_B, PLACE_CHEESE_B, PLACE_WALL_B, PLACE_SPACE_B, SAVE_WORLD_B, GOTO_MAIN_MENU_B, QUIT_B};
-const byte load_game_ids[LOAD_GAME_OBJS] = {WORLD_CHOOSER_B, DONE_B, BACK_B};
+const byte load_game_ids[LOAD_GAME_OBJS] = {WORLD_CHOOSER, DONE_B, BACK_B};
 const byte error_message_ids[ERROR_MESSAGE_OBJS] = {BACK_B};
 
 SDL_Surface* texts;

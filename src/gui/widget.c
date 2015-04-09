@@ -17,7 +17,7 @@ int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	ListRef children;
-	int err;
+	int err = 0;
 	if (widget == NULL) {
 		return ERROR_NO_WIDGET;
 	}
@@ -55,7 +55,7 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 		children = tail(children); //cutting the head
 	}
 
-	return 0;
+	return err;
 }
 
 // TODO
@@ -83,17 +83,16 @@ void freeWidget(void* data) {
 
 Widget* find_widget_by_id(Widget* root, int id) {
 	ListRef children;
-	int err;
-	Widget* found == NULL;
+	Widget* found = NULL;
 	if (root == NULL) {
-		return ERROR_NO_WIDGET;
+		return NULL;
 	}
 	
 	if (root->id == id) {
 		return root;
 	}
 	
-	children = widget->children;
+	children = root->children;
 	
 	while (children != NULL) {
 		if (isEmpty(children)) {
@@ -104,7 +103,7 @@ Widget* find_widget_by_id(Widget* root, int id) {
 		}
 		children = tail(children); //cutting the head
 	}
-	return 0;
+	return NULL;
 }
 
 // returns a position which centerizes the child within the parent

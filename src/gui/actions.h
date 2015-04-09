@@ -7,8 +7,8 @@
 
 //typedef int (*onclick)(Widget*, game_state*);
 
-onclick quit_action(Widget*, game_state*);
+onclick quit_action;
 
-onclick back_action(Widget*, game_state*);
+onclick back_action;
 
 #endif

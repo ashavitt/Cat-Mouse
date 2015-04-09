@@ -30,8 +30,8 @@ extern const byte choose_player_ids[CHOOSE_PLAYER_OBJS];
 extern const byte choose_skill_ids[CHOOSE_SKILL_OBJS];
 extern const byte game_screen_ids[GAME_SCREEN_OBJS];
 extern const byte create_game_ids[CREATE_GAME_OBJS];
-extern const load_game_ids[LOAD_GAME_OBJS];
-extern const error_message_ids[ERROR_MESSAGE_OBJS];
+extern const byte load_game_ids[LOAD_GAME_OBJS];
+extern const byte error_message_ids[ERROR_MESSAGE_OBJS];
 
 extern SDL_Surface* texts;
 extern SDL_Surface* buttons;
