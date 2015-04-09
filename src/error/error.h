@@ -17,9 +17,10 @@
 #define ERROR_NO_WINDOW 11
 #define ERROR_BLIT_FAIL 12
 
-/* handlers */
+/** handlers **/
 #define ERROR_NO_SDLEVENT 13
 #define ERROR_FOCUSED_ID 14
+
 /** UITree **/
 
 /* build_ui */
@@ -31,6 +32,9 @@
 #define ERROR_BUILD_UI_FAILED 30
 #define ERROR_WIDGET_FACTORY_FAILED 31
 #define ERROR_DRAW_WIDGET_FAILED 32
+
+/** actions **/
+#define ERROR_NO_STATE 40
 
 /*** General ***/
 #define ERROR_MALLOC_FAILED 100

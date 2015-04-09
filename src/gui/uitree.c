@@ -62,7 +62,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	text_dims.y = MAIN_MENU_T_Y_START;
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	button = build_text_button(NEW_GAME_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(NEW_GAME_B, button_pos, button_dims, text_dims, panel, new_game_action);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
