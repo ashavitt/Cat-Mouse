@@ -68,6 +68,7 @@ void destroyList(ListRef list, FreeFunc freeData){
 	ListRef prev = list;
 	ListRef nxt;
 	if (list->num_elements == 0) {
+		free(prev);
 		return;
 	}
 	do {
