@@ -36,6 +36,7 @@
 
 /** actions **/
 #define ERROR_NO_STATE 40
+#define ERROR_NO_GAME 41
 
 /*** General ***/
 #define ERROR_MALLOC_FAILED 100
