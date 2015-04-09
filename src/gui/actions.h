@@ -1,6 +1,7 @@
 #ifndef __ACTIONS_H__
 #define __ACTIONS_H__
 
+#include <string.h>
 #include "SDL.h"
 #include "widget.h"
 #include "shared.h"

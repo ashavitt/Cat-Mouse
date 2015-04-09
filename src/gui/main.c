@@ -108,6 +108,7 @@ int run_gui() {
 	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
+	Uint32 white_colorkey;
 	//TODO check mallocs
 
 	if (init(&screen)) {
@@ -128,6 +129,13 @@ int run_gui() {
 	while (quit == 0) {
 		if (build_ui(window, &state) != 0) {
 			quit = ERROR_BUILD_UI_FAILED;
+			break;
+		}
+		//color the window white
+		white_colorkey = SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF);
+		if (SDL_FillRect(screen, NULL, white_colorkey) != 0) {
+			printf("Error: %s\n", SDL_GetError());
+			quit = ERROR_FILL_RECT_FAILED;
 			break;
 		}
 		if (draw_widget(window, screen, window_rect) != 0) {
