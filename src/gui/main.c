@@ -157,6 +157,8 @@ int run_gui() {
 
 		SDL_Delay(10);
 	}
+	free(event);
+	free(window);
 	cleanup();
 	return quit;
 }
