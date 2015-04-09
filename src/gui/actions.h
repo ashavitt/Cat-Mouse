@@ -13,4 +13,6 @@ onclick quit_action;
 onclick back_action;
 
 onclick new_game_action;
+
+onclick choose_action;
 #endif
