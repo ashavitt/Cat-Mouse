@@ -121,7 +121,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	while (buttons != NULL) {
 		if (headData(buttons) != NULL) {
 			button = ((Widget*)headData(buttons));
-			if (button->id == state->focused) {
+			if (button->id == main_menu_ids[state->focused]) {
 				//set the correct color for the button
 				((Widget*)headData(button->children))->dims = button_dims;
 			}
@@ -201,7 +201,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	while (buttons != NULL) {
 		if (headData(buttons) != NULL) {
 			button = ((Widget*)headData(buttons));
-			if (button->id == state->focused) {
+			if (button->id == choose_player_ids[state->focused]) {
 				//set the correct color for the button
 				((Widget*)headData(button->children))->dims = button_dims;
 			}
