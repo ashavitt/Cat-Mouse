@@ -5,7 +5,9 @@ int quit_action(Widget* widget, game_state* state) {
 }
 
 int back_action(Widget* widget, game_state* state) {
-	*state = *(state->previous_state);
+	game_state temp_state = *(state->previous_state);
+	free(state->previous_state);
+	*state = temp_state;
 	return 0;
 }
 
