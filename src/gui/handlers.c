@@ -17,9 +17,10 @@ byte get_obj_count(state_type type) {
 		case ERROR_DIALOG:
 			return ERROR_MESSAGE_OBJS;
 	}
+	return 0;
 }
 
-byte[] get_objs_arr(state_type type) {
+byte* get_objs_arr(state_type type) {
 	switch (type) {
 		case MAIN_MENU:
 			return main_menu_ids;
@@ -36,6 +37,7 @@ byte[] get_objs_arr(state_type type) {
 		case ERROR_DIALOG:
 			return error_message_ids;
 	}
+	return NULL;
 }
 
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {

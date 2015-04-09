@@ -123,7 +123,7 @@ int run_gui() {
 	}
 	
 	state.type = MAIN_MENU;
-	state.focused = NEW_GAME_B;
+	state.focused = 0;
 
 	//main loop
 	while (quit == 0) {

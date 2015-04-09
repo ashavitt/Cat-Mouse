@@ -7,7 +7,7 @@
 
 byte get_obj_count(state_type type);
 
-byte[] get_objs_arr(state_type type);
+byte* get_objs_arr(state_type type);
 
 int handle_mouse_click(SDL_Event* event, Widget* window, game_state* state);
 
