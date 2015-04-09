@@ -72,7 +72,9 @@ typedef struct Game {
 	// number of steps left
 	byte turns;
 	// number of steps in the minimax algorithm
-	byte num_steps;
+	// 0 for human
+	byte num_steps_cat;
+	byte num_steps_mouse;
 } Game;
 
 /* Functions */

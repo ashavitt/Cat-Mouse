@@ -51,10 +51,11 @@ int build_main_menu(Widget* window, game_state* state) {
 	//create the title
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	text_dims.x = MAIN_MENU_T_X_START;
-	text_dims.y = TITLES_T_Y_START + WL_T_H;
+	text_dims.x = TITLES_T_X_START;
+	text_dims.y = TITLES_T_Y_START;
 	title_pos = get_center(window->dims, text_dims);
-	title_pos.y -= 5*WL_BUTTON_H;
+	//title_pos.y -= 5*WL_BUTTON_H;
+	title_pos.y = WL_BUTTON_H;
 	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
 	if (append(children, title) == NULL) {
 		return ERROR_APPEND_FAILED;
@@ -154,6 +155,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	SDL_Rect button_pos = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
+	SDL_Rect title_pos;
 	
 	ListRef children, buttons;
 	if ((children = window->children) != NULL) {
@@ -162,6 +164,24 @@ int build_choose_player(Widget* window, game_state* state) {
 
 	children = newList(NULL);
 
+	text_dims.w = WL_T_W;
+	text_dims.h = WL_T_H;
+	
+	//create the title
+	if (state->catormouse == CAT) { // "Choose your cat"
+		text_dims.x = TITLES_T_X_START + WL_T_W;
+		text_dims.y = TITLES_T_Y_START;
+	} else { // "Choose your mouse"
+		text_dims.x = TITLES_T_X_START;
+		text_dims.y = TITLES_T_Y_START + 3*WL_T_H;
+	}
+	title_pos = get_center(window->dims, text_dims);
+	title_pos.y = WL_BUTTON_H;
+	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
+	if (append(children, title) == NULL) {
+		return ERROR_APPEND_FAILED;
+	}
+	
 	//creating a new panel for the buttons
 	panel = new_panel(UNFOCUSABLE, get_center(window->dims, panel_dims), window);
 	if (append(children, panel) == NULL) {
@@ -174,9 +194,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	button_dims.y = WL_BUTTON_H;
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	text_dims.w = WL_T_W;
-	text_dims.h = WL_T_H;
-	button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action(state->catormouse,0));
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
@@ -188,7 +206,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	}
 	text_dims.x = 0;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, NULL);
+	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, choose_action(state->catormouse,-1));
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}

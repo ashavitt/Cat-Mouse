@@ -27,8 +27,8 @@ int build_ui(Widget*, game_state*);
 #define NL_T_H 51
 
 /* Titles */
-#define TITLES_T_X_START 528
-#define TITLES_T_Y_START 271
+#define TITLES_T_X_START 0
+#define TITLES_T_Y_START 322
 
 /* Numbers */
 // Small Numbers (starts with braces () )
