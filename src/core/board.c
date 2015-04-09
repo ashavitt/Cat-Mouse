@@ -145,7 +145,8 @@ ListRef getChildren(void* gameVoid) {
 				return NULL;
 		  	}
 			// Game settings
-			child->num_steps = gamep->num_steps;
+			child->num_steps_cat = gamep->num_steps_cat;
+			child->num_steps_mouse = gamep->num_steps_mouse;
 			// Switch the player for next turn
 			child->player = SWITCH(gamep->player);
 
