@@ -79,6 +79,8 @@ typedef struct Game {
 
 /* Functions */
 
+Game* game_malloc();
+
 ListRef getChildren(void* gamep);
 
 //int evaluateGame(Game* game);

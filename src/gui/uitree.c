@@ -146,9 +146,7 @@ int build_main_menu(Widget* window, game_state* state) {
 
 int build_choose_player(Widget* window, game_state* state) {
 	int err;
-	Widget* panel;
-	Widget* button;
-	// TODO add title
+	Widget *panel, *button, *title;
 	//height is height of 3 buttons + 0.5 button per spacing between buttons
 	SDL_Rect panel_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H*4};
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
