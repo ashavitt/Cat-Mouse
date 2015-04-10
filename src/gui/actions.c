@@ -54,6 +54,7 @@ int choose_action(Widget* widget, game_state* state) {
 				// assuming state is OK?
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
+				state->number = 1; //start skill level choosing at 1
 				// still cat
 			}
 		} else { // mouse
@@ -62,6 +63,7 @@ int choose_action(Widget* widget, game_state* state) {
 				state->type = IN_GAME;
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
+				state->number = 1; //start skill level choosing at 1
 				//still mouse
 			}
 		}
