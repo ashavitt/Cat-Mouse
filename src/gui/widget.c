@@ -1,6 +1,20 @@
 #include "widget.h"
 #include <stdio.h>
 
+int sub_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
+	if (rect1 == NULL) {
+		return ERROR_NO_RECT1;
+	}
+	if (rect2 == NULL) {
+		return ERROR_NO_RECT2;
+	}
+	rect1->x = rect1->x - rect2->x;
+	rect1->y = rect1->y - rect2->y;
+	return 0;
+
+	//maybe change w,h
+}
+
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	if (rect1 == NULL) {
 		return ERROR_NO_RECT1;
