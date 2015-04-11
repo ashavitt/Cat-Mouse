@@ -64,5 +64,5 @@ uitree.o: uitree.c uitree.h shared.h widget.h ListUtils.h error.h actions.h
 handlers.o: handlers.c shared.h widget.h ListUtils.h error.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
-actions.o: actions.c shared.h widget.h ListUtils.h error.h
+actions.o: actions.c shared.h widget.h ListUtils.h error.h game_settings.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
