@@ -44,7 +44,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= S_NUM_T_W; // ')'
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 1");
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -55,7 +56,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		digit = number % 10;
 		dims = zero_dims; // TODO memcpy?
 		dims.x += offset_rect.x * digit;
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 2");
 			return NULL;
 		}
 		//add_rect(&pos, &offset_rect);
@@ -67,7 +69,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= 2*S_NUM_T_W; // '('
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 3");
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -79,8 +82,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	
 	text->pos.x += width; // fix for negative coordinates
 	add_rect(&(text->pos), &offset_rect); // fix for negative coordinates offset
-	text->dims.w = text->pos.w = width; // DANGER
-	text->dims.h = text->pos.h = height;
+	text->dims.w = (text->pos.w = width); // DANGER
+	text->dims.h = (text->pos.h = height);
 	
 	return text;
 }
@@ -96,6 +99,11 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	// text_dims is the area that includes the number or "World "+number
 	text_dims.w -= arrow_dims.w;
 	text_dims.x = text_dims.y = 0; // text_dims and pos
+
+	if (state == NULL) {
+		//TODO print error
+		return NULL;
+	}
 	
 	chooser = new_button(id, main_pos, main_pos, parent, do_nothing_action); // TODO do_nothing
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, chooser);
@@ -108,6 +116,10 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	if (state->type == CHOOSE_SKILL) {
 		// numbers
 		text = number_to_graphic(UNFOCUSABLE, zeros, state->number, TEXT_SIZE_MEDIUM, bg);
+		if (text == NULL) {
+			//TODO print error
+			return NULL;
+		}
 		text->pos = get_center(text_dims, text->dims);
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
