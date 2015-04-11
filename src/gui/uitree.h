@@ -20,6 +20,11 @@ int build_ui(Widget*, game_state*);
 #define WS_BUTTON_W WL_BUTTON_W
 #define WS_BUTTON_H 25
 
+#define UP_ARROW_B_X 247
+#define UP_ARROW_B_Y 171
+#define UP_ARROW_B_W 35
+#define UP_ARROW_B_H 29
+
 /** Text **/
 #define WL_T_W 264
 #define WL_T_H 51
