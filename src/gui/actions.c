@@ -99,7 +99,7 @@ int arrow_action(Widget* widget, game_state* state) {
 		}
 		state->number++;
 	} else if (widget->id == LEVEL_DN_B) {
-		if (state->number <= 0) {
+		if (state->number <= 1) {
 			return 0;
 		}
 		state->number--;
