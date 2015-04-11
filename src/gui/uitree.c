@@ -506,7 +506,7 @@ int build_choose(Widget* window, game_state* state) {
 		printf("Error in add_rect: %d\n", err);
 		return ERROR_ADD_RECT_FAILED;
 	}
-	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_H;
+	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
 	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (append(panel->children, button) == NULL) {
