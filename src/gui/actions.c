@@ -80,3 +80,29 @@ int choose_action(Widget* widget, game_state* state) {
 	
 	return 0;
 }
+
+int do_nothing_action(Widget* widget, game_state* state) {
+	return 0;
+}
+
+
+int arrow_action(Widget* widget, game_state* state) {
+	if (widget->id == LEVEL_UP_B) {
+		if (state->type == CHOOSE_SKILL) {
+			if (state->number >= NUM_OF_LEVELS) {
+				return 0;
+			}
+		} else if (state->type == LOAD_GAME || state->type == SAVE_GAME || state->type == EDIT_GAME) {
+			if (state->number >= NUM_OF_WORLDS){
+				return 0;
+			}
+		}
+		state->number++;
+	} else if (widget->id == LEVEL_DOWN_B) {
+		if (state->number <= 0) {
+			return 0;
+		}
+		state->number--;
+	}
+	return 0;
+}

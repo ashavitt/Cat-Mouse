@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include "widget.h"
 #include "shared.h"
+#include "../main/game_settings.h"
 
 //typedef int (*onclick)(Widget*, game_state*);
 
@@ -15,4 +16,8 @@ onclick back_action;
 onclick new_game_action;
 
 onclick choose_action;
+
+onclick do_nothing_action;
+
+onclick arrow_action;
 #endif

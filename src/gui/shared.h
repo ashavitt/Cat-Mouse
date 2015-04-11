@@ -3,7 +3,7 @@
 #include "SDL.h"
 #include "../core/board.h"
 typedef enum  {
-	MAIN_MENU, CHOOSE_PLAYER, CHOOSE_SKILL, IN_GAME, SELECT_GAME, GAME_EDIT, ERROR_DIALOG
+	MAIN_MENU, CHOOSE_PLAYER, CHOOSE_SKILL, IN_GAME, LOAD_GAME, SAVE_GAME, EDIT_GAME, GAME_EDIT, ERROR_DIALOG
 } state_type;
 
 typedef struct game_state_struct {
