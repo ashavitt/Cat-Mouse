@@ -11,7 +11,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	SDL_Rect dims;
 	SDL_Rect pos = zeros; // TODO
 	SDL_Rect offset_rect;
-	int x_offset,digit,width,height;
+	int digit,width,height;
 	int n = 0;
 	ListRef digits;
 	
@@ -23,14 +23,14 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 
 	switch (size) { // "Load" data from defines
 		case TEXT_SIZE_SMALL:
-			zero_dims = {S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};	
+			zero_dims = (SDL_Rect){S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};	
 			// both braces () for small font are at the begginning
 			break;
 		case TEXT_SIZE_MEDIUM:
-			zero_dims = {M_NUM_T_X_START, M_NUM_T_Y_START, M_NUM_T_W, M_NUM_T_H};
+			zero_dims = (SDL_Rect){M_NUM_T_X_START, M_NUM_T_Y_START, M_NUM_T_W, M_NUM_T_H};
 			break;
 		case TEXT_SIZE_LARGE:
-			zero_dims = {L_NUM_T_X_START, L_NUM_T_Y_START, L_NUM_T_W, L_NUM_T_H};
+			zero_dims = (SDL_Rect){L_NUM_T_X_START, L_NUM_T_Y_START, L_NUM_T_W, L_NUM_T_H};
 			break;
 		default:
 			printf("Error - bad size\n");
@@ -44,7 +44,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= S_NUM_T_W; // ')'
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -55,7 +55,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		digit = number % 10;
 		dims = zero_dims; // TODO memcpy?
 		dims.x += offset_rect.x * digit;
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
 			return NULL;
 		}
 		//add_rect(&pos, &offset_rect);
@@ -67,7 +67,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= 2*S_NUM_T_W; // '('
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) != 0) {
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -86,7 +86,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 }
 
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
-	Widget *chooser, *bg, *text, *number *up, *up_arrow, *down, *down_arrow;
+	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
 	SDL_Rect zeros = {0,0,0,0};
 	SDL_Rect arrow_dims = {UP_ARROW_B_X, UP_ARROW_B_Y, UP_ARROW_B_W, UP_ARROW_B_H};
 	SDL_Rect world_t_dims = {TITLES_T_X_START, TITLES_T_Y_START - WL_T_H, WL_T_W, WL_T_H};
@@ -97,8 +97,8 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	text_dims.w -= arrow_dims.w;
 	text_dims.x = text_dims.y = 0; // text_dims and pos
 	
-	chooser = new_button(id, main_pos, main_pos, parent, do_nothing); // TODO do_nothing
-	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
+	chooser = new_button(id, main_pos, main_pos, parent, do_nothing_action); // TODO do_nothing
+	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, chooser);
 	if (chooser == NULL || bg == NULL) {
 		//TODO print error
 		return NULL;
@@ -481,9 +481,9 @@ int build_choose(Widget* window, game_state* state) {
 	
 	//button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (state->type == CHOOSE_SKILL) {
-		button = build_chooser(LEVEL_CHOOSER, button_pos, SDL_Rect button_dims, panel, state);
+		button = build_chooser(LEVEL_CHOOSER, button_pos, button_dims, panel, state);
 	} else { // world chooser
-		button = build_chooser(WORLD_CHOOSER, button_pos, SDL_Rect button_dims, panel, state);
+		button = build_chooser(WORLD_CHOOSER, button_pos, button_dims, panel, state);
 	}
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
