@@ -10,7 +10,9 @@ byte get_obj_count(state_type type) {
 			return CHOOSE_SKILL_OBJS;
 		case IN_GAME:
 			return GAME_SCREEN_OBJS;
-		case SELECT_GAME:
+		case LOAD_GAME:
+		case SAVE_GAME:
+		case EDIT_GAME:
 			return LOAD_GAME_OBJS;
 		case GAME_EDIT:
 			return CREATE_GAME_OBJS;
@@ -30,7 +32,9 @@ byte* get_objs_arr(state_type type) {
 			return choose_skill_ids;
 		case IN_GAME:
 			return game_screen_ids;
-		case SELECT_GAME:
+		case LOAD_GAME:
+		case SAVE_GAME:
+		case EDIT_GAME:
 			return load_game_ids;
 		case GAME_EDIT:
 			return create_game_ids;
