@@ -9,6 +9,14 @@
 
 int build_ui(Widget*, game_state*);
 
+Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widget* parent);
+
+/*** General Defines ***/
+#define TEXT_SIZE_SMALL 0
+#define TEXT_SIZE_MEDIUM 1
+#define TEXT_SIZE_LARGE 2
+
+
 /*** Sprites ***/
 
 /** Buttons **/
