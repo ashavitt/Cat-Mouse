@@ -42,6 +42,7 @@ typedef int (onclick)(Widget*, game_state*);
 Widget* find_widget_by_id(Widget* root, int id);
 
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2);
+int sub_rect(SDL_Rect* rect1, SDL_Rect* rect2);
 
 void freeWidget(void* data);
 
