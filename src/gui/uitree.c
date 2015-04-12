@@ -450,7 +450,7 @@ int build_choose(Widget* window, game_state* state) {
 	/* Create the title */
 	if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) { // "Choose cat skill level"
-			text_dims.x = TITLES_T_X_START + WL_T_W;
+			text_dims.x = TITLES_T_X_START;
 			text_dims.y = TITLES_T_Y_START + 4*WL_T_H;
 		} else { // "Choose mouse skill level"
 			text_dims.x = TITLES_T_X_START + WL_T_W;
