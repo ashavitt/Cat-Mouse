@@ -14,7 +14,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	int x_offset,digit,width,height;
 	int n = 0;
 	ListRef digits;
-	
+
 	if (text == NULL) {
 		printf("Error text is null\n");
 		return NULL;
@@ -23,7 +23,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 
 	switch (size) { // "Load" data from defines
 		case TEXT_SIZE_SMALL:
-			zero_dims = {S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};	
+			zero_dims = {S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};
 			// both braces () for small font are at the begginning
 			break;
 		case TEXT_SIZE_MEDIUM:
@@ -40,7 +40,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	offset_rect.x = zero_dims.w;
 	offset_rect.y = zero_dims.h;
 	sub_rect(&pos, &offset_rect); // change offset for negative coordinates
-	
+
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= S_NUM_T_W; // ')'
@@ -50,7 +50,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		pos.x -= offset_rect.x;
 		n++;
 	}
-	
+
 	while (number != 0) {
 		digit = number % 10;
 		dims = zero_dims; // TODO memcpy?
@@ -63,7 +63,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		n++; // count digits
 		number /= 10;
 	}
-	
+
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= 2*S_NUM_T_W; // '('
@@ -73,15 +73,15 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		pos.x -= offset_rect.x;
 		n++;
 	}
-	
-	width = n*offset_rect.x;
+
+	width = (n-1)*offset_rect.x;
 	height = offset_rect.y;
-	
+
 	text->pos.x += width; // fix for negative coordinates
 	add_rect(&(text->pos), &offset_rect); // fix for negative coordinates offset
-	text->dims.w = text->pos.w = width; // DANGER
+	text->dims.w = text->pos.w = n*offset_rect.x; // DANGER
 	text->dims.h = text->pos.h = height;
-	
+
 	return text;
 }
 
@@ -96,14 +96,14 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	// text_dims is the area that includes the number or "World "+number
 	text_dims.w -= arrow_dims.w;
 	text_dims.x = text_dims.y = 0; // text_dims and pos
-	
+
 	chooser = new_button(id, main_pos, main_pos, parent, do_nothing); // TODO do_nothing
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
 	if (chooser == NULL || bg == NULL) {
 		//TODO print error
 		return NULL;
 	}
-	
+
 	//text = new_panel(UNFOCUSABLE, text_dims, bg); // text_pos = zeros
 	if (state->type == CHOOSE_SKILL) {
 		// numbers
@@ -112,7 +112,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
 		text = new_panel(UNFOCUSABLE, text_dims, bg);
-		
+
 		// adds the "World "
 		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) != 0) {
 			return NULL;
@@ -131,12 +131,12 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		text->dims.h = world_t_dims.h;
 		text->pos = get_center(text_dims, text->dims);
 	}
-	
+
 	if (text == NULL) {
 		//TODO print error
 		return NULL;
 	}
-	
+
 	arrow_pos.x = text_dims.w;
 	up = new_button(LEVEL_UP_B, arrow_dims, arrow_pos, bg, arrow_action);
 	up_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, up);
@@ -153,7 +153,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		printf("Error appending down_arrow\n");
 		return NULL;
 	}
-	
+
 	if (append(chooser->children, bg) == NULL) {
 		printf("Error appending bg\n");
 		return NULL;
@@ -170,7 +170,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		printf("Error appending down\n");
 		return NULL;
 	}
-	
+
 	return chooser;
 }
 
@@ -179,11 +179,11 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 	Widget* bg;
 	Widget* text;
 	SDL_Rect zeros = {0,0,0,0};
-	
+
 	//set the position of the text in the center of the button graphic
 	SDL_Rect text_pos = get_center(bg_dims, text_dims);
 	//printf("%d,%d\n", text_pos.x, text_pos.y);
-	
+
 	//create the widgets
 	clickable = new_button(id, main_pos, main_pos, parent, onClick);
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
@@ -193,7 +193,7 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 		//TODO print error
 		return NULL;
 	}
-	
+
 	//add the widgets to the list of childrens
 	if (append(clickable->children, bg) == NULL) {
 		return NULL;
@@ -214,7 +214,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
-	
+
 	ListRef children, buttons;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
@@ -240,7 +240,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	if (append(children, panel) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
-	
+
 	/*-----creating main menu buttons-----*/
 	//new game
 	button_dims.x = 0;
@@ -328,7 +328,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
-	
+
 	ListRef children, buttons;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
@@ -338,7 +338,7 @@ int build_choose_player(Widget* window, game_state* state) {
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	
+
 	//create the title
 	if (state->catormouse == CAT) { // "Choose your cat"
 		text_dims.x = TITLES_T_X_START + WL_T_W;
@@ -353,20 +353,20 @@ int build_choose_player(Widget* window, game_state* state) {
 	if (append(children, title) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
-	
+
 	//creating a new panel for the buttons
 	panel = new_panel(UNFOCUSABLE, get_center(window->dims, panel_dims), window);
 	if (append(children, panel) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
-	
+
 	/*-----creating choose player buttons-----*/
 	//human
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	
+
 	button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
@@ -424,7 +424,7 @@ int build_choose(Widget* window, game_state* state) {
 	SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
-	
+
 	ListRef children, buttons;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
@@ -434,7 +434,7 @@ int build_choose(Widget* window, game_state* state) {
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
-	
+
 	/* Create the title */
 	if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) { // "Choose cat skill level"
@@ -457,28 +457,28 @@ int build_choose(Widget* window, game_state* state) {
 		// TODO error
 		return -1;
 	}
-	
+
 	title_pos = get_center(window->dims, text_dims);
 	title_pos.y = WL_BUTTON_H;
 	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
 	if (append(children, title) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
-	
-	
+
+
 	/* creating a new panel for the buttons */
 	panel = new_panel(UNFOCUSABLE, get_center(window->dims, panel_dims), window);
 	if (append(children, panel) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
-	
+
 	/*-----creating choose number buttons-----*/
 	//chooser
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	
+
 	//button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (state->type == CHOOSE_SKILL) {
 		button = build_chooser(LEVEL_CHOOSER, button_pos, SDL_Rect button_dims, panel, state);
