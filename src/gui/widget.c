@@ -166,7 +166,7 @@ int graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Sur
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
-		//TODO error message
+		printf("Error: malloc failed.\n");
 		return NULL;
 	}
 	if (graphicFactory(widget, id, dims, pos, imgsrc, parent, NULL, 0, 1) != 0) {

@@ -11,7 +11,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	SDL_Rect dims;
 	SDL_Rect pos = zeros; // TODO
 	SDL_Rect offset_rect;
-	int x_offset,digit,width,height;
+	int digit,width,height;
 	int n = 0;
 	ListRef digits;
 
@@ -23,14 +23,14 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 
 	switch (size) { // "Load" data from defines
 		case TEXT_SIZE_SMALL:
-			zero_dims = {S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};
+			zero_dims = (SDL_Rect){S_NUM_T_X_START + 2*S_NUM_T_W, S_NUM_T_Y_START, S_NUM_T_W, S_NUM_T_H};
 			// both braces () for small font are at the begginning
 			break;
 		case TEXT_SIZE_MEDIUM:
-			zero_dims = {M_NUM_T_X_START, M_NUM_T_Y_START, M_NUM_T_W, M_NUM_T_H};
+			zero_dims = (SDL_Rect){M_NUM_T_X_START, M_NUM_T_Y_START, M_NUM_T_W, M_NUM_T_H};
 			break;
 		case TEXT_SIZE_LARGE:
-			zero_dims = {L_NUM_T_X_START, L_NUM_T_Y_START, L_NUM_T_W, L_NUM_T_H};
+			zero_dims = (SDL_Rect){L_NUM_T_X_START, L_NUM_T_Y_START, L_NUM_T_W, L_NUM_T_H};
 			break;
 		default:
 			printf("Error - bad size\n");
@@ -44,7 +44,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= S_NUM_T_W; // ')'
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 1");
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -55,7 +56,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		digit = number % 10;
 		dims = zero_dims; // TODO memcpy?
 		dims.x += offset_rect.x * digit;
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 2");
 			return NULL;
 		}
 		//add_rect(&pos, &offset_rect);
@@ -67,7 +69,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= 2*S_NUM_T_W; // '('
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, digits)) != 0) {
+		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			printf("Error in append: 3");
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -79,14 +82,14 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 
 	text->pos.x += width; // fix for negative coordinates
 	add_rect(&(text->pos), &offset_rect); // fix for negative coordinates offset
-	text->dims.w = text->pos.w = n*offset_rect.x; // DANGER
-	text->dims.h = text->pos.h = height;
+	text->dims.w = (text->pos.w = n*offset_rect.x); // DANGER
+	text->dims.h = (text->pos.h = height);
 
 	return text;
 }
 
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
-	Widget *chooser, *bg, *text, *number *up, *up_arrow, *down, *down_arrow;
+	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
 	SDL_Rect zeros = {0,0,0,0};
 	SDL_Rect arrow_dims = {UP_ARROW_B_X, UP_ARROW_B_Y, UP_ARROW_B_W, UP_ARROW_B_H};
 	SDL_Rect world_t_dims = {TITLES_T_X_START, TITLES_T_Y_START - WL_T_H, WL_T_W, WL_T_H};
@@ -97,8 +100,14 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	text_dims.w -= arrow_dims.w;
 	text_dims.x = text_dims.y = 0; // text_dims and pos
 
-	chooser = new_button(id, main_pos, main_pos, parent, do_nothing); // TODO do_nothing
-	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
+	if (state == NULL) {
+		//TODO print error
+		return NULL;
+	}
+
+	chooser = new_button(id, main_pos, main_pos, parent, do_nothing_action); // TODO do_nothing
+	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, chooser);
+
 	if (chooser == NULL || bg == NULL) {
 		//TODO print error
 		return NULL;
@@ -108,6 +117,10 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	if (state->type == CHOOSE_SKILL) {
 		// numbers
 		text = number_to_graphic(UNFOCUSABLE, zeros, state->number, TEXT_SIZE_MEDIUM, bg);
+		if (text == NULL) {
+			//TODO print error
+			return NULL;
+		}
 		text->pos = get_center(text_dims, text->dims);
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
@@ -438,7 +451,7 @@ int build_choose(Widget* window, game_state* state) {
 	/* Create the title */
 	if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) { // "Choose cat skill level"
-			text_dims.x = TITLES_T_X_START + WL_T_W;
+			text_dims.x = TITLES_T_X_START;
 			text_dims.y = TITLES_T_Y_START + 4*WL_T_H;
 		} else { // "Choose mouse skill level"
 			text_dims.x = TITLES_T_X_START + WL_T_W;
@@ -481,9 +494,9 @@ int build_choose(Widget* window, game_state* state) {
 
 	//button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (state->type == CHOOSE_SKILL) {
-		button = build_chooser(LEVEL_CHOOSER, button_pos, SDL_Rect button_dims, panel, state);
+		button = build_chooser(LEVEL_CHOOSER, button_pos, button_dims, panel, state);
 	} else { // world chooser
-		button = build_chooser(WORLD_CHOOSER, button_pos, SDL_Rect button_dims, panel, state);
+		button = build_chooser(WORLD_CHOOSER, button_pos, button_dims, panel, state);
 	}
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
@@ -494,9 +507,9 @@ int build_choose(Widget* window, game_state* state) {
 		printf("Error in add_rect: %d\n", err);
 		return ERROR_ADD_RECT_FAILED;
 	}
-	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_H;
+	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	button = build_text_button(MACHINE_B, button_pos, button_dims, text_dims, panel, choose_action);
+	button = build_text_button(DONE_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (append(panel->children, button) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
