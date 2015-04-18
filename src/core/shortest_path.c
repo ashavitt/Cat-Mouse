@@ -35,7 +35,7 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	char sign[BOARD_SIZE][BOARD_SIZE];
 	char depth = 0;
 	coord start;
-	coord* temp1, temp2;
+	coord *temp1, *temp2;
 	ListRef queue = newList(&start);
 	start.x = start_x;
 	start.y = start_y;
@@ -52,12 +52,17 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 		//if we found the destination
 		depth = sign[temp1->x][temp1->y];
 		if (temp1->x == dest_x && temp1->y == dest_y) {
+			destroyList(queue);
+			free(temp1);
 			return depth;
 		}
 		for (int i = 0; i < 4; i++) {
 			temp2 = (coord*) malloc (sizeof(coord));
 			if (temp2 == NULL) {
-				perror("Error: malloc failed.\n");
+				destroyList(queue);
+				free(temp1);
+				printf("Error: malloc failed.\n");
+				return ERROR_MALLOC_FAILED;
 			}
 			temp2->x = temp1->x + dx[i];
 			temp2->y = temp1->y + dy[i];
@@ -69,9 +74,15 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 					sign[temp2->x][temp2->y] = depth + 1;
 					//add the node to the queue
 					append(queue, temp2);
+				} else {
+					free(temp2);
 				}
+			} else {
+				free(temp2);
 			}
 		}
+		free(temp1);
 	}
+	destroyList(queue);
 	return INFINITY;
 }

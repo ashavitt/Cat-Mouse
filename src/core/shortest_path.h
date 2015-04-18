@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "../main/ListUtils.h"
 #include "../core/board.h"
+#include "../error/error.h"
 
 #define FREE -1
 #define INFINITY 100000
