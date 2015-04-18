@@ -239,3 +239,12 @@ int check_end_game(Game* gamep) {
 	}
 	return -1;
 }
+
+int evaluateGame(Game* game) {
+	int mouse_cheese, cat_mouse, cat_cheese;
+	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
+	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y);
+	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
+	//TODO define params
+	return 1*mouse_cheese -1*cat_cheese - 0.3*cat_mouse;
+}

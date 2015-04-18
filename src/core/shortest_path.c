@@ -62,7 +62,7 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 				destroyList(queue);
 				free(temp1);
 				printf("Error: malloc failed.\n");
-				return ERROR_MALLOC_FAILED;
+				return -1;
 			}
 			temp2->x = temp1->x + dx[i];
 			temp2->y = temp1->y + dy[i];

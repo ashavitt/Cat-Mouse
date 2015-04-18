@@ -3,6 +3,7 @@
 
 /* Includes */
 #include "../main/ListUtils.h"
+#include "shortest_path.h"
 #include <stdlib.h>
 
 /* Defines */
@@ -83,7 +84,7 @@ Game* game_malloc();
 
 ListRef getChildren(void* gamep);
 
-//int evaluateGame(Game* game);
+int evaluateGame(Game* game);
 
 int check_end_game(Game* gamep);
 
