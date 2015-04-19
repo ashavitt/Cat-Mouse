@@ -38,7 +38,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	}
 
 	n = floor(log10(number)) + 1;
-	if (size == TEST_SIZE_SMALL) {
+	if (size == TEXT_SIZE_SMALL) {
 		n += 2;
 	}
 
