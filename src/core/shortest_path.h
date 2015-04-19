@@ -13,3 +13,5 @@ typdef struct coord {
 	byte x;
 	byte y;
 } coord;
+
+int evaluateGame(Game* game);
