@@ -6,6 +6,7 @@
 #include "widget.h"
 #include "../error/error.h"
 #include "actions.h"
+#include <math.h>
 
 int build_ui(Widget*, game_state*);
 

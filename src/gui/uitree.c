@@ -12,7 +12,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	SDL_Rect pos = zeros; // TODO
 	SDL_Rect offset_rect;
 	int digit,width,height;
-	int n = 0;
+	int n;
 	ListRef digits;
 
 	if (text == NULL) {
@@ -36,10 +36,15 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 			printf("Error - bad size\n");
 			return NULL;
 	}
-	//x_offset = zero_dims.w;
+
+	n = floor(log10(number)) + 1;
+	if (size == TEST_SIZE_SMALL) {
+		n += 2;
+	}
+
 	offset_rect.x = zero_dims.w;
 	offset_rect.y = zero_dims.h;
-	sub_rect(&pos, &offset_rect); // change offset for negative coordinates
+	pos.x += n*offset_rect.x;
 
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
@@ -49,7 +54,6 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
-		n++;
 	}
 
 	while (number != 0) {
@@ -62,7 +66,6 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		}
 		//add_rect(&pos, &offset_rect);
 		pos.x -= offset_rect.x; // move position left for next number (negative coordinates)
-		n++; // count digits
 		number /= 10;
 	}
 
@@ -74,15 +77,13 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
-		n++;
 	}
 
-	width = (n-1)*offset_rect.x;
+	width = n*offset_rect.x;
 	height = offset_rect.y;
 
-	text->pos.x += width; // fix for negative coordinates
 	add_rect(&(text->pos), &offset_rect); // fix for negative coordinates offset
-	text->dims.w = (text->pos.w = n*offset_rect.x); // DANGER
+	text->dims.w = (text->pos.w = width); // DANGER
 	text->dims.h = (text->pos.h = height);
 
 	return text;
