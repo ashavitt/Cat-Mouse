@@ -100,6 +100,7 @@ int handle_mouse_click(SDL_Event* event, Widget* window, game_state* state) {
 int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 	Widget* widget;
 	int err;
+	int id;
 	switch(event->key.keysym.sym) {
 		case SDLK_ESCAPE:
 			return 1;
@@ -127,6 +128,21 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			break;
 		case SDLK_UP:
 		case SDLK_DOWN:
+			id = (event->key.keysym.sym == SDLK_UP) ? LEVEL_UP_B : LEVEL_DN_B;
+			widget = find_widget_by_id(window, id);
+			if (widget == NULL) {
+				// focused widget must exist
+				printf("ERROR no widget with id:%d was found",state->focused);
+				return ERROR_FOCUSED_ID;
+			}
+			if ((err = (widget->onclick)(widget, state)) != 0) {
+				// "NULL pointer exception"
+				if (err != 1) { // if it is 1, then its just clean closing
+					printf("Error in onclick func of widget, code %d\n",err);
+				}
+				return err;
+			}
+			break;
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
 			if (state->type == IN_GAME || state->type == GAME_EDIT) {

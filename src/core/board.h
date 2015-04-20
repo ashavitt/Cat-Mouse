@@ -83,7 +83,6 @@ Game* game_malloc();
 
 ListRef getChildren(void* gamep);
 
-//int evaluateGame(Game* game);
 
 int check_end_game(Game* gamep);
 
