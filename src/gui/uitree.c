@@ -89,6 +89,72 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	return text;
 }
 
+Widget* build_grid(int id, Widget* parent, game_state* state) {
+	Widget *grid;
+	SDL_Rect dims = {0,0,GRID_W,GRID_H};
+	SDL_Rect pos = get_center(parent->dims, dims);
+	grid = new_graphic(UNFOCUSABLE, dims, pos, grid_surface, parent);
+
+	// add mouse, cat, walls
+
+	return grid;
+}
+
+int build_game_scheme(Widget* window, game_state* state) {
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
+	SDL_Rect pos = window->dims;
+	pos.x = pos.y = 0;
+	pos.h = S_NUM_T_H * 4;
+	title_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = NL_BUTTON_H*1.5;
+	top_buttons = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = window->dims.h - pos.y;
+	pos.w = NL_BUTTON_W*1.5;
+	left_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.x += pos.w;
+	pos.w = window->dims.w - pos.x;
+	grid_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
+		printf("Error: Some panel is null\n");
+		return ERROR_NO_WIDGET;
+	}
+
+	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) != 0) {
+		printf("Error: appending build_grid\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+
+	/* Append panels to window */
+	if (append(window->children, title_panel) == NULL) {
+		printf("Error appending title_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, top_buttons) == NULL) {
+		printf("Error appending top_buttons\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, left_panel) == NULL) {
+		printf("Error appending left_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, grid_panel) == NULL) {
+		printf("Error appending grid_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	return 0;
+}
+
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
 	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
 	SDL_Rect zeros = {0,0,0,0};
@@ -563,6 +629,8 @@ int build_ui(Widget* window, game_state* state) {
 		case LOAD_GAME:
 		case SAVE_GAME:
 			return build_choose(window, state);
+		case IN_GAME:
+			return build_game_scheme(window, state);
 		default:
 			return 0;
 	}

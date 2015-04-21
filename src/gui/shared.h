@@ -39,6 +39,6 @@ extern SDL_Surface* buttons;
 extern SDL_Surface* cat;
 extern SDL_Surface* mouse;
 extern SDL_Surface* tiles;
-extern SDL_Surface* grid;
+extern SDL_Surface* grid_surface;
 #endif
 #endif
