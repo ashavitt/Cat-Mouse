@@ -89,6 +89,37 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	return text;
 }
 
+Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, onclick* onClick) {
+	Widget* clickable;
+	Widget* bg;
+	Widget* text;
+	SDL_Rect zeros = {0,0,0,0};
+
+	//set the position of the text in the center of the button graphic
+	SDL_Rect text_pos = get_center(bg_dims, text_dims);
+	//printf("%d,%d\n", text_pos.x, text_pos.y);
+
+	//create the widgets
+	clickable = new_button(id, main_pos, main_pos, parent, onClick);
+	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
+	text = new_graphic(UNFOCUSABLE, text_dims, text_pos, texts, bg);
+	//check everything worked
+	if (clickable == NULL || bg == NULL || text == NULL) {
+		//TODO print error
+		return NULL;
+	}
+
+	//add the widgets to the list of childrens
+	if (append(clickable->children, bg) == NULL) {
+		return NULL;
+	}
+	if (append(bg->children, text) == NULL) {
+		return NULL;
+	}
+	return clickable;
+}
+
+
 Widget* build_grid(int id, Widget* parent, game_state* state) {
 	Widget *grid;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
@@ -99,10 +130,12 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 
 	return grid;
 }
-
-int build_game_scheme(Widget* window, game_state* state) {
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
+ 
+int build_game_scheme(Widget* window, game_state* state) {  
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *button;
 	SDL_Rect pos = window->dims;
+	SDL_Rect dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+		
 	pos.x = pos.y = 0;
 	pos.h = S_NUM_T_H * 4;
 	title_panel = new_panel(UNFOCUSABLE, pos, window);
@@ -113,7 +146,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 
 	pos.y += pos.h;
 	pos.h = window->dims.h - pos.y;
-	pos.w = NL_BUTTON_W*1.5;
+	pos.w = NL_BUTTON_W*1.15;
 	left_panel = new_panel(UNFOCUSABLE, pos, window);
 
 	pos.x += pos.w;
@@ -124,30 +157,42 @@ int build_game_scheme(Widget* window, game_state* state) {
 		printf("Error: Some panel is null\n");
 		return ERROR_NO_WIDGET;
 	}
-
-	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) != 0) {
+	
+	/* Top Panel */
+	
+	/* Top Buttons */
+	
+	/* Left Panel */ // NOTE: this should be different according to game state
+	pos = get_center(left_panel->dims,dims);
+	button = build_text_button(RECONF_MOUSE_B, pos, dims, text_dims, left_panel, do_nothing_action);
+	if (append(left_panel->children,button) == 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	/* Grid Panel */	
+	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) == 0) {
 		printf("Error: appending build_grid\n");
 		return ERROR_APPEND_FAILED;
 	}
 
-
 	/* Append panels to window */
-	if (append(window->children, title_panel) == NULL) {
+	if (append(window->children, title_panel) == 0) {
 		printf("Error appending title_panel\n");
 		return ERROR_APPEND_FAILED;
 	}
 
-	if (append(window->children, top_buttons) == NULL) {
+	if (append(window->children, top_buttons) == 0) {
 		printf("Error appending top_buttons\n");
 		return ERROR_APPEND_FAILED;
 	}
 
-	if (append(window->children, left_panel) == NULL) {
+	if (append(window->children, left_panel) == 0) {
 		printf("Error appending left_panel\n");
 		return ERROR_APPEND_FAILED;
 	}
 
-	if (append(window->children, grid_panel) == NULL) {
+	if (append(window->children, grid_panel) == 0) {
 		printf("Error appending grid_panel\n");
 		return ERROR_APPEND_FAILED;
 	}
@@ -252,36 +297,6 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	}
 
 	return chooser;
-}
-
-Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, onclick* onClick) {
-	Widget* clickable;
-	Widget* bg;
-	Widget* text;
-	SDL_Rect zeros = {0,0,0,0};
-
-	//set the position of the text in the center of the button graphic
-	SDL_Rect text_pos = get_center(bg_dims, text_dims);
-	//printf("%d,%d\n", text_pos.x, text_pos.y);
-
-	//create the widgets
-	clickable = new_button(id, main_pos, main_pos, parent, onClick);
-	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
-	text = new_graphic(UNFOCUSABLE, text_dims, text_pos, texts, bg);
-	//check everything worked
-	if (clickable == NULL || bg == NULL || text == NULL) {
-		//TODO print error
-		return NULL;
-	}
-
-	//add the widgets to the list of childrens
-	if (append(clickable->children, bg) == NULL) {
-		return NULL;
-	}
-	if (append(bg->children, text) == NULL) {
-		return NULL;
-	}
-	return clickable;
 }
 
 int build_main_menu(Widget* window, game_state* state) {
@@ -619,6 +634,14 @@ int build_choose(Widget* window, game_state* state) {
 }
 
 int build_ui(Widget* window, game_state* state) {
+	ListRef children;
+	if ((children = window->children) != NULL) {
+		destroyList(children, &freeWidget);
+	}
+
+	children = newList(NULL);
+	window->children = children; // note: if this is here, we must used window->children throughout the entire function
+	
 	switch (state->type) {
 		case MAIN_MENU:
 			return build_main_menu(window, state);
