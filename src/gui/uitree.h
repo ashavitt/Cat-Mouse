@@ -69,5 +69,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 /* Messages */
 
 
+/** Game Scheme **/
+#define GRID_W 636
+#define GRID_H 634
 
 #endif

@@ -5,6 +5,7 @@
 #include "uitree.h"
 #include "../error/error.h"
 #include "handlers.h"
+#include "../io/file_io.h"
 
 //Screen attributes
 #define SCREEN_WIDTH 800

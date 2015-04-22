@@ -1,6 +1,6 @@
 #include "file_io.h"
 
-int save_game(game* gamep, FILE* file) {
+int save_game(Game* gamep, FILE* file) {
 	int error;
 	struct board tempboard = *(gamep->board);
 	// print the number of turns left
@@ -14,7 +14,7 @@ int save_game(game* gamep, FILE* file) {
 	tempboard.board[gamep->mouse_x][gamep->mouse_y] = MOUSE;
 	tempboard.board[gamep->cheese_x][gamep->cheese_y] = CHEESE;
 	// print the board
-	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
+	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
@@ -25,7 +25,7 @@ int save_game(game* gamep, FILE* file) {
 	return 0;
 }
 
-void find_obj(game* gamep, char obj) {
+void find_obj(Game* gamep, char obj) {
 	int count = 0;
 	int x = 0, y = 0;
 	int flag = 1;
@@ -56,7 +56,7 @@ void find_obj(game* gamep, char obj) {
 }
 
 #define BFLEN 10
-int load_game(game* gamep, FILE* file) {
+int load_game(Game* gamep, FILE* file) {
 	int error;
 	char* checker;
 	char buffer[BFLEN]; // a buffer to read the file into
@@ -78,7 +78,7 @@ int load_game(game* gamep, FILE* file) {
 
 	// get the next lines
 	checker = fgets(buffer, BFLEN, file);
-	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
+	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
 			perror("Error: world file is not valid\n");
 			return 1;
@@ -96,4 +96,30 @@ int load_game(game* gamep, FILE* file) {
 	find_obj(gamep, CHEESE);
 
 	return 0;
+}
+
+Game* load_world(int id) {
+	FILE* gamefile;
+	char dest_file_name[128];
+	Game* game = (Game*) malloc (sizeof(Game));
+	struct board* board = (struct board*) malloc (sizeof(struct board));
+	game->board = board;
+	if (game == NULL) {
+		perror("Error: malloc failed.\n");
+		return NULL;
+	}
+	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
+	//printf("%s", dest_file_name);
+	
+	gamefile = fopen(dest_file_name, "r");
+	if (gamefile == NULL) {
+		perror("Error: fopen failed.\n");
+		return NULL;
+	}
+	load_game(game, gamefile);
+	if (fclose(gamefile) != 0) {
+		perror("Error: fclose failed.\n");
+		return NULL;
+	}
+	return game;
 }

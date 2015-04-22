@@ -20,4 +20,6 @@ onclick choose_action;
 onclick do_nothing_action;
 
 onclick arrow_action;
+
+onclick restart_game_action;
 #endif

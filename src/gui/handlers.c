@@ -44,9 +44,12 @@ byte* get_objs_arr(state_type type) {
 	return NULL;
 }
 
+
+
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {
 	ListRef children;
-	int err;
+	int err, array_size;
+	byte* ids;
 	SDL_Rect dims = widget->dims;
 	if (e == NULL) {
 		return ERROR_NO_SDLEVENT;
@@ -59,6 +62,14 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 	if (widget->type == BUTTON) {
 		if ((e->button.x > abs_pos.x) && (e->button.x < abs_pos.x + dims.w) 
 			&& (e->button.y > abs_pos.y) && (e->button.y < abs_pos.y + dims.h)) {
+			ids = get_objs_arr(state->type);
+			array_size = get_obj_count(state->type);
+			for (int i=0; i<array_size; i++) {
+				if (ids[i] == widget->id && widget->id != UNFOCUSABLE) {
+					state->focused = i;
+					break;
+				}
+			}
 			if ((err = (widget->onclick)(widget, state)) != 0) {
 				if (err != 1) {
 					printf("Error in onclick func of widget, code %d\n",err);
@@ -121,31 +132,37 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			break;
 		case SDLK_TAB:
 			if (state == NULL) {
-				printf("Error state is null");
+				printf("Error state is null\n");
 				return ERROR_NO_STATE;
 			}
 			state->focused = (state->focused + 1) % get_obj_count(state->type);
 			break;
 		case SDLK_UP:
 		case SDLK_DOWN:
-			id = (event->key.keysym.sym == SDLK_UP) ? LEVEL_UP_B : LEVEL_DN_B;
-			widget = find_widget_by_id(window, id);
-			if (widget == NULL) {
-				// focused widget must exist
-				printf("ERROR no widget with id:%d was found",state->focused);
-				return ERROR_FOCUSED_ID;
-			}
-			if ((err = (widget->onclick)(widget, state)) != 0) {
-				// "NULL pointer exception"
-				if (err != 1) { // if it is 1, then its just clean closing
-					printf("Error in onclick func of widget, code %d\n",err);
+			if (state->type == CHOOSE_SKILL || state->type == LOAD_GAME || state->type == SAVE_GAME || state->type == EDIT_GAME) {
+				if (state->focused == 0) {
+					id = (event->key.keysym.sym == SDLK_UP) ? LEVEL_UP_B : LEVEL_DN_B;
+					widget = find_widget_by_id(window, id);
+					if (widget == NULL) {
+						// focused widget must exist
+						printf("ERROR no widget with id:%d was found",state->focused);
+						return ERROR_FOCUSED_ID;
+					}
+					if ((err = (widget->onclick)(widget, state)) != 0) {
+						// "NULL pointer exception"
+						if (err != 1) { // if it is 1, then its just clean closing
+							printf("Error in onclick func of widget, code %d\n",err);
+						}
+						return err;
+					}
 				}
-				return err;
+				break;
 			}
-			break;
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
-			if (state->type == IN_GAME || state->type == GAME_EDIT) {
+			if (state->type == IN_GAME) {
+			}
+			if (state->type == GAME_EDIT) {
 				//move cursor to direction event->key.keysym.sym
 			}
 			break;
