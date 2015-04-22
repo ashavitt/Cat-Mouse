@@ -119,158 +119,6 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 	return clickable;
 }
 
-Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
-	SDL_Rect pos = {0,0,0,0};
-	pos.w = button_dims.w;
-	Widget* menu = new_panel(UNFOCUSABLE, pos, parent);
-	if (menu == NULL) {
-		return NULL;
-	}
-	//set the panel dims as the button dims for later usage
-	menu->dims = button_dims;
-	return menu;
-}
-
-int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick) {
-	SDL_Rect main_pos = {0,0,0,0};
-	if (menu == NULL) {
-		return ERROR_NO_WIDGET;
-	}
-	//check if this is the first button of the menu
-	if (menu->pos.h == 0) {
-		//add button height to menu
-		menu->pos.h += menu->dims.h;
-	} else {
-		//set the position of the button with 0.5 spacing
-		main_pos.y = menu->pos.h + (0.5 * (menu->dims.h));
-		//set the new height of the menu
-		menu->pos.h += 1.5 * (menu->dims.h);
-	}
-	SDL_Rect bg_dims = menu->dims;
-	main_pos.w = bg_dims.w;
-	main_pos.h = bg_dims.h;
-	Widget* button = build_text_button(id, main_pos, bg_dims, text_dims, menu, onClick);
-	//add the button to the menu children list
-	if (append(menu->children, button) == NULL) {
-		return ERROR_APPEND_FAILED;
-	} 
-	return 0;
-}
-
-
-Widget* build_grid(int id, Widget* parent, game_state* state) { 
-	Widget *grid;
-	SDL_Rect dims = {0,0,GRID_W,GRID_H};
-	SDL_Rect pos = get_center(parent->dims, dims);
-	grid = new_graphic(UNFOCUSABLE, dims, pos, grid_surface, parent);
-
-	// add mouse, cat, walls
-
-	return grid;
-}
- 
-int build_game_scheme(Widget* window, game_state* state) {  
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
-	//int y_offset;
-	SDL_Rect pos = window->dims;
-	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
-		
-	pos.x = pos.y = 0;
-	pos.h = S_NUM_T_H * 4;
-	title_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.y += pos.h;
-	pos.h = NL_BUTTON_H*1.5;
-	top_buttons = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.y += pos.h;
-	pos.h = window->dims.h - pos.y;
-	pos.w = NL_BUTTON_W*1.15;
-	left_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.x += pos.w;
-	pos.w = window->dims.w - pos.x;
-	grid_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
-		printf("Error: Some panel is null\n");
-		return ERROR_NO_WIDGET;
-	}
-	
-	/* Top Panel */
-	
-	/* Top Buttons */
-	
-	/* Left Panel */ // NOTE: this should be different according to game state
-	menu = create_menu(button_dims, left_panel);
-	if (menu == NULL) {
-		return ERROR_NO_WIDGET;
-	}
-	if (append_menu(menu, RECONF_MOUSE_B, text_dims, choose_action) != 0) {
-		printf("Error: appending button\n");
-		return ERROR_APPEND_FAILED;
-	}
-	
-	text_dims.x += NL_T_W;
-	if (append_menu(menu, RECONF_CAT_B, text_dims, choose_action) != 0) {
-		printf("Error: appending button\n");
-		return ERROR_APPEND_FAILED;
-	}
-	
-	text_dims.x += NL_T_W;
-	if (append_menu(menu, RESTART_GAME_B, text_dims, do_nothing_action) != 0) {
-		printf("Error: appending button\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	text_dims.x += NL_T_W;
-	if (append_menu(menu, GOTO_MAIN_MENU_B, text_dims, do_nothing_action) != 0) {
-		printf("Error: appending button\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	text_dims.x += NL_T_W;
-	if (append_menu(menu, QUIT_B, text_dims, quit_action) != 0) {
-		printf("Error: appending button\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	menu->pos = get_center(left_panel->dims,menu->pos);
-	if (append(left_panel->children, menu) == NULL) {
-		printf("Error: appending build_grid\n");
-		return ERROR_APPEND_FAILED;
-	}
-	
-	/* Grid Panel */	
-	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) == 0) {
-		printf("Error: appending build_grid\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	/* Append panels to window */
-	if (append(window->children, title_panel) == 0) {
-		printf("Error appending title_panel\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, top_buttons) == 0) {
-		printf("Error appending top_buttons\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, left_panel) == 0) {
-		printf("Error appending left_panel\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, grid_panel) == 0) {
-		printf("Error appending grid_panel\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	return 0;
-}
-
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
 	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
 	SDL_Rect zeros = {0,0,0,0};
@@ -370,6 +218,164 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	return chooser;
 }
 
+Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
+	SDL_Rect pos = {0,0,0,0};
+	pos.w = button_dims.w;
+	Widget* menu = new_panel(UNFOCUSABLE, pos, parent);
+	if (menu == NULL) {
+		return NULL;
+	}
+	//set the panel dims as the button dims for later usage
+	menu->dims = button_dims;
+	return menu;
+}
+
+int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game_state* state) {
+	SDL_Rect main_pos = {0,0,0,0};
+	Widget* button;
+	if (menu == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	//check if this is the first button of the menu
+	if (menu->pos.h == 0) {
+		//add button height to menu
+		menu->pos.h += menu->dims.h;
+	} else {
+		//set the position of the button with 0.5 spacing
+		main_pos.y = menu->pos.h + (0.5 * (menu->dims.h));
+		//set the new height of the menu
+		menu->pos.h += 1.5 * (menu->dims.h);
+	}
+	SDL_Rect bg_dims = menu->dims;
+	main_pos.w = bg_dims.w;
+	main_pos.h = bg_dims.h;
+	if (id != LEVEL_CHOOSER && id != WORLD_CHOOSER) {
+		button = build_text_button(id, main_pos, bg_dims, text_dims, menu, onClick);
+	} else {
+		button = build_chooser(id, main_pos, bg_dims, menu, state);
+	}
+	//add the button to the menu children list
+	if (append(menu->children, button) == NULL) {
+			return ERROR_APPEND_FAILED;
+	}
+		
+	return 0;
+}
+
+
+Widget* build_grid(int id, Widget* parent, game_state* state) { 
+	Widget *grid;
+	SDL_Rect dims = {0,0,GRID_W,GRID_H};
+	SDL_Rect pos = get_center(parent->dims, dims);
+	grid = new_graphic(UNFOCUSABLE, dims, pos, grid_surface, parent);
+
+	// add mouse, cat, walls
+
+	return grid;
+}
+ 
+int build_game_scheme(Widget* window, game_state* state) {  
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
+	//int y_offset;
+	SDL_Rect pos = window->dims;
+	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+		
+	pos.x = pos.y = 0;
+	pos.h = S_NUM_T_H * 4;
+	title_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = NL_BUTTON_H*1.5;
+	top_buttons = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = window->dims.h - pos.y;
+	pos.w = NL_BUTTON_W*1.15;
+	left_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.x += pos.w;
+	pos.w = window->dims.w - pos.x;
+	grid_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
+		printf("Error: Some panel is null\n");
+		return ERROR_NO_WIDGET;
+	}
+	
+	/* Top Panel */
+	
+	/* Top Buttons */
+	
+	/* Left Panel */ // NOTE: this should be different according to game state
+	menu = create_menu(button_dims, left_panel);
+	if (menu == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	if (append_menu(menu, RECONF_MOUSE_B, text_dims, choose_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, RECONF_CAT_B, text_dims, choose_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, RESTART_GAME_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, GOTO_MAIN_MENU_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, QUIT_B, text_dims, quit_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	menu->pos = get_center(left_panel->dims,menu->pos);
+	if (append(left_panel->children, menu) == NULL) {
+		printf("Error: appending build_grid\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	/* Grid Panel */	
+	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) == 0) {
+		printf("Error: appending build_grid\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	/* Append panels to window */
+	if (append(window->children, title_panel) == 0) {
+		printf("Error appending title_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, top_buttons) == 0) {
+		printf("Error appending top_buttons\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, left_panel) == 0) {
+		printf("Error appending left_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	if (append(window->children, grid_panel) == 0) {
+		printf("Error appending grid_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	return 0;
+}
+
 int build_main_menu(Widget* window, game_state* state) {
 	Widget *panel, *button, *title;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
@@ -408,35 +414,35 @@ int build_main_menu(Widget* window, game_state* state) {
 	//new game
 	text_dims.x = MAIN_MENU_T_X_START;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	if (append_menu(panel, NEW_GAME_B, text_dims, new_game_action) != 0) {
+	if (append_menu(panel, NEW_GAME_B, text_dims, new_game_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//load game
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	if (append_menu(panel, LOAD_GAME_B, text_dims, NULL) != 0) {
+	if (append_menu(panel, LOAD_GAME_B, text_dims, NULL, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//create game
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	if (append_menu(panel, CREATE_GAME_B, text_dims, NULL) != 0) {
+	if (append_menu(panel, CREATE_GAME_B, text_dims, NULL, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//edit game
 	text_dims.x = MAIN_MENU_T_X_START;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	if (append_menu(panel, EDIT_GAME_B, text_dims, NULL) != 0) {
+	if (append_menu(panel, EDIT_GAME_B, text_dims, NULL, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//quit
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	if (append_menu(panel, QUIT_B, text_dims, quit_action) != 0) {
+	if (append_menu(panel, QUIT_B, text_dims, quit_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -503,21 +509,21 @@ int build_choose_player(Widget* window, game_state* state) {
 	//human
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	if (append_menu(panel, HUMAN_B, text_dims, choose_action) != 0) {
+	if (append_menu(panel, HUMAN_B, text_dims, choose_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//machine
 	text_dims.x = 0;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	if (append_menu(panel, MACHINE_B, text_dims, choose_action) != 0) {
+	if (append_menu(panel, MACHINE_B, text_dims, choose_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//back
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	if (append_menu(panel, BACK_B, text_dims, back_action) != 0) {
+	if (append_menu(panel, BACK_B, text_dims, back_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -542,13 +548,9 @@ int build_choose_player(Widget* window, game_state* state) {
 }
 
 int build_choose(Widget* window, game_state* state) {
-	int err;
 	Widget *panel, *button, *title;
-	//height is height of 3 buttons + 0.5 button per spacing between buttons
-	SDL_Rect panel_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H*4};
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect button_pos = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
-	SDL_Rect button_offset = {0, WL_BUTTON_H * 1.5, 0, 0};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
 
@@ -592,9 +594,10 @@ int build_choose(Widget* window, game_state* state) {
 		return ERROR_APPEND_FAILED;
 	}
 
-
 	/* creating a new panel for the buttons */
-	panel = new_panel(UNFOCUSABLE, get_center(window->dims, panel_dims), window);
+	button_dims.x = 0;
+	button_dims.y = WL_BUTTON_H;
+	panel = create_menu(button_dims, window);
 	if (append(children, panel) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
@@ -606,39 +609,32 @@ int build_choose(Widget* window, game_state* state) {
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
 
-	//button = build_text_button(HUMAN_B, button_pos, button_dims, text_dims, panel, choose_action);
 	if (state->type == CHOOSE_SKILL) {
+		if (append_menu(panel, LEVEL_CHOOSER, text_dims, NULL, state) != 0) {
+			return ERROR_APPEND_FAILED;
+		}
 		button = build_chooser(LEVEL_CHOOSER, button_pos, button_dims, panel, state);
 	} else { // world chooser
-		button = build_chooser(WORLD_CHOOSER, button_pos, button_dims, panel, state);
-	}
-	if (append(panel->children, button) == NULL) {
-		return ERROR_APPEND_FAILED;
+		if (append_menu(panel, WORLD_CHOOSER, text_dims, NULL, state) != 0) {
+			return ERROR_APPEND_FAILED;
+		}
 	}
 
 	//done button
-	if ((err = add_rect(&button_pos, &button_offset)) != 0) {
-		printf("Error in add_rect: %d\n", err);
-		return ERROR_ADD_RECT_FAILED;
-	}
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	button = build_text_button(DONE_B, button_pos, button_dims, text_dims, panel, choose_action);
-	if (append(panel->children, button) == NULL) {
+	if (append_menu(panel, DONE_B, text_dims, choose_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
 	//back button
-	if ((err = add_rect(&button_pos, &button_offset)) != 0) {
-		printf("Error in add_rect: %d\n", err);
-		return ERROR_ADD_RECT_FAILED;
-	}
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START + 2*WL_T_H;
-	button = build_text_button(BACK_B, button_pos, button_dims, text_dims, panel, back_action);
-	if (append(panel->children, button) == NULL) {
+	if (append_menu(panel, BACK_B, text_dims, back_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
+	
+	panel->pos = get_center(window->dims, panel->pos);
 
 	//change the background color of the focused widget
 	buttons = panel->children;
