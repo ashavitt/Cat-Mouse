@@ -306,8 +306,8 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
 			if (game->board->board[j][i] == WALL) {
-				tile_pos.x = i * tile_dims.w;
-				tile_pos.y = j * tile_dims.h;
+				tile_pos.x = j * tile_dims.w;
+				tile_pos.y = i * tile_dims.h;
 				obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, bricks, grid);
 				if (append(grid->children, obj) == NULL) {
 					return NULL;
