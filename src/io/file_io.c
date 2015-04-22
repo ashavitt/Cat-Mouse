@@ -1,6 +1,6 @@
 #include "file_io.h"
 
-int save_game(game* gamep, FILE* file) {
+int save_game(Game* gamep, FILE* file) {
 	int error;
 	struct board tempboard = *(gamep->board);
 	// print the number of turns left
@@ -25,7 +25,7 @@ int save_game(game* gamep, FILE* file) {
 	return 0;
 }
 
-void find_obj(game* gamep, char obj) {
+void find_obj(Game* gamep, char obj) {
 	int count = 0;
 	int x = 0, y = 0;
 	int flag = 1;
@@ -56,7 +56,7 @@ void find_obj(game* gamep, char obj) {
 }
 
 #define BFLEN 10
-int load_game(game* gamep, FILE* file) {
+int load_game(Game* gamep, FILE* file) {
 	int error;
 	char* checker;
 	char buffer[BFLEN]; // a buffer to read the file into
@@ -96,4 +96,31 @@ int load_game(game* gamep, FILE* file) {
 	find_obj(gamep, CHEESE);
 
 	return 0;
+}
+
+Game* load_world(int id) {
+	FILE* gamefile;
+	char dest_file_name[128];
+	Game* game = (Game*) malloc (sizeof(Game));
+	struct board* board = (struct board*) malloc (sizeof(struct board));
+	game->board = board;
+	if (game == NULL) {
+		perror("Error: malloc failed.\n");
+		return NULL;
+	}
+	strcat(dest_file_name, "worlds/world_");
+	strcat(dest_file_name, itoa(id));
+	strcat(dest_file_name, ".txt");
+	
+	gamefile = fopen(argv[i], "r");
+	if (testfile == NULL) {
+		perror("Error: fopen failed.\n");
+		return 2;
+	}
+	load_game(game_test, testfile);
+	if (fclose(testfile) != 0) {
+		perror("Error: fclose failed.\n");
+		return 3;
+	}
+	return game;
 }

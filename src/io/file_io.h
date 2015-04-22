@@ -12,7 +12,9 @@
 
 /* Functions */
 
-int save_game(game* gamep, FILE* file);
+int save_game(Game* gamep, FILE* file);
 
-int load_game(game* gamep, FILE* file);
+int load_game(Game* gamep, FILE* file);
+
+Game* load_world(int id);
 #endif /* FILE_IO_H_ */
