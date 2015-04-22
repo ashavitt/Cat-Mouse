@@ -78,6 +78,7 @@ int load_images() {
 	if (grid_surface == NULL) {
 		return -2;
 	}
+	
 	text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
