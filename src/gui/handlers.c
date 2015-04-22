@@ -132,7 +132,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			break;
 		case SDLK_TAB:
 			if (state == NULL) {
-				printf("Error state is null");
+				printf("Error state is null\n");
 				return ERROR_NO_STATE;
 			}
 			state->focused = (state->focused + 1) % get_obj_count(state->type);
@@ -156,11 +156,13 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 						return err;
 					}
 				}
+				break;
 			}
-			break;
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
-			if (state->type == IN_GAME || state->type == GAME_EDIT) {
+			if (state->type == IN_GAME) {
+			}
+			if (state->type == GAME_EDIT) {
 				//move cursor to direction event->key.keysym.sym
 			}
 			break;
