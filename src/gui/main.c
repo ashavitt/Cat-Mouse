@@ -82,7 +82,7 @@ int load_images() {
 	SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, mouse_colorkey);
 	tiles_colorkey = SDL_MapRGB(tiles->format, 0x00, 0xFF, 0x00);
 	SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey);
-	cheese_colorkey = SDL_MapRGB(cheese->format, 0x00, 0xFF, 0x00);
+	cheese_colorkey = SDL_MapRGB(cheese->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(cheese,SDL_SRCCOLORKEY, cheese_colorkey);
 	grid_colorkey = SDL_MapRGB(grid_surface->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(grid_surface,SDL_SRCCOLORKEY, grid_colorkey);
