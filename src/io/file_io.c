@@ -14,7 +14,7 @@ int save_game(game* gamep, FILE* file) {
 	tempboard.board[gamep->mouse_x][gamep->mouse_y] = MOUSE;
 	tempboard.board[gamep->cheese_x][gamep->cheese_y] = CHEESE;
 	// print the board
-	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
+	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
@@ -78,7 +78,7 @@ int load_game(game* gamep, FILE* file) {
 
 	// get the next lines
 	checker = fgets(buffer, BFLEN, file);
-	for (int i = BOARD_SIZE-1; i >= 0; i--) { // Y coordinate
+	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
 			perror("Error: world file is not valid\n");
 			return 1;
