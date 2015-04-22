@@ -37,6 +37,7 @@ extern byte error_message_ids[ERROR_MESSAGE_OBJS];
 extern SDL_Surface* texts;
 extern SDL_Surface* buttons;
 extern SDL_Surface* cat;
+extern SDL_Surface* cheese;
 extern SDL_Surface* mouse;
 extern SDL_Surface* tiles;
 extern SDL_Surface* grid_surface;

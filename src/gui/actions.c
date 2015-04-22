@@ -21,7 +21,7 @@ int new_game_action(Widget* widget, game_state* state) {
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	// TODO free previous game?
-	state->game = game_malloc(); // TODO should be function that loads some world
+	//state->game = game_malloc(); // TODO should be function that loads some world
 	state->previous_state = old_state;
 	state->type = CHOOSE_PLAYER;
 	state->focused = 0;

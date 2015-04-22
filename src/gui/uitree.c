@@ -288,6 +288,20 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	if (append(grid->children, obj) == NULL) {
 		return NULL;
 	}
+	//mouse
+	tile_pos.x = game->mouse_x * tile_dims.w;
+	tile_pos.y = game->mouse_y * tile_dims.h;
+	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, mouse, grid);
+	if (append(grid->children, obj) == NULL) {
+		return NULL;
+	}
+	//cheese
+	tile_pos.x = game->cheese_x * tile_dims.w;
+	tile_pos.y = game->cheese_y * tile_dims.h;
+	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cheese, grid);
+	if (append(grid->children, obj) == NULL) {
+		return NULL;
+	}
 
 	return grid;
 }
