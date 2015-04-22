@@ -167,8 +167,14 @@ int run_gui() {
 			quit = 25; // TODO
 			break;
 		}
+		if (state.game->player == CAT && state.game->num_steps_cat != 0) {
+			//TODO
+		}
+		if (state.game->player == MOUSE && state.game->num_steps_mouse != 0) {
+			//TODO
+		}
 		//looping on the events
-		while (SDL_PollEvent(event) && quit == 0) {
+		if (SDL_PollEvent(event) && quit == 0) {
 			switch (event->type) {
 				case SDL_QUIT:
 					quit = 1;
