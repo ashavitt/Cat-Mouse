@@ -120,7 +120,7 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 }
 
 
-Widget* build_grid(int id, Widget* parent, game_state* state) {
+Widget* build_grid(int id, Widget* parent, game_state* state) { 
 	Widget *grid;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
@@ -133,6 +133,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
  
 int build_game_scheme(Widget* window, game_state* state) {  
 	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *button;
+	//int y_offset;
 	SDL_Rect pos = window->dims;
 	SDL_Rect dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
 		
@@ -164,7 +165,24 @@ int build_game_scheme(Widget* window, game_state* state) {
 	
 	/* Left Panel */ // NOTE: this should be different according to game state
 	pos = get_center(left_panel->dims,dims);
-	button = build_text_button(RECONF_MOUSE_B, pos, dims, text_dims, left_panel, do_nothing_action);
+	pos.y = 0;
+	button = build_text_button(RECONF_MOUSE_B, pos, dims, text_dims, left_panel, choose_action);
+	if (append(left_panel->children,button) == 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	pos.y += NL_BUTTON_H*1.5;
+	text_dims.x += NL_T_W;
+	button = build_text_button(RECONF_CAT_B, pos, dims, text_dims, left_panel, choose_action);
+	if (append(left_panel->children,button) == 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	pos.y += NL_BUTTON_H*1.5;
+	text_dims.x += NL_T_W;
+	button = build_text_button(RESTART_GAME_B, pos, dims, text_dims, left_panel, do_nothing_action);
 	if (append(left_panel->children,button) == 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
