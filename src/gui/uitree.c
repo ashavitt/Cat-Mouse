@@ -448,26 +448,9 @@ int build_main_menu(Widget* window, game_state* state) {
 
 	panel->pos = get_center(window->dims, panel->pos);
 
-	/**
-	//change the background color of the focused button
-	buttons = panel->children;
-	button_dims.y *= 2;
-	while (buttons != NULL) {
-		if (headData(buttons) != NULL) {
-			button = ((Widget*)headData(buttons));
-			if (button->id == main_menu_ids[state->focused]) {
-				//set the correct color for the button
-				((Widget*)headData(button->children))->dims = button_dims;
-			}
-		}
-		buttons = tail(buttons);
-	}
-	**/
-
 	button_dims.y += WL_BUTTON_H;
 	window->children = children;
-	button = find_widget_by_id(window, main_menu_ids[state->focused]);
-	if (button == NULL) {
+	if ((button = find_widget_by_id(window, main_menu_ids[state->focused])) == NULL) {
 		return ERROR_NO_FOCUS;
 	}
 	((Widget*)headData(button->children))->dims = button_dims;
