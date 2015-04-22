@@ -262,6 +262,14 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 	return 0;
 }
 
+int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
+	Widget* button;
+	if ((button = find_widget_by_id(window, focused)) == NULL) {
+		return ERROR_NO_FOCUS;
+	}
+	((Widget*)headData(button->children))->dims = new_button_dims;
+	return 0;
+}
 
 Widget* build_grid(int id, Widget* parent, game_state* state) { 
 	Widget *grid;
@@ -377,7 +385,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 }
 
 int build_main_menu(Widget* window, game_state* state) {
-	Widget *panel, *button, *title;
+	Widget *panel, *title;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
@@ -450,20 +458,21 @@ int build_main_menu(Widget* window, game_state* state) {
 
 	button_dims.y += WL_BUTTON_H;
 	window->children = children;
-	if ((button = find_widget_by_id(window, main_menu_ids[state->focused])) == NULL) {
+
+	if (set_focus_bg(window, button_dims, main_menu_ids[state->focused]) != 0) {
 		return ERROR_NO_FOCUS;
 	}
-	((Widget*)headData(button->children))->dims = button_dims;
 	return 0;
 }
 
+
 int build_choose_player(Widget* window, game_state* state) {
-	Widget *panel, *button, *title;
+	Widget *panel, *title;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
 
-	ListRef children, buttons;
+	ListRef children;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
 	}
@@ -521,31 +530,22 @@ int build_choose_player(Widget* window, game_state* state) {
 	panel->pos = get_center(window->dims, panel->pos);
 
 	//change the background color of the focused button
-	buttons = panel->children;
-	button_dims.y *= 2; // ONLY APPLIES FOR MAIN MENUS
-	while (buttons != NULL) {
-		if (headData(buttons) != NULL) {
-			button = ((Widget*)headData(buttons));
-			if (button->id == choose_player_ids[state->focused]) {
-				//set the correct color for the button
-				((Widget*)headData(button->children))->dims = button_dims;
-			}
-		}
-		buttons = tail(buttons);
-	}
-
+	button_dims.y += WL_BUTTON_H;
 	window->children = children;
+
+	if (set_focus_bg(window, button_dims, choose_player_ids[state->focused]) != 0) {
+		return ERROR_NO_FOCUS;
+	}
 	return 0;
 }
 
 int build_choose(Widget* window, game_state* state) {
-	Widget *panel, *button, *title;
+	Widget *panel, *title;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
-	SDL_Rect button_pos = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
 
-	ListRef children, buttons;
+	ListRef children;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
 	}
@@ -604,7 +604,6 @@ int build_choose(Widget* window, game_state* state) {
 		if (append_menu(panel, LEVEL_CHOOSER, text_dims, NULL, state) != 0) {
 			return ERROR_APPEND_FAILED;
 		}
-		button = build_chooser(LEVEL_CHOOSER, button_pos, button_dims, panel, state);
 	} else { // world chooser
 		if (append_menu(panel, WORLD_CHOOSER, text_dims, NULL, state) != 0) {
 			return ERROR_APPEND_FAILED;
@@ -628,27 +627,18 @@ int build_choose(Widget* window, game_state* state) {
 	panel->pos = get_center(window->dims, panel->pos);
 
 	//change the background color of the focused widget
-	buttons = panel->children;
-	button_dims.y *= 2; // ONLY APPLIES FOR MAIN MENUS
-	while (buttons != NULL) {
-		if (headData(buttons) != NULL) {
-			button = ((Widget*)headData(buttons));
-			if (state->type == CHOOSE_SKILL) {
-				if (button->id == choose_skill_ids[state->focused]) {
-					//set the correct color for the button
-					((Widget*)headData(button->children))->dims = button_dims;
-				}
-			} else { //world chooser
-				if (button->id == load_game_ids[state->focused]) {
-					//set the correct color for the button
-					((Widget*)headData(button->children))->dims = button_dims;
-				}
-			}
-		}
-		buttons = tail(buttons);
-	}
-
+	button_dims.y += WL_BUTTON_H;
 	window->children = children;
+
+	if (state->type == CHOOSE_SKILL) {
+		if (set_focus_bg(window, button_dims, choose_skill_ids[state->focused]) != 0) {
+			return ERROR_NO_FOCUS;
+		}
+	} else {
+		if (set_focus_bg(window, button_dims, load_game_ids[state->focused]) != 0) {
+			return ERROR_NO_FOCUS;
+		}
+	}
 	return 0;
 }
 
