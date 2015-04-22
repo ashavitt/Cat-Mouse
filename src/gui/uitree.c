@@ -147,6 +147,8 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick) {
 		menu->pos.h += 1.5 * (menu->dims.h);
 	}
 	SDL_Rect bg_dims = menu->dims;
+	main_pos.w = bg_dims.w;
+	main_pos.h = bg_dims.h;
 	Widget* button = build_text_button(id, main_pos, bg_dims, text_dims, menu, onClick);
 	//add the button to the menu children list
 	if (append(menu->children, button) == NULL) {
@@ -168,10 +170,10 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 }
  
 int build_game_scheme(Widget* window, game_state* state) {  
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *button;
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
 	//int y_offset;
 	SDL_Rect pos = window->dims;
-	SDL_Rect dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
 		
 	pos.x = pos.y = 0;
 	pos.h = S_NUM_T_H * 4;
@@ -200,27 +202,42 @@ int build_game_scheme(Widget* window, game_state* state) {
 	/* Top Buttons */
 	
 	/* Left Panel */ // NOTE: this should be different according to game state
-	pos = get_center(left_panel->dims,dims);
-	pos.y = 0;
-	button = build_text_button(RECONF_MOUSE_B, pos, dims, text_dims, left_panel, choose_action);
-	if (append(left_panel->children,button) == 0) {
+	menu = create_menu(button_dims, left_panel);
+	if (menu == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	if (append_menu(menu, RECONF_MOUSE_B, text_dims, choose_action) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
-	pos.y += NL_BUTTON_H*1.5;
 	text_dims.x += NL_T_W;
-	button = build_text_button(RECONF_CAT_B, pos, dims, text_dims, left_panel, choose_action);
-	if (append(left_panel->children,button) == 0) {
+	if (append_menu(menu, RECONF_CAT_B, text_dims, choose_action) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
-	pos.y += NL_BUTTON_H*1.5;
 	text_dims.x += NL_T_W;
-	button = build_text_button(RESTART_GAME_B, pos, dims, text_dims, left_panel, do_nothing_action);
-	if (append(left_panel->children,button) == 0) {
+	if (append_menu(menu, RESTART_GAME_B, text_dims, do_nothing_action) != 0) {
 		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, GOTO_MAIN_MENU_B, text_dims, do_nothing_action) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, QUIT_B, text_dims, quit_action) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	menu->pos = get_center(left_panel->dims,menu->pos);
+	if (append(left_panel->children, menu) == NULL) {
+		printf("Error: appending build_grid\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
