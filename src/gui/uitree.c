@@ -272,12 +272,19 @@ int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 }
 
 Widget* build_grid(int id, Widget* parent, game_state* state) { 
-	Widget *grid;
+	Widget *grid, obj;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
 	grid = new_graphic(UNFOCUSABLE, dims, pos, grid_surface, parent);
+	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
+	SDL_Rect tile_pos = {0,0,GRID_W/7,GRID_H/7};
 
 	// add mouse, cat, walls
+	Game* game = state->game;
+	//cat
+	tile_pos.x = game->cat_x * tile_dims.w;
+	tile_pos.y = game->cat_y * tile_dims.h;
+	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cat, grid);
 
 	return grid;
 }
