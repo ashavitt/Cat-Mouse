@@ -72,8 +72,18 @@ int load_images() {
 	if (grid_surface == NULL) {
 		return -2;
 	}
-	text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
+	
+	/*text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);*/
+	
+	for (int i=0; i < 10; i++) {
+	for (int j=0; j < 10; j++) {
+	for (int k=0; k < 10; k++) {
+		text_colorkey = SDL_MapRGB(texts->format, 0xFF - i, 0xFF - j, 0xF - k);
+		SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
+	}
+	}
+	}
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
 	cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0xFF, 0xFF);
