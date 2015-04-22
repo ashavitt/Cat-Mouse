@@ -382,7 +382,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
 
-	ListRef children, buttons;
+	ListRef children;
 	if ((children = window->children) != NULL) {
 		destroyList(children, &freeWidget);
 	}
@@ -448,6 +448,7 @@ int build_main_menu(Widget* window, game_state* state) {
 
 	panel->pos = get_center(window->dims, panel->pos);
 
+	/**
 	//change the background color of the focused button
 	buttons = panel->children;
 	button_dims.y *= 2;
@@ -461,8 +462,15 @@ int build_main_menu(Widget* window, game_state* state) {
 		}
 		buttons = tail(buttons);
 	}
+	**/
 
+	button_dims.y += WL_BUTTON_H;
 	window->children = children;
+	button = find_widget_by_id(window, main_menu_ids[state->focused]);
+	if (button == NULL) {
+		return ERROR_NO_FOCUS;
+	}
+	((Widget*)headData(button->children))->dims = button_dims;
 	return 0;
 }
 
