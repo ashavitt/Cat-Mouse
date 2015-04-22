@@ -49,7 +49,7 @@ byte* get_objs_arr(state_type type) {
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {
 	ListRef children;
 	int err, array_size;
-	byte[] ids;
+	byte* ids;
 	SDL_Rect dims = widget->dims;
 	if (e == NULL) {
 		return ERROR_NO_SDLEVENT;
@@ -65,7 +65,7 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			ids = get_objs_arr(state->type);
 			array_size = get_obj_count(state->type);
 			for (int i=0; i<array_size; i++) {
-				if (ids[i] = widget->id && widget->id != UNFOCUSABLE) {
+				if (ids[i] == widget->id && widget->id != UNFOCUSABLE) {
 					state->focused = i;
 					break;
 				}
