@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "../core/board.h"
 #include <string.h>
+#include <stdlib.h>
 
 /* Macros */
 

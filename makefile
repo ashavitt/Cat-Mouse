@@ -16,7 +16,7 @@ MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
 
 test: file_io_test getChildren_test gui_main_test
 
-gui_main_test: main_test.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o
+gui_main_test: main_test.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o
 	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
 
 file_io_test: file_io_test.o file_io.o board.o ListUtils.o
@@ -52,7 +52,7 @@ getChildren_test.o: getChildren_test.c
 main_test.o: main_test.c
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
-main.o: main.c main.h shared.h widget.h uitree.h handlers.h error.h board.h ListUtils.h
+main.o: main.c main.h shared.h widget.h uitree.h handlers.h error.h board.h ListUtils.h file_io.h
 	gcc -c $(CFLAGS) $< `sdl-config --cflags`
 
 widget.o: widget.c widget.h shared.h ListUtils.h error.h

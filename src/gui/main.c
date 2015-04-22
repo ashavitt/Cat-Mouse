@@ -127,6 +127,7 @@ int run_gui() {
 	state.type = MAIN_MENU;
 	state.focused = 0;
 	state.previous_state = NULL;
+	state.game = load_world(1);
 
 	//main loop
 	while (quit == 0) {

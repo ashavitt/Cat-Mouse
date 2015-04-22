@@ -285,7 +285,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	tile_pos.x = game->cat_x * tile_dims.w;
 	tile_pos.y = game->cat_y * tile_dims.h;
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cat, grid);
-	if (append(grid->children, obj) != 0) {
+	if (append(grid->children, obj) == NULL) {
 		return NULL;
 	}
 

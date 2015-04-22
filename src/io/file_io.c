@@ -108,19 +108,18 @@ Game* load_world(int id) {
 		perror("Error: malloc failed.\n");
 		return NULL;
 	}
-	strcat(dest_file_name, "worlds/world_");
-	strcat(dest_file_name, itoa(id));
-	strcat(dest_file_name, ".txt");
+	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
+	//printf("%s", dest_file_name);
 	
-	gamefile = fopen(argv[i], "r");
-	if (testfile == NULL) {
+	gamefile = fopen(dest_file_name, "r");
+	if (gamefile == NULL) {
 		perror("Error: fopen failed.\n");
-		return 2;
+		return NULL;
 	}
-	load_game(game_test, testfile);
-	if (fclose(testfile) != 0) {
+	load_game(game, gamefile);
+	if (fclose(gamefile) != 0) {
 		perror("Error: fclose failed.\n");
-		return 3;
+		return NULL;
 	}
 	return game;
 }
