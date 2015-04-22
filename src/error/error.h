@@ -7,7 +7,6 @@
 
 /* draw_widget */
 
-
 /* add_rect */
 #define ERROR_NO_RECT1 2
 #define ERROR_NO_RECT2 3
@@ -26,6 +25,7 @@
 /* build_ui */
 #define ERROR_APPEND_FAILED 20
 #define ERROR_ADD_RECT_FAILED 21
+#define ERROR_NO_FOCUS 22
 /** main **/
 
 /* run_gui */
