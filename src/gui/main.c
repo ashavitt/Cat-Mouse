@@ -14,6 +14,7 @@ SDL_Surface* buttons;
 SDL_Surface* cat;
 SDL_Surface* mouse;
 SDL_Surface* cheese;
+SDL_Surface* bricks;
 SDL_Surface* tiles;
 SDL_Surface* grid_surface;
 
@@ -41,6 +42,7 @@ int load_images() {
 	Uint32 buttons_colorkey;
 	Uint32 cat_colorkey;
 	Uint32 mouse_colorkey;
+	Uint32 bricks_colorkey;
 	Uint32 tiles_colorkey;
 	Uint32 grid_colorkey;
 	Uint32 cheese_colorkey;
@@ -48,6 +50,7 @@ int load_images() {
 	buttons = SDL_LoadBMP("images/buttons.bmp");
 	cat = SDL_LoadBMP("images/cat.bmp");
 	mouse = SDL_LoadBMP("images/mouse.bmp");
+	bricks = SDL_LoadBMP("images/bricks.bmp");
 	cheese = SDL_LoadBMP("images/cheese.bmp");
 	tiles = SDL_LoadBMP("images/tiles.bmp");
 	grid_surface = SDL_LoadBMP("images/grid.bmp");
@@ -61,6 +64,9 @@ int load_images() {
 		return -2;
 	}
 	if (mouse == NULL) {
+		return -2;
+	}
+	if (bricks == NULL) {
 		return -2;
 	}
 	if (tiles == NULL) {
@@ -84,6 +90,8 @@ int load_images() {
 	SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey);
 	cheese_colorkey = SDL_MapRGB(cheese->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(cheese,SDL_SRCCOLORKEY, cheese_colorkey);
+	bricks_colorkey = SDL_MapRGB(bricks->format, 0xFF, 0xFF, 0xFF);
+	SDL_SetColorKey(bricks,SDL_SRCCOLORKEY, bricks_colorkey);
 	grid_colorkey = SDL_MapRGB(grid_surface->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(grid_surface,SDL_SRCCOLORKEY, grid_colorkey);
 	return 0;
