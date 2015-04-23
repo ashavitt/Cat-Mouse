@@ -61,6 +61,7 @@ int choose_action(Widget* widget, game_state* state) {
 			if (widget->id == HUMAN_B) {
 				state->game->num_steps_mouse = 0; // human is 0 steps
 				state->type = IN_GAME;
+				state->catormouse = PLAYING;
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = 1; //start skill level choosing at 1
@@ -75,6 +76,7 @@ int choose_action(Widget* widget, game_state* state) {
 		} else { // mouse
 			state->game->num_steps_mouse = state->number;
 			state->type = IN_GAME;
+			state->catormouse = PLAYING;
 		}
 	}
 	
