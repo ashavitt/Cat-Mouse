@@ -319,21 +319,20 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 }
  
  int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
- 	Widget* widget;
+ 	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
- 	SDL_Rect pos = get_center(top_panel->pos, rect);
- 	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H};
- 	SDL_Surface surface;
+ 	SDL_Rect pos = get_center(title_panel->pos, rect);
+ 	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
  	/* Top Panel */ /* Top Buttons */
-	swtich(state->catormouse) {
+	switch(state->catormouse) {
 		case PLAYING:
 			// add stuff before button
-		
-			dims = {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
+			//TODO
+			dims = (SDL_Rect) {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
 			// in game stuff; disable widgets
 			pos = get_center(left_panel->pos, button_dims);
-			if ((state->game->player == CAT && num_steps_cat == 0) ||
-				(state->game->player == MOUSE && num_steps_mouse == 0)) {
+			if ((state->game->player == CAT && state->game->num_steps_cat == 0) ||
+				(state->game->player == MOUSE && state->game->num_steps_mouse == 0)) {
 				dims.y += NS_T_H;
 			} else { // machine is now playing, dims is ok
 			}
@@ -347,7 +346,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 			// disable grid
 			// add stuff before buttons
 			
-			dims = {NS_B_MESSAGE_X_START + (2 * NS_T_H), NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
+			dims = (SDL_Rect) {NS_B_MESSAGE_X_START + (2 * NS_T_H), NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
 			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
 			if (append(top_buttons->children, widget) == NULL) {
 				printf("Error appending title widget\n");
@@ -384,6 +383,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	}
 	
 	/* Left Panel */ // NOTE: this should be different according to game state
+	button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
 	menu = create_menu(button_dims, left_panel);
 	if (menu == NULL) {
 		return ERROR_NO_WIDGET;
@@ -450,7 +450,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
  }
  
 int build_game_scheme(Widget* window, game_state* state) {  
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
 	//int y_offset;
 	int err;
 	SDL_Rect pos = window->dims;
