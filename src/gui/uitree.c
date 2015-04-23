@@ -318,7 +318,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	return grid;
 }
  
- int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
+int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
  	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
  	SDL_Rect pos = get_center(title_panel->pos, rect);
@@ -388,10 +388,11 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	if (menu == NULL) {
 		return ERROR_NO_WIDGET;
 	}
-	
+	onclickp choose_action = choose_action; // local<-global
+	onclickp quit_action = quit_action;	// local<-global
 	if (state->catormouse == PLAYING) {
-		onclickp choose_action; choose_action = do_nothing_action;
-		onclickp quit_action = do_nothing_action;
+		choose_action = do_nothing_action;
+		quit_action = do_nothing_action;
 		// all other actions
 	}
 	
