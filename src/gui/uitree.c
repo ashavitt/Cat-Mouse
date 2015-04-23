@@ -318,43 +318,83 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	return grid;
 }
  
-int build_game_scheme(Widget* window, game_state* state) {  
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
-	//int y_offset;
-	SDL_Rect pos = window->dims;
-	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
+ 	Widget* widget;
+ 	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
+ 	SDL_Rect pos = get_center(top_panel->pos, rect);
+ 	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H};
+ 	SDL_Surface surface;
+ 	/* Top Panel */ /* Top Buttons */
+	swtich(state->catormouse) {
+		case PLAYING:
+			// add stuff before button
 		
-	pos.x = pos.y = 0;
-	pos.h = S_NUM_T_H * 4;
-	title_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.y += pos.h;
-	pos.h = NL_BUTTON_H*1.5;
-	top_buttons = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.y += pos.h;
-	pos.h = window->dims.h - pos.y;
-	pos.w = NL_BUTTON_W*1.15;
-	left_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	pos.x += pos.w;
-	pos.w = window->dims.w - pos.x;
-	grid_panel = new_panel(UNFOCUSABLE, pos, window);
-
-	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
-		printf("Error: Some panel is null\n");
-		return ERROR_NO_WIDGET;
+			dims = {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
+			// in game stuff; disable widgets
+			pos = get_center(left_panel->pos, button_dims);
+			if ((state->game->player == CAT && num_steps_cat == 0) ||
+				(state->game->player == MOUSE && num_steps_mouse == 0)) {
+				dims.y += NS_T_H;
+			} else { // machine is now playing, dims is ok
+			}
+			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
+			if (append(top_buttons->children, widget) == NULL) {
+				printf("Error appending title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+			break;
+		case PAUSED:
+			// disable grid
+			// add stuff before buttons
+			
+			dims = {NS_B_MESSAGE_X_START + (2 * NS_T_H), NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
+			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
+			if (append(top_buttons->children, widget) == NULL) {
+				printf("Error appending title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+			break;
+		case CAT_WIN:
+			dims.x += WL_T_W * 2;
+			dims.y += WL_T_H * 2;
+			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+				printf("Error appending title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+			break;
+		case MOUSE_WIN:
+			dims.x += WL_T_W * 2;
+			dims.y += WL_T_H * 3;
+			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+				printf("Error appending title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+			break;
+		case TIE:
+			dims.x += WL_T_W * 2;
+			dims.y += WL_T_H * 4;
+			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+				printf("Error appending title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+			break;
+		default:
+			printf("Error: bad value:%d, in catormouse field\n",state->catormouse);
+			return ERROR_BAD_VALUE;
 	}
-	
-	/* Top Panel */
-	
-	/* Top Buttons */
 	
 	/* Left Panel */ // NOTE: this should be different according to game state
 	menu = create_menu(button_dims, left_panel);
 	if (menu == NULL) {
 		return ERROR_NO_WIDGET;
 	}
+	
+	if (state->catormouse == PLAYING) {
+		onclick choose_action = do_nothing_action;
+		onclick quit_action = do_nothing_action;
+		// all other actions
+	}
+	
 	if (append_menu(menu, RECONF_MOUSE_B, text_dims, choose_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
@@ -388,6 +428,70 @@ int build_game_scheme(Widget* window, game_state* state) {
 	if (append(left_panel->children, menu) == NULL) {
 		printf("Error: appending build_grid\n");
 		return ERROR_APPEND_FAILED;
+	}
+	
+	if (state->catormouse == PLAYING) {
+		rect = left_panel->pos;
+		rect.x = rect.y = 0;
+		if (SDL_SetAlpha(black_surface, SDL_SRCALPHA, 128) != 0) {
+			printf("Error setting alpha value\n");
+			return -1;
+		}
+		widget = new_graphic(UNFOCUSABLE, rect, rect, black_surface, left_panel);
+		if (append(left_panel->children, widget) == NULL) {
+			printf("Error appending black_surface widget\n");
+			return ERROR_APPEND_FAILED;
+		}
+	}
+ }
+ 
+ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
+ 	return 0;
+ }
+ 
+int build_game_scheme(Widget* window, game_state* state) {  
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *menu;
+	//int y_offset;
+	int err;
+	SDL_Rect pos = window->dims;
+	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+		
+	pos.x = pos.y = 0;
+	pos.h = S_NUM_T_H * 4;
+	title_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = NL_BUTTON_H*1.5;
+	top_buttons = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.y += pos.h;
+	pos.h = window->dims.h - pos.y;
+	pos.w = NL_BUTTON_W*1.15;
+	left_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	pos.x += pos.w;
+	pos.w = window->dims.w - pos.x;
+	grid_panel = new_panel(UNFOCUSABLE, pos, window);
+
+	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
+		printf("Error: Some panel is null\n");
+		return ERROR_NO_WIDGET;
+	}
+	
+	/* Top panel, buttons and left panel */
+	if (state->type == IN_GAME) {
+		if ((err = build_panels_in_game(title_panel, top_buttons, left_panel, state)) != 0) {
+			printf("Error building panels for in_game\n");
+			return err;
+		}
+	} else if (state->type == GAME_EDIT) {
+		if ((err = build_panels_game_edit(title_panel, top_buttons, left_panel, state)) != 0) {
+			printf("Error building panels for game_edit\n");
+			return err;
+		}
+	} else {
+		printf("Error: bad state->type\n");
+		return -1; //TODO
 	}
 	
 	/* Grid Panel */	
@@ -500,7 +604,6 @@ int build_main_menu(Widget* window, game_state* state) {
 	}
 	return 0;
 }
-
 
 int build_choose_player(Widget* window, game_state* state) {
 	Widget *panel, *title;
