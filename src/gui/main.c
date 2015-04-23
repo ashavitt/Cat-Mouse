@@ -17,6 +17,7 @@ SDL_Surface* cheese;
 SDL_Surface* bricks;
 SDL_Surface* tiles;
 SDL_Surface* grid_surface;
+SDL_Surface* black_surface;
 
 int init(SDL_Surface**  screen) {
 	//initialize SDL
@@ -54,6 +55,8 @@ int load_images() {
 	cheese = SDL_LoadBMP("images/cheese.bmp");
 	tiles = SDL_LoadBMP("images/tiles.bmp");
 	grid_surface = SDL_LoadBMP("images/grid.bmp");
+	
+	black_surface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0x000000ff);
 	if (texts == NULL) {
 		return -1;
 	}
@@ -76,6 +79,9 @@ int load_images() {
 		return -2;
 	}
 	if (grid_surface == NULL) {
+		return -2;
+	}
+	if (black_surface == NULL) {
 		return -2;
 	}
 	
@@ -114,6 +120,7 @@ void cleanup() {
 	SDL_FreeSurface(mouse);
 	SDL_FreeSurface(tiles);
 	SDL_FreeSurface(grid_surface);
+	SDL_FreeSurface(bricks);
 	//Quit SDL
 	SDL_Quit();
 }
