@@ -24,11 +24,12 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	byte dy[] = {1,0,-1,0};
 	char sign[BOARD_SIZE][BOARD_SIZE];
 	char depth = 0;
-	coord start;
+	coord *start = (coord*) malloc (sizeof(coord));
 	coord *temp1, *temp2;
-	ListRef queue = newList(&start);
-	start.x = start_x;
-	start.y = start_y;
+	ListRef queue = newList(start);
+	ListRef temp_queue;
+	start->x = start_x;
+	start->y = start_y;
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
 			sign[i][j] = FREE;
@@ -38,7 +39,15 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	while (!isEmpty(queue)) {
 		//dequeue
 		temp1 = headData(queue);
-		queue = tail(queue);
+		//check if queue contains one element
+		temp_queue = tail(queue);
+		if (temp_queue == NULL) {
+			free(queue);
+			queue = newList(NULL);
+		} else { //otherwise we remove the first obj in the list
+			free(queue);
+			queue = temp_queue;
+		}
 		//if we found the destination
 		depth = sign[temp1->x][temp1->y];
 		if (temp1->x == dest_x && temp1->y == dest_y) {
@@ -49,9 +58,9 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 		for (int i = 0; i < 4; i++) {
 			temp2 = (coord*) malloc (sizeof(coord));
 			if (temp2 == NULL) {
+				printf("Error: malloc failed.\n");
 				destroyList(queue, free);
 				free(temp1);
-				printf("Error: malloc failed.\n");
 				return -1;
 			}
 			temp2->x = temp1->x + dx[i];
