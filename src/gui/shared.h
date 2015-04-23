@@ -18,6 +18,7 @@ typedef struct game_state_struct {
 } game_state;
 
 #define PAUSED -1
+#define PLAYING -2
 
 #define MAIN_MENU_OBJS 5
 #define CHOOSE_PLAYER_OBJS 3
