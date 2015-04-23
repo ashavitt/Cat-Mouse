@@ -1,0 +1,36 @@
+#include "ai.h"
+
+int get_best_move(Game* game, int num_step) {
+	int is_max_player = (game->player == CAT) ? 1 : 0;
+
+	//TODO check if getBestChild failed
+	int result_index = getBestChildAlphaBeta(game, num_steps, getChildren, free, evaluateGame, is_max_player).index;
+
+	int i;
+	for (i = 0; result_index >= 0; i++) {
+		if (!dir_is_valid(game,i)) {
+			result_index--;
+		}
+	}
+	return --i;
+}
+
+int ai_move(Game* game) {
+	int move = -1;
+	if (game->player == CAT && game->num_steps_cat != 0) {
+		move = get_best_move(game, game->num_steps_cat);
+	} else if (game->player == MOUSE && game->num_steps_mouse != 0) {
+		move = get_best_move(game, game->num_steps_mouse);
+	}
+	//if it isn't the computer turn
+	if (move == -1) {
+		return 0;
+	}
+	//update the turns left
+	game->turns--;
+	//commit the computer move
+	move_obj(game, game->player, move);
+	//swap the players
+	game->player = (game->player == CAT) ? MOUSE : CAT;
+	return 0;
+}
