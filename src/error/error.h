@@ -26,6 +26,7 @@
 #define ERROR_APPEND_FAILED 20
 #define ERROR_ADD_RECT_FAILED 21
 #define ERROR_NO_FOCUS 22
+#define ERROR_BAD_VALUE 23
 /** main **/
 
 /* run_gui */
