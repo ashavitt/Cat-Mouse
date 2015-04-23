@@ -6,7 +6,7 @@ VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:src/gui/:src/error/:te
 all: ListUtilsDemo MiniMaxDemo 
 
 clean:
-	rm -f $(O_FILES) ListUtilsDemo.o MiniMaxDemo.o GameUtils.o file_io.o board.o file_io_test.o getChildren_test.o ListUtilsDemo MiniMaxDemo file_io_test getChildren_test
+	rm -f $(O_FILES) ListUtilsDemo.o MiniMaxDemo.o GameUtils.o board.o ai.o evaluate.o file_io.o main.o uitree.o handlers.o actions.o file_io_test.o widget.o getChildren_test.o ListUtilsDemo MiniMaxDemo file_io_test getChildren_test
 
 ListUtilsDemo: ListUtilsDemo.o ListUtils.o
 	gcc -o $@ $^ $(CFLAGS)
