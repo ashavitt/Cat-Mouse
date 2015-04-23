@@ -11,6 +11,11 @@ int back_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int pause_resume_action(Widget* widget, game_state* state) {
+	state->catormouse = (state->catormouse == PLAYING) ? PAUSED : PLAYING;
+	return 0;
+}
+
 int new_game_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {

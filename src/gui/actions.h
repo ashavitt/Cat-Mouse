@@ -13,6 +13,8 @@ onclick quit_action;
 
 onclick back_action;
 
+onclick pause_resume_action;
+
 onclick new_game_action;
 
 onclick choose_action;
