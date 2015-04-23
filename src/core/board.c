@@ -13,6 +13,11 @@ Game* game_malloc() {
 	return gamep;
 }
 
+void game_free(Game* game) {
+	free(game->board);
+	free(game);
+}
+
 int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y, struct board* boardp) {
 	switch (dir) {
 		case UP:

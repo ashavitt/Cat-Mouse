@@ -81,8 +81,9 @@ typedef struct Game {
 
 Game* game_malloc();
 
-ListRef getChildren(void* gamep);
+void game_free(Game* game);
 
+ListRef getChildren(void* gamep);
 
 int check_end_game(Game* gamep);
 
