@@ -20,7 +20,7 @@ void game_free(Game* game) {
 
 int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y, struct board* boardp) {
 	switch (dir) {
-		case UP:
+		case DOWN:
 			if (y + 1 == BOARD_SIZE) {
 				return 0;
 			}
@@ -42,7 +42,7 @@ int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y,
 				return 0;
 			}
 			break;
-		case DOWN:
+		case UP:
 			if (y == 0) {
 				return 0;
 			}
@@ -75,7 +75,7 @@ int dir_is_valid(Game* gamep, int dir) {
 			return 0;
 		}
 		switch (dir) {
-			case UP:
+			case DOWN:
 				//check if the cell is empty
 				if (gamep->mouse_x == gamep->cat_x && gamep->mouse_y == gamep->cat_y + 1) {
 					return 0;
@@ -87,7 +87,7 @@ int dir_is_valid(Game* gamep, int dir) {
 					return 0;
 				}
 				break;
-			case DOWN:
+			case UP:
 				//check if the cell is empty
 				if (gamep->mouse_x == gamep->cat_x && gamep->mouse_y == gamep->cat_y - 1) {
 					return 0;
@@ -106,7 +106,7 @@ int dir_is_valid(Game* gamep, int dir) {
 			return 0;
 		}
 		switch (dir) {
-			case UP:
+			case DOWN:
 				//check if the cell is empty
 				if (gamep->cat_x == gamep->mouse_x && gamep->cat_y == gamep->mouse_y + 1) {
 					return 0;
@@ -118,7 +118,7 @@ int dir_is_valid(Game* gamep, int dir) {
 					return 0;
 				}
 				break;
-			case DOWN:
+			case UP:
 				//check if the cell is empty
 				if (gamep->cat_x == gamep->mouse_x && gamep->cat_y == gamep->mouse_y - 1) {
 					return 0;
@@ -169,7 +169,7 @@ ListRef getChildren(void* gameVoid) {
 				child->mouse_x = gamep->mouse_x;
 				child->mouse_y = gamep->mouse_y;
 				switch (i) {
-					case UP:
+					case DOWN:
 						child->cat_x = gamep->cat_x;
 						child->cat_y = gamep->cat_y + 1;
 						break;
@@ -177,7 +177,7 @@ ListRef getChildren(void* gameVoid) {
 						child->cat_x = gamep->cat_x + 1;
 						child->cat_y = gamep->cat_y;
 						break;
-					case DOWN:
+					case UP:
 						child->cat_x = gamep->cat_x;
 						child->cat_y = gamep->cat_y - 1;
 						break;
@@ -192,7 +192,7 @@ ListRef getChildren(void* gameVoid) {
 				child->cat_x = gamep->cat_x;
 				child->cat_y = gamep->cat_y;
 				switch (i) {
-					case UP:
+					case DOWN:
 						child->mouse_x = gamep->mouse_x;
 						child->mouse_y = gamep->mouse_y + 1;
 						break;
@@ -200,7 +200,7 @@ ListRef getChildren(void* gameVoid) {
 						child->mouse_x = gamep->mouse_x + 1;
 						child->mouse_y = gamep->mouse_y;
 						break;
-					case DOWN:
+					case UP:
 						child->mouse_x = gamep->mouse_x;
 						child->mouse_y = gamep->mouse_y - 1;
 						break;
@@ -220,7 +220,7 @@ ListRef getChildren(void* gameVoid) {
 
 void move_obj(Game* game, byte player, int dir) {
 	int dx[] = {0,1,0,-1};
-	int dy[] = {1,0,-1,0};
+	int dy[] = {-1,0,1,0};
 	if (player == CAT) {
 		game->cat_y += dy[dir];
 		game->cat_x += dx[dir];
@@ -235,7 +235,7 @@ void move_obj(Game* game, byte player, int dir) {
  */
 int check_end_game(Game* gamep) {
 	int dx[] = {0,1,0,-1};
-	int dy[] = {1,0,-1,0};
+	int dy[] = {-1,0,1,0};
 	for (int i = 0; i < 4; i++) {
 		//check if cat won
 		if (gamep->cat_x + dx[i] == gamep->mouse_x) {

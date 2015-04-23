@@ -8,7 +8,7 @@ int get_best_move(Game* game, int num_steps) {
 
 	int i;
 	for (i = 0; result_index >= 0; i++) {
-		if (!dir_is_valid(game,i)) {
+		if (dir_is_valid(game,i)) {
 			result_index--;
 		}
 	}

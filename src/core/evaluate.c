@@ -10,6 +10,12 @@ int node_is_valid(struct board* board, byte x, byte y) {
 	if (y > BOARD_SIZE-1) {
 		return 0;
 	}
+	if (x < 0) {
+		return 0;
+	}
+	if (y < 0) {
+		return 0;
+	}
 	if (board->board[x][y] == WALL) {
 		return 0;
 	}
@@ -21,7 +27,7 @@ int node_is_valid(struct board* board, byte x, byte y) {
  */
 int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_y) {
 	byte dx[] = {0,1,0,-1};
-	byte dy[] = {1,0,-1,0};
+	byte dy[] = {-1,0,1,0};
 	char sign[BOARD_SIZE][BOARD_SIZE];
 	char depth = 0;
 	coord *start = (coord*) malloc (sizeof(coord));
