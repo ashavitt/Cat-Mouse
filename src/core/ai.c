@@ -1,10 +1,10 @@
 #include "ai.h"
 
-int get_best_move(Game* game, int num_step) {
+int get_best_move(Game* game, int num_steps) {
 	int is_max_player = (game->player == CAT) ? 1 : 0;
 
 	//TODO check if getBestChild failed
-	int result_index = getBestChildAlphaBeta(game, num_steps, getChildren, free, evaluateGame, is_max_player).index;
+	int result_index = getBestChild(game, num_steps, getChildren, free, evaluateGame, is_max_player).index;
 
 	int i;
 	for (i = 0; result_index >= 0; i++) {

@@ -1,15 +1,5 @@
 #include "evaluate.h"
 
-// FIXME: DEPRECATED
-inline int max (int a, int b) { return a > b ? a : b; }
-
-/** Manhattan Distance implemented
- *  FIXME: DEPRECATED
- */
-int heuristic(byte x_1, byte y_1, byte x_2, byte y_2) {
-	return max(abs(x_1-x_2),abs(y_1-y_2));
-}
-
 /** checks if [x][y] is a valid place ignoring cat/mouse/cheese
  *
  */
@@ -52,14 +42,14 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 		//if we found the destination
 		depth = sign[temp1->x][temp1->y];
 		if (temp1->x == dest_x && temp1->y == dest_y) {
-			destroyList(queue);
+			destroyList(queue, free);
 			free(temp1);
 			return depth;
 		}
 		for (int i = 0; i < 4; i++) {
 			temp2 = (coord*) malloc (sizeof(coord));
 			if (temp2 == NULL) {
-				destroyList(queue);
+				destroyList(queue, free);
 				free(temp1);
 				printf("Error: malloc failed.\n");
 				return -1;
@@ -83,11 +73,12 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 		}
 		free(temp1);
 	}
-	destroyList(queue);
+	destroyList(queue, free);
 	return INFINITY;
 }
 
-int evaluateGame(Game* game) {
+int evaluateGame(void* gamep) {
+	Game* game = (Game*) gamep;
 	int mouse_cheese, cat_mouse, cat_cheese;
 	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
 	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y);

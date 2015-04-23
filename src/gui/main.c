@@ -168,7 +168,7 @@ int run_gui() {
 			break;
 		}
 		//move the ai
-		if (ai_move(game) == 1) {
+		if (ai_move(state.game) == 1) {
 			//if the ai played, we delay the game by half a second
 			SDL_Delay(500);
 		}
