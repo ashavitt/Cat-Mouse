@@ -39,6 +39,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define WL_T_H 51
 #define NL_T_W 132
 #define NL_T_H 51
+#define NS_T_W 219
+#define NS_T_H 17
 
 /* Titles */
 #define TITLES_T_X_START 0
@@ -67,6 +69,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define MAIN_MENU_T_Y_START 118
 
 /* Messages */
+#define NS_B_MESSAGE_X_START 185
+#define NS_B_MESSAGE_Y_START 612
 
 
 /** Game Scheme **/
