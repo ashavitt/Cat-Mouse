@@ -85,6 +85,8 @@ void game_free(Game* game);
 
 ListRef getChildren(void* gamep);
 
+void move_obj(Game* game, byte player, int dir);
+
 int check_end_game(Game* gamep);
 
 #endif /* GAME_UTILS_H_ */

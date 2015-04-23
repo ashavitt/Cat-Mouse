@@ -218,6 +218,18 @@ ListRef getChildren(void* gameVoid) {
 	return children;
 }
 
+void move_obj(Game* game, byte player, int dir) {
+	int dx[] = {0,1,0,-1};
+	int dy[] = {1,0,-1,0};
+	if (player == CAT) {
+		game->cat_y += dy[dir];
+		game->cat_x += dx[dir];
+	} else if (player == MOUSE) {
+		game->mouse_y += dy[dir];
+		game->mouse_x += dx[dir];
+	}
+}
+
 /** checks if game has end
  * returns negative if game hasn't ended yet
  */
