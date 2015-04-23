@@ -32,5 +32,5 @@ int ai_move(Game* game) {
 	move_obj(game, game->player, move);
 	//swap the players
 	game->player = (game->player == CAT) ? MOUSE : CAT;
-	return 0;
+	return 1;
 }

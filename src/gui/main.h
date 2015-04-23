@@ -1,5 +1,6 @@
 #include "SDL.h"
 #include "../main/ListUtils.h"
+#include "../core/ai.h"
 #include "shared.h"
 #include "widget.h"
 #include "uitree.h"

@@ -167,11 +167,10 @@ int run_gui() {
 			quit = 25; // TODO
 			break;
 		}
-		if (state.game->player == CAT && state.game->num_steps_cat != 0) {
-			//TODO
-		}
-		if (state.game->player == MOUSE && state.game->num_steps_mouse != 0) {
-			//TODO
+		//move the ai
+		if (ai_move(game) == 1) {
+			//if the ai played, we delay the game by half a second
+			SDL_Delay(500);
 		}
 		//looping on the events
 		if (SDL_PollEvent(event) && quit == 0) {
