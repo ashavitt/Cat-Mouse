@@ -383,15 +383,15 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	}
 	
 	/* Left Panel */ // NOTE: this should be different according to game state
-	button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
+	button_dims = (SDL_Rect) {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = (SDL_Rect) {0,0,NL_T_W,NL_T_H};
 	menu = create_menu(button_dims, left_panel);
 	if (menu == NULL) {
 		return ERROR_NO_WIDGET;
 	}
 	
 	if (state->catormouse == PLAYING) {
-		onclick choose_action = do_nothing_action;
-		onclick quit_action = do_nothing_action;
+		onclickp choose_action; choose_action = do_nothing_action;
+		onclickp quit_action = do_nothing_action;
 		// all other actions
 	}
 	
@@ -443,6 +443,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 			return ERROR_APPEND_FAILED;
 		}
 	}
+	return 0;
  }
  
  int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
@@ -454,7 +455,6 @@ int build_game_scheme(Widget* window, game_state* state) {
 	//int y_offset;
 	int err;
 	SDL_Rect pos = window->dims;
-	SDL_Rect button_dims = {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = {0,0,NL_T_W,NL_T_H};
 		
 	pos.x = pos.y = 0;
 	pos.h = S_NUM_T_H * 4;
