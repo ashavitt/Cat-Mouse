@@ -168,9 +168,14 @@ int run_gui() {
 			break;
 		}
 		//move the ai
-		if (ai_move(state.game) == 1) {
-			//if the ai played, we delay the game by half a second
-			SDL_Delay(500);
+		if (state.type == IN_GAME) {
+			if (check_end_game(state.game) != -1) {
+				state.catormouse = check_end_game(state.game);
+			} else if (ai_move(state.game) == 1) {
+				//if the ai played, we delay the game by half a second
+				state.catormouse = check_end_game(state.game);
+				SDL_Delay(500);
+			}
 		}
 		//looping on the events
 		if (SDL_PollEvent(event) && quit == 0) {
@@ -192,6 +197,7 @@ int run_gui() {
 	free(event);
 	freeWidget(window);
 	SDL_FreeSurface(screen);
+	game_free(state.game);
 	free_state(state);
 	cleanup();
 	return quit;

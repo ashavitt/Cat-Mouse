@@ -101,9 +101,7 @@ int load_game(Game* gamep, FILE* file) {
 Game* load_world(int id) {
 	FILE* gamefile;
 	char dest_file_name[128];
-	Game* game = (Game*) malloc (sizeof(Game));
-	struct board* board = (struct board*) malloc (sizeof(struct board));
-	game->board = board;
+	Game* game = game_malloc();
 	if (game == NULL) {
 		perror("Error: malloc failed.\n");
 		return NULL;
