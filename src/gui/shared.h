@@ -17,8 +17,8 @@ typedef struct game_state_struct {
 	char catormouse; // CAT 'C' or MOUSE 'M'
 } game_state;
 
-#define PAUSED -1
-#define PLAYING -2
+#define PAUSED -2
+#define PLAYING -1
 
 #define MAIN_MENU_OBJS 5
 #define CHOOSE_PLAYER_OBJS 3
