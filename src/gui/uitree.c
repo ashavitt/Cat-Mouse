@@ -330,7 +330,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 			//TODO
 			dims = (SDL_Rect) {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
 			// in game stuff; disable widgets
-			pos = get_center(left_panel->pos, button_dims);
+			pos = get_center(top_buttons->pos, button_dims);
 			if ((state->game->player == CAT && state->game->num_steps_cat == 0) ||
 				(state->game->player == MOUSE && state->game->num_steps_mouse == 0)) {
 				dims.y += NS_T_H;
