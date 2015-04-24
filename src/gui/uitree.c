@@ -356,7 +356,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		case CAT_WIN:
 			dims.x += WL_T_W * 2;
 			dims.y += WL_T_H * 2;
-			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+			if (append(title_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
 				printf("Error appending title widget\n");
 				return ERROR_APPEND_FAILED;
 			}
@@ -364,7 +364,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		case MOUSE_WIN:
 			dims.x += WL_T_W * 2;
 			dims.y += WL_T_H * 3;
-			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+			if (append(title_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
 				printf("Error appending title widget\n");
 				return ERROR_APPEND_FAILED;
 			}
@@ -372,7 +372,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		case TIE:
 			dims.x += WL_T_W * 2;
 			dims.y += WL_T_H * 4;
-			if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
+			if (append(title_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) {
 				printf("Error appending title widget\n");
 				return ERROR_APPEND_FAILED;
 			}
