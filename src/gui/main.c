@@ -85,7 +85,8 @@ int load_images() {
 		return -2;
 	}
 	
-	text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
+	//text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
+  text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
