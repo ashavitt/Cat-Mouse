@@ -49,6 +49,7 @@ byte* get_objs_arr(state_type type) {
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {
 	ListRef children;
 	int err, array_size;
+	Widget* widget2;
 	byte* ids;
 	SDL_Rect dims = widget->dims;
 	if (e == NULL) {
@@ -70,7 +71,18 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 					break;
 				}
 			}
-			if ((err = (widget->onclick)(widget, state)) != 0) {
+			if (widget->id == GRID_B) {
+				graphicFactory(widget2, 0, {0,0,0,0},
+					{e->button.x - abs_pos.x, e->button.y - abs_pos.y,0,0}, NULL,
+					NULL, NULL, 0, 0);
+				if (widget2 == NULL) {
+					//TOOD error
+					return -1;
+				}
+			} else {
+				widget2 = widget;
+			}
+			if ((err = (widget->onclick)(widget2, state)) != 0) {
 				if (err != 1) {
 					printf("Error in onclick func of widget, code %d\n",err);
 				}
@@ -161,7 +173,6 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
 			if (state->type == IN_GAME) {
-				return in_game_action(state, event->key.keysym.sym);
 			}
 			if (state->type == GAME_EDIT) {
 				//move cursor to direction event->key.keysym.sym
