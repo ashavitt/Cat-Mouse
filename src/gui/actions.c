@@ -113,3 +113,33 @@ int arrow_action(Widget* widget, game_state* state) {
 	}
 	return 0;
 }
+
+int in_game_action(game_state* state, SDLKey key) {
+	int dir;
+	if (!((state->game->player == CAT && state->game->num_steps_cat == 0) || (state->game->player == MOUSE && state->game->num_steps_mouse == 0))) {
+		return 0;
+	}
+	switch (key) {
+		case SDLK_UP:
+			dir = UP;
+			break;
+		case SDLK_RIGHT:
+			dir = RIGHT;
+			break;
+		case SDLK_DOWN:
+			dir = DOWN;
+			break;
+		case SDLK_LEFT:
+			dir = LEFT;
+			break;
+		default:
+			//TODO error code
+			return 1;
+	}
+	if (dir_is_valid(state->game, dir)) {
+		move_obj(state->game, state->game->player, dir);
+		state->game->player = SWITCH(state->game->player);
+		state->game->turns--;
+	}
+	return 0;
+}

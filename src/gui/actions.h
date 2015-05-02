@@ -24,4 +24,6 @@ onclick do_nothing_action;
 onclick arrow_action;
 
 onclick restart_game_action;
+
+int in_game_action(game_state* state, SDLKey key);
 #endif
