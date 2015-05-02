@@ -72,11 +72,9 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 				}
 			}
 			if (widget->id == GRID_B) {
-				graphicFactory(widget2, 0, {0,0,0,0},
-					{e->button.x - abs_pos.x, e->button.y - abs_pos.y,0,0}, NULL,
-					NULL, NULL, 0, 0);
+				widget2 = new_panel(0, (SDL_Rect) {e->button.x - abs_pos.x, e->button.y - abs_pos.y,0,0}, NULL);
 				if (widget2 == NULL) {
-					//TOOD error
+					//TODO error
 					return -1;
 				}
 			} else {
@@ -88,6 +86,7 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 				}
 				return err;
 			}
+			freeWidget(widget2);
 		}
 	}
 //???

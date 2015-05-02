@@ -276,7 +276,8 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
 
-	grid = new_button(GRID_B, dims, pos, grid_surface, parent, grid_mouse_action);
+	grid = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
+	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid);
 	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
 	SDL_Rect tile_pos = {0,0,GRID_W/7,GRID_H/7};
 

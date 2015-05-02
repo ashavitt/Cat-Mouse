@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "widget.h"
 #include "shared.h"
+#include "actions.h"
 
 byte get_obj_count(state_type type);
 
