@@ -275,7 +275,8 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	Widget *grid, *obj;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
-	grid = new_graphic(UNFOCUSABLE, dims, pos, grid_surface, parent);
+
+	grid = new_button(GRID_B, dims, pos, grid_surface, parent, grid_mouse_action);
 	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
 	SDL_Rect tile_pos = {0,0,GRID_W/7,GRID_H/7};
 
@@ -496,7 +497,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 	}
 	
 	/* Grid Panel */	
-	if (append(grid_panel->children,build_grid(GRID_B, grid_panel, state)) == 0) {
+	if (append(grid_panel->children,build_grid(UNFOCUSABLE, grid_panel, state)) == 0) {
 		printf("Error: appending build_grid\n");
 		return ERROR_APPEND_FAILED;
 	}
