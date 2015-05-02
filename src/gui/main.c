@@ -131,7 +131,7 @@ int run_gui() {
 	//variables declaration
 	SDL_Surface* screen; // = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
-	int quit = 0;
+	int quit = 0, while_flag = 0;
 	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -188,16 +188,20 @@ int run_gui() {
 			}
 		}
 		//looping on the events
-		if (SDL_PollEvent(event) && quit == 0) {
+		while_flag = 0;
+		while (SDL_PollEvent(event) && quit == 0 && while_flag == 0) {
 			switch (event->type) {
 				case SDL_QUIT:
 					quit = 1;
+					while_flag = 1;
 					break;
 				case SDL_MOUSEBUTTONUP:
 					quit = handle_mouse_click(event, window, &state);
+					while_flag = 1;
 					break;
 				case SDL_KEYUP:
 					quit = handle_keyboard(event, window, &state);
+					while_flag = 1;
 					break;
 			}
 		}
