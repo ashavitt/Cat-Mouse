@@ -114,6 +114,15 @@ int arrow_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int play_turn(int dir, game_state* state) {
+	if (dir_is_valid(state->game, dir)) {
+		move_obj(state->game, state->game->player, dir);
+		state->game->player = SWITCH(state->game->player);
+		state->game->turns--;
+	}
+	return 0;
+}
+
 int in_game_action(game_state* state, SDLKey key) {
 	int dir;
 	if (!((state->game->player == CAT && state->game->num_steps_cat == 0) || (state->game->player == MOUSE && state->game->num_steps_mouse == 0))) {
@@ -136,10 +145,5 @@ int in_game_action(game_state* state, SDLKey key) {
 			//TODO error code
 			return 1;
 	}
-	if (dir_is_valid(state->game, dir)) {
-		move_obj(state->game, state->game->player, dir);
-		state->game->player = SWITCH(state->game->player);
-		state->game->turns--;
-	}
-	return 0;
+	return play_turn(dir, state);
 }
