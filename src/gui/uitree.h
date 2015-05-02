@@ -73,8 +73,4 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define NS_B_MESSAGE_Y_START 612
 
 
-/** Game Scheme **/
-#define GRID_W 634
-#define GRID_H 634
-
 #endif

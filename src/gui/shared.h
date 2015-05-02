@@ -28,6 +28,11 @@ typedef struct game_state_struct {
 #define LOAD_GAME_OBJS 3
 #define ERROR_MESSAGE_OBJS 1
 
+
+/** Game Scheme **/
+#define GRID_W 634
+#define GRID_H 634
+
 #ifndef __main_c__
 extern byte main_menu_ids[MAIN_MENU_OBJS];
 extern byte choose_player_ids[CHOOSE_PLAYER_OBJS];
