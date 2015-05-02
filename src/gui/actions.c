@@ -124,6 +124,9 @@ int play_turn(int dir, game_state* state) {
 }
 
 int in_game_action(game_state* state, SDLKey key) {
+	if (state->catormouse != PLAYING) {
+		return 0;
+	}
 	int dir;
 	if (!((state->game->player == CAT && state->game->num_steps_cat == 0) || (state->game->player == MOUSE && state->game->num_steps_mouse == 0))) {
 		return 0;
@@ -149,6 +152,9 @@ int in_game_action(game_state* state, SDLKey key) {
 }
 
 int grid_mouse_action(Widget* fake_widget, game_state* state) {
+	if (state->catormouse != PLAYING) {
+		return 0;
+	}
 	SDL_Rect mouse_pos = fake_widget->pos; // mouse position, relative to board
 	int x,y;
 	int dx[] = {0,1,0,-1};
