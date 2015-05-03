@@ -272,12 +272,15 @@ int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 }
 
 Widget* build_grid(int id, Widget* parent, game_state* state) { 
-	Widget *grid, *obj;
+	Widget *grid, *grid_button, *obj;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
 
-	grid = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
-	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid);
+	grid_button = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
+	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid_button);
+	if (append(grid_button->children, grid) == NULL) {
+		return NULL;
+	}
 	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
 	SDL_Rect tile_pos = {0,0,GRID_W/7,GRID_H/7};
 
@@ -317,7 +320,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 			}
 		}
 	}
-	return grid;
+	return grid_button;
 }
  
 int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
