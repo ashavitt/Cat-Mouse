@@ -86,7 +86,9 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 				}
 				return err;
 			}
-			freeWidget(widget2);
+			if (widget->id == GRID_B) {
+				freeWidget(widget2);
+			}
 		}
 	}
 //???
