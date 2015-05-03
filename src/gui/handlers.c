@@ -174,6 +174,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_RIGHT:
 		case SDLK_LEFT:
 			if (state->type == IN_GAME) {
+				return in_game_action(state, event->key.keysym.sym);
 			}
 			if (state->type == GAME_EDIT) {
 				//move cursor to direction event->key.keysym.sym
