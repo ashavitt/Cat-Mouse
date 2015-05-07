@@ -92,6 +92,20 @@ int do_nothing_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int goto_main_menu_action(Widget* widget, game_state* state) {
+	free_state(*state); // frees previous states
+	state->type = MAIN_MENU;
+	state->focused = 0;
+	state->previous_state = NULL;
+	game_free(state->game);
+	state->game = load_world(state->world_id);
+	if (state->game == NULL) {
+		printf("Failed loading world number: %d\n", state->world_id);
+		return 1; // TODO ERROR
+	}
+	return 0;
+}
+
 
 int arrow_action(Widget* widget, game_state* state) {
 	if (widget->id == LEVEL_UP_B) {

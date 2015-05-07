@@ -6,6 +6,7 @@
 #include "widget.h"
 #include "shared.h"
 #include "../main/game_settings.h"
+#include "../io/file_io.h"
 
 //typedef int (*onclick)(Widget*, game_state*);
 
@@ -26,6 +27,8 @@ onclick arrow_action;
 onclick restart_game_action;
 
 onclick grid_mouse_action;
+
+onclick goto_main_menu_action;
 
 int in_game_action(game_state* state, SDLKey key);
 #endif

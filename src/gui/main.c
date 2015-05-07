@@ -105,13 +105,6 @@ int load_images() {
 	return 0;
 }
 
-void free_state(game_state state) {
-	if (state.previous_state != NULL) {
-		free_state(*(state.previous_state));
-	}
-	free(state.previous_state);
-	return;
-}
 
 
 void cleanup() {
@@ -122,6 +115,7 @@ void cleanup() {
 	SDL_FreeSurface(tiles);
 	SDL_FreeSurface(grid_surface);
 	SDL_FreeSurface(bricks);
+	SDL_FreeSurface(cheese);
 	//Quit SDL
 	SDL_Quit();
 }
@@ -152,7 +146,9 @@ int run_gui() {
 	state.type = MAIN_MENU;
 	state.focused = 0;
 	state.previous_state = NULL;
-	state.game = load_world(1);
+	state.world_id = 1;
+	state.game = load_world(state.world_id);
+
 
 	//main loop
 	while (quit == 0) {

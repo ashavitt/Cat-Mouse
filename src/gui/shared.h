@@ -11,7 +11,8 @@ typedef struct game_state_struct {
 	int focused; 
 	// focused 0-99 is regular buttons
 	// if focused>99 then focused = 1xy in world editing
-	int number; //skill_level or world_id
+	int number; //skill_level
+	int world_id;
 	Game* game; // for world editing
 	struct game_state_struct* previous_state;
 	char catormouse; // CAT 'C' or MOUSE 'M'
@@ -52,4 +53,8 @@ extern SDL_Surface* tiles;
 extern SDL_Surface* grid_surface;
 extern SDL_Surface* black_surface;
 #endif
+
+
+void free_state(game_state state);
+
 #endif
