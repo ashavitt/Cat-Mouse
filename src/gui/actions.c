@@ -92,6 +92,17 @@ int do_nothing_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int restart_game_action(Widget* widget, game_state* state) {
+	game_free(state->game);
+	state->game = load_world(state->world_id);
+	state->catormouse = PLAYING;
+	if (state->game == NULL) {
+		printf("Failed loading world number: %d\n", state->world_id);
+		return 1; // TODO ERROR
+	}
+	return 0;
+}
+
 int goto_main_menu_action(Widget* widget, game_state* state) {
 	free_state(*state); // frees previous states
 	state->type = MAIN_MENU;

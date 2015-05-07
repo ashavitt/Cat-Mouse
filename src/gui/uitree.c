@@ -413,7 +413,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	}
 	
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, RESTART_GAME_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, RESTART_GAME_B, text_dims, restart_game_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
