@@ -258,7 +258,7 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 	if (append(menu->children, button) == NULL) {
 			return ERROR_APPEND_FAILED;
 	}
-
+		
 	return 0;
 }
 
@@ -454,12 +454,58 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	}
 	return 0;
  }
+ 
+int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
+ 	Widget *widget, *menu;
+ 	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
+ 	SDL_Rect pos = get_center(title_panel->pos, rect);
+ 	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
 
- int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
- 	return 0;
- }
+	/* Left Panel */ // NOTE: this should be different according to game state
+	button_dims = (SDL_Rect) {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = (SDL_Rect) {0,NL_T_H,NL_T_W,NL_T_H};
+	menu = create_menu(button_dims, left_panel);
+	if (menu == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	
+	if (append_menu(menu, PLACE_MOUSE_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, PLACE_CAT_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, PLACE_CHEESE_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
 
-int build_game_scheme(Widget* window, game_state* state) {
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, PLACE_WALL_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	text_dims.x += NL_T_W;
+	if (append_menu(menu, PLACE_SPACE_B, text_dims, do_nothing_action, state) != 0) {
+		printf("Error: appending button\n");
+		return ERROR_APPEND_FAILED;
+	}
+
+	menu->pos = get_center(left_panel->dims,menu->pos);
+	if (append(left_panel->children, menu) == NULL) {
+		printf("Error: appending build_grid\n");
+		return ERROR_APPEND_FAILED;
+	}
+	return 0;
+}
+ 
+int build_game_scheme(Widget* window, game_state* state) {  
 	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
 	//int y_offset;
 	int err;
@@ -592,7 +638,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	//edit game
 	text_dims.x = MAIN_MENU_T_X_START;
 	text_dims.y = MAIN_MENU_T_Y_START + WL_T_H;
-	if (append_menu(panel, EDIT_GAME_B, text_dims, NULL, state) != 0) {
+	if (append_menu(panel, EDIT_GAME_B, text_dims, edit_game_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -810,6 +856,7 @@ int build_ui(Widget* window, game_state* state) {
 		case SAVE_GAME:
 			return build_choose(window, state);
 		case IN_GAME:
+		case GAME_EDIT:
 			return build_game_scheme(window, state);
 		default:
 			return 0;

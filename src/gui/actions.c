@@ -315,3 +315,20 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 
 	return 0; // nothing happens
 }
+
+int edit_game_action(Widget* widget, game_state* state) {
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+	if (state == NULL) {
+		return ERROR_NO_STATE;
+	}
+	if (old_state == NULL) {
+		return ERROR_MALLOC_FAILED;
+	}
+	memcpy(old_state, state, sizeof(game_state));
+	// TODO free previous game?
+	//state->game = game_malloc(); // TODO should be function that loads some world
+	state->previous_state = old_state;
+	state->type = GAME_EDIT;
+	state->focused = 0;
+	return 0;
+}
