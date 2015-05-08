@@ -180,6 +180,11 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 				//move cursor to direction event->key.keysym.sym
 			}
 			break;
+		case SDLK_SPACE:
+			if (state->type == IN_GAME) {
+				return pause_resume_action(NULL, state);
+			}
+			break;
 		//cases for in-game or edit-game later
 		default:
 			break;
