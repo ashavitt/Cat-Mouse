@@ -16,7 +16,7 @@ int pause_resume_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
-int new_game_action(Widget* widget, game_state* state) {
+int new_game_action(Widget* widget, game_state* state) { // TODO main menu freeing?
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
 		return ERROR_NO_STATE;
@@ -51,6 +51,73 @@ int load_game_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int reconf_action(Widget* widget, game_state* state) {
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+	if (state == NULL) {
+		return ERROR_NO_STATE;
+	}
+	if (old_state == NULL) {
+		return ERROR_MALLOC_FAILED;
+	}
+	memcpy(old_state, state, sizeof(game_state));
+	// TODO free previous game?
+	//state->game = game_malloc(); // TODO should be function that loads some world
+	state->previous_state = old_state;
+	state->focused = 0; // set?
+	
+	if (widget->id == RECONF_MOUSE_B) {
+		state->catormouse = MOUSE;
+		if (state->game->num_steps_mouse == 0) {
+			// TODO set focus to human button
+			// state->focused = 0;
+			// Already done..
+			state->type = CHOOSE_PLAYER;
+		} else { // machine
+			state->type = CHOOSE_PLAYER;
+			state->focused = 1; // machine is focused
+			old_state = (game_state*) malloc (sizeof(game_state));
+			if (state == NULL) {
+				return ERROR_NO_STATE;
+			}
+			if (old_state == NULL) {
+				return ERROR_MALLOC_FAILED;
+			}
+			memcpy(old_state, state, sizeof(game_state));
+			state->previous_state = old_state;
+			
+			state->focused = 0;
+			state->type = CHOOSE_SKILL;
+			state->number = state->game->num_steps_mouse;
+		}
+		// maybe prior set to focus / number! TODO
+	} else { // widget->id == RECONF_CAT_B
+		state->catormouse = CAT;
+		if (state->game->num_steps_cat == 0) {
+			// state->focused = 0; // human
+			// TODO set focus to human button
+			state->type = CHOOSE_PLAYER;
+		} else { // machine
+			state->type = CHOOSE_PLAYER;
+			state->focused = 1; // machine is focused
+			old_state = (game_state*) malloc (sizeof(game_state));
+			if (state == NULL) {
+				return ERROR_NO_STATE;
+			}
+			if (old_state == NULL) {
+				return ERROR_MALLOC_FAILED;
+			}
+			memcpy(old_state, state, sizeof(game_state));
+			state->previous_state = old_state;
+			
+			state->focused = 0;
+			state->type = CHOOSE_SKILL;
+			state->number = state->game->num_steps_cat;
+		}
+	}
+
+	return 0;
+}
+
 int choose_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
@@ -66,12 +133,14 @@ int choose_action(Widget* widget, game_state* state) {
 	state->previous_state = old_state;
 
 	state->focused = 0;
-	
+
 	if (state->type == CHOOSE_PLAYER) {
 		if (state->catormouse == CAT) {
 			if (widget->id == HUMAN_B) {
-				if (state->previous_state->type == IN_GAME) {
-					free_state(*state); // frees previous states before entering game
+				//printf("state->previous_state->type: %d\n", state->previous_state->type);
+				//printf("state->previous_state->previous_state->type: %d\n", state->previous_state->previous_state->type);
+				if (old_state->previous_state->type == IN_GAME) {
+					free_prev_states(state); // frees previous states before entering game
 					state->type = IN_GAME;
 					state->catormouse = PLAYING; // Maybe should be different
 				} else { // proceed to cat selection
@@ -81,26 +150,31 @@ int choose_action(Widget* widget, game_state* state) {
 				// assuming state is OK?
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
-				state->number = 1; //start skill level choosing at 1
-				// TODO start skill level at state->game->num_steps_cat
+				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
+				if (old_state->previous_state->type == IN_GAME) { // TODO if setting default_skill_level in new game than this can change..
+					state->number = state->game->num_steps_cat;
+				}
 				// still cat
 			}
 		} else { // mouse
 			if (widget->id == HUMAN_B) {
-				free_state(*state); // frees previous states before entering game
+				free_prev_states(state); // frees previous states before entering game
 				state->game->num_steps_mouse = 0; // human is 0 steps
 				state->type = IN_GAME;
 				state->catormouse = PLAYING;
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
-				state->number = 1; //start skill level choosing at 1
+				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
+				if (old_state->previous_state->type == IN_GAME) {
+					state->number = state->game->num_steps_mouse;
+				}
 				//still mouse
 			}
-		}
+		} 
 	} else if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) {
-			if (state->previous_state->previous_state->type == IN_GAME) {
-				free_state(*state); // frees previous states before entering game
+			if (old_state->previous_state->previous_state->type == IN_GAME) {
+				free_prev_states(state); // frees previous states before entering game
 				state->type = IN_GAME;
 				state->catormouse = PLAYING; // Maybe should be different
 			} else { // proceed to mouse selection
@@ -109,7 +183,7 @@ int choose_action(Widget* widget, game_state* state) {
 			}
 			state->game->num_steps_cat = state->number;
 		} else { // mouse
-			free_state(*state); // frees previous states before entering game
+			free_prev_states(state); // frees previous states before entering game
 			state->game->num_steps_mouse = state->number;
 			state->type = IN_GAME;
 			state->catormouse = PLAYING;
@@ -125,16 +199,8 @@ int choose_action(Widget* widget, game_state* state) {
 		free(game);
 
 		return new_game_action(widget, state);
-	} else if (state->type == IN_GAME) {
-		if (widget->id == RECONF_MOUSE_B) {
-			state->catormouse = MOUSE;
-			// maybe prior set to focus / number! TODO
-		} else { // widget->id == RECONF_CAT_B
-			state->catormouse = CAT;
-		}
-		state->type = CHOOSE_PLAYER;
 	}
-	
+
 	return 0;
 }
 
@@ -166,7 +232,6 @@ int goto_main_menu_action(Widget* widget, game_state* state) {
 	}
 	return 0;
 }
-
 
 int arrow_action(Widget* widget, game_state* state) {
 	if (widget->id == LEVEL_UP_B) {
@@ -247,6 +312,6 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 			}
 		}
 	}
-	
+
 	return 0; // nothing happens
 }

@@ -29,7 +29,7 @@ typedef struct game_state_struct {
 #define LOAD_GAME_OBJS 3
 #define ERROR_MESSAGE_OBJS 1
 
-
+#define DEFAULT_SKILL_LEVEL (5)
 /** Game Scheme **/
 #define GRID_W 634
 #define GRID_H 634
@@ -56,5 +56,6 @@ extern SDL_Surface* black_surface;
 
 
 void free_state(game_state state);
+void free_prev_states(game_state* state);
 
 #endif
