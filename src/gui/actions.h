@@ -34,5 +34,7 @@ onclick goto_main_menu_action;
 
 onclick restart_game_action;
 
+onclick edit_game_action;
+
 int in_game_action(game_state* state, SDLKey key);
 #endif
