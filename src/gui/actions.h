@@ -18,6 +18,8 @@ onclick pause_resume_action;
 
 onclick new_game_action;
 
+onclick load_game_action;
+
 onclick choose_action;
 
 onclick do_nothing_action;

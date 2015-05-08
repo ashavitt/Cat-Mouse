@@ -3,7 +3,7 @@
 // can only print positive numbers
 // character spacing?
 // TODO braces ()
-#define SPACE_BETWEEN_WORLD_AND_NUMBER 20
+#define SPACE_BETWEEN_WORLD_AND_NUMBER (20)
 Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widget* parent) {
 	SDL_Rect zeros = {0,0,0,0};
 	Widget* text = new_panel(id, main_pos, parent);
@@ -158,7 +158,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		text = new_panel(UNFOCUSABLE, text_dims, bg);
 
 		// adds the "World "
-		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) != 0) {
+		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
 			return NULL;
 		}
 		// pos is zeros
@@ -168,7 +168,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 			return NULL;
 		}
 		// adds number
-		if (append(text->children, number) != 0) {
+		if (append(text->children, number) == NULL) {
 			return NULL;
 		}
 		text->dims.w = world_t_dims.w + number->dims.w + SPACE_BETWEEN_WORLD_AND_NUMBER;
@@ -576,7 +576,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	//load game
 	text_dims.x = MAIN_MENU_T_X_START + WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	if (append_menu(panel, LOAD_GAME_B, text_dims, NULL, state) != 0) {
+	if (append_menu(panel, LOAD_GAME_B, text_dims, load_game_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 

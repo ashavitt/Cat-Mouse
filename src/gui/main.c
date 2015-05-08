@@ -147,6 +147,7 @@ int run_gui() {
 	state.focused = 0;
 	state.previous_state = NULL;
 	state.world_id = 1;
+	state.number = 1;
 	state.game = load_world(state.world_id);
 
 

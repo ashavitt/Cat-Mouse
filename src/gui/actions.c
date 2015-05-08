@@ -34,6 +34,22 @@ int new_game_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int load_game_action(Widget* widget, game_state* state) {
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+	if (state == NULL) {
+		return ERROR_NO_STATE;
+	}
+	if (old_state == NULL) {
+		return ERROR_MALLOC_FAILED;
+	}
+	memcpy(old_state, state, sizeof(game_state));
+	state->previous_state = old_state;
+	state->type = LOAD_GAME;
+	state->focused = 0;
+	state->game = old_state->game;
+	state->catormouse = CAT;
+	return 0;
+}
 
 int choose_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
@@ -83,6 +99,17 @@ int choose_action(Widget* widget, game_state* state) {
 			state->type = IN_GAME;
 			state->catormouse = PLAYING;
 		}
+	} else if (state->type == LOAD_GAME) {
+		state->world_id = state->number;
+		Game* game = load_world(state->world_id);
+		// free only the board inside the original game
+		free(state->game->board);
+		// copy the new game to the original one
+		memcpy(state->game, game, sizeof(Game));
+		// free only the game without it's board
+		free(game);
+
+		return new_game_action(widget, state);
 	}
 	
 	return 0;
