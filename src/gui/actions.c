@@ -70,16 +70,24 @@ int choose_action(Widget* widget, game_state* state) {
 	if (state->type == CHOOSE_PLAYER) {
 		if (state->catormouse == CAT) {
 			if (widget->id == HUMAN_B) {
-				state->catormouse = MOUSE;
+				if (state->previous_state->type == IN_GAME) {
+					free_state(*state); // frees previous states before entering game
+					state->type = IN_GAME;
+					state->catormouse = PLAYING; // Maybe should be different
+				} else { // proceed to cat selection
+					state->catormouse = MOUSE;
+				}
 				state->game->num_steps_cat = 0; // HUMAN is 0 steps
 				// assuming state is OK?
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = 1; //start skill level choosing at 1
+				// TODO start skill level at state->game->num_steps_cat
 				// still cat
 			}
 		} else { // mouse
 			if (widget->id == HUMAN_B) {
+				free_state(*state); // frees previous states before entering game
 				state->game->num_steps_mouse = 0; // human is 0 steps
 				state->type = IN_GAME;
 				state->catormouse = PLAYING;
@@ -91,10 +99,17 @@ int choose_action(Widget* widget, game_state* state) {
 		}
 	} else if (state->type == CHOOSE_SKILL) {
 		if (state->catormouse == CAT) {
+			if (state->previous_state->previous_state->type == IN_GAME) {
+				free_state(*state); // frees previous states before entering game
+				state->type = IN_GAME;
+				state->catormouse = PLAYING; // Maybe should be different
+			} else { // proceed to mouse selection
+				state->type = CHOOSE_PLAYER;
+				state->catormouse = MOUSE;
+			}
 			state->game->num_steps_cat = state->number;
-			state->type = CHOOSE_PLAYER;
-			state->catormouse = MOUSE;
 		} else { // mouse
+			free_state(*state); // frees previous states before entering game
 			state->game->num_steps_mouse = state->number;
 			state->type = IN_GAME;
 			state->catormouse = PLAYING;
@@ -110,6 +125,14 @@ int choose_action(Widget* widget, game_state* state) {
 		free(game);
 
 		return new_game_action(widget, state);
+	} else if (state->type == IN_GAME) {
+		if (widget->id == RECONF_MOUSE_B) {
+			state->catormouse = MOUSE;
+			// maybe prior set to focus / number! TODO
+		} else { // widget->id == RECONF_CAT_B
+			state->catormouse = CAT;
+		}
+		state->type = CHOOSE_PLAYER;
 	}
 	
 	return 0;
