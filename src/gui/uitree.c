@@ -351,7 +351,8 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 			// disable grid
 			// add stuff before buttons
 			
-			dims = (SDL_Rect) {NS_B_MESSAGE_X_START + (2 * NS_T_H), NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
+			dims = (SDL_Rect) {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START + (2 * NS_T_H), NS_T_W, NS_T_H};
+			pos = get_center(top_buttons->pos, button_dims);
 			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
 			if (append(top_buttons->children, widget) == NULL) {
 				printf("Error appending title widget\n");
