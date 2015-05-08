@@ -151,7 +151,7 @@ int choose_action(Widget* widget, game_state* state) {
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
-				if (old_state->previous_state->type == IN_GAME) { // TODO if setting default_skill_level in new game than this can change..
+				if (old_state->previous_state->type == IN_GAME && state->game->num_steps_cat != 0) { // TODO if setting default_skill_level in new game than this can change..
 					state->number = state->game->num_steps_cat;
 				}
 				// still cat
@@ -165,7 +165,7 @@ int choose_action(Widget* widget, game_state* state) {
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
-				if (old_state->previous_state->type == IN_GAME) {
+				if (old_state->previous_state->type == IN_GAME && state->game->num_steps_cat != 0) {
 					state->number = state->game->num_steps_mouse;
 				}
 				//still mouse
