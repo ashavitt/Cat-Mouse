@@ -71,7 +71,7 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 
 	int index = 0; //counting how many children were inserted to childrenResults by now
 	//Assuming maxDepth>0
-	while (children != NULL) { //we run over the list of children
+	while (children != NULL && !isEmpty(children)) { //we run over the list of children
 		if (maxDepth == 1) { //then this is the last recursion level
 			MiniMaxResult bottomChildResult;
 			bottomChildResult.index = index;
