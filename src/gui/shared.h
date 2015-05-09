@@ -21,6 +21,8 @@ typedef struct game_state_struct {
 #define PAUSED -2
 #define PLAYING -1
 
+#define DEFAULT_WORLD_INDEX 1
+
 #define MAIN_MENU_OBJS 5
 #define CHOOSE_PLAYER_OBJS 3
 #define CHOOSE_SKILL_OBJS 3

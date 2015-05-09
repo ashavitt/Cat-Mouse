@@ -48,6 +48,7 @@ int load_game_action(Widget* widget, game_state* state) {
 	state->focused = 0;
 	state->game = old_state->game;
 	state->catormouse = CAT;
+	state->number = DEFAULT_WORLD_INDEX;
 	return 0;
 }
 
