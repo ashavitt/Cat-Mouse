@@ -320,6 +320,15 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 			}
 		}
 	}
+	if (state->type == GAME_EDIT) {
+		//cursor
+		tile_pos.x = ((state->focused % 100) / 10) * tile_dims.w;
+		tile_pos.y = ((state->focused) % 10) * tile_dims.h;
+		obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, tiles, grid);
+		if (append(grid->children, obj) == NULL) {
+			return NULL;
+		}
+	}
 	return grid_button;
 }
 
