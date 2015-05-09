@@ -155,19 +155,6 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			if (state->type == CHOOSE_SKILL || state->type == LOAD_GAME || state->type == SAVE_GAME || state->type == EDIT_GAME) {
 				if (state->focused == 0) {
 					id = (event->key.keysym.sym == SDLK_UP) ? LEVEL_UP_B : LEVEL_DN_B;
-					widget = find_widget_by_id(window, id);
-					if (widget == NULL) {
-						// focused widget must exist
-						printf("ERROR no widget with id:%d was found",state->focused);
-						return ERROR_FOCUSED_ID;
-					}
-					if ((err = (widget->onclick)(widget, state)) != 0) {
-						// "NULL pointer exception"
-						if (err != 1) { // if it is 1, then its just clean closing
-							printf("Error in onclick func of widget, code %d\n",err);
-						}
-						return err;
-					}
 				}
 				break;
 			}
