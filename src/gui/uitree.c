@@ -698,7 +698,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	//create game
 	text_dims.x = MAIN_MENU_T_X_START + 2*WL_T_W;
 	text_dims.y = MAIN_MENU_T_Y_START;
-	if (append_menu(panel, CREATE_GAME_B, text_dims, NULL, state) != 0) {
+	if (append_menu(panel, CREATE_GAME_B, text_dims, create_game_action, state) != 0) {
 		return ERROR_APPEND_FAILED;
 	}
 

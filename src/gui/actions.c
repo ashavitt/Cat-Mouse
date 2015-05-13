@@ -346,6 +346,25 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 	return 0; // nothing happens
 }
 
+int create_game_action(Widget* widget, game_state* state) {
+	edit_game_action(widget, state);
+	Game* game = game_malloc();
+	if (game == NULL) {
+		//TODO print error
+		return 1;
+	}
+	game->cat_x = BOARD_SIZE;
+	game->cat_y = BOARD_SIZE;
+	game->mouse_x = BOARD_SIZE;
+	game->mouse_y = BOARD_SIZE;
+	game->cheese_x = BOARD_SIZE;
+	game->cheese_y = BOARD_SIZE;
+	//TODO magic number
+	state->game->turns = 20;
+	state->game = game;
+	return 0;
+}
+
 int edit_game_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
