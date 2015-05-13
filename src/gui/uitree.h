@@ -63,6 +63,12 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define L_NUM_T_W 14
 #define L_NUM_T_H 20
 
+/* Game Titles */
+#define G_TITLES_X_START 0
+#define G_TITLES_Y_START 612
+#define G_TITLES_H 18 //TODO
+#define G_TITLES_W 180 // TODO
+
 /* Main Menu */
 // 5 buttons, 3 in a row
 #define MAIN_MENU_T_X_START 0

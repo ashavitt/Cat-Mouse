@@ -335,13 +335,50 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
  	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
- 	SDL_Rect pos = get_center(title_panel->pos, rect);
+ 	SDL_Rect pos = get_center(title_panel->dims, rect);
+ 	int offset;
  	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
  	/* Top Panel */ /* Top Buttons */
+ 	if (state->catormouse == PLAYING || state->catormouse == PAUSED) {
+ 		dims = (SDL_Rect) {G_TITLES_X_START, G_TITLES_Y_START, G_TITLES_W, G_TITLES_H}; // "Mouse's move"
+		pos = get_center(title_panel->dims, dims);
+		offset = pos.y = 50; // TODO top margin
+		if (state->game->player == CAT) {
+			dims.y += dims.h; // now "Cat's move"
+		} 
+		widget = new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel);
+		
+		if (append(title_panel->children, widget) == NULL) {
+			printf("Error appending title widget\n");
+			return ERROR_APPEND_FAILED;
+		}
+
+		pos.x += dims.w; // pos for number to the right of title
+		widget = number_to_graphic(UNFOCUSABLE, pos, state->game->turns, 0, title_panel); //number of turns left, with small size and ()
+		if (append(title_panel->children, widget) == NULL) {
+			printf("Error appending title widget\n");
+			return ERROR_APPEND_FAILED;
+		}
+		offset += dims.h;
+ 	}
 	switch(state->catormouse) {
 		case PLAYING:
 			// add stuff before button
-			//TODO
+			// ALREADY ADDED STUFF BEFORE
+			pos = get_center(title_panel->dims, dims);
+			pos.y = offset;
+			if ((state->game->player == CAT && state->game->num_steps_cat == 0) 
+					|| (state->game->player == MOUSE && state->game->num_steps_mouse == 0)) {
+				dims.y = G_TITLES_Y_START + 2*dims.h; // Human, waiting for next move
+			} else { // machine
+				dims.y = G_TITLES_Y_START + 4*dims.h; // Machine -computing
+			}
+
+			if (append(title_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) { // machine / human..
+				printf("Error appending status2 title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+
 			dims = (SDL_Rect) {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START, NS_T_W, NS_T_H};
 			// in game stuff; disable widgets
 			pos = get_center(top_buttons->pos, button_dims);
@@ -352,13 +389,28 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 			}
 			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
 			if (append(top_buttons->children, widget) == NULL) {
-				printf("Error appending title widget\n");
+				printf("Error appending title button widget\n");
 				return ERROR_APPEND_FAILED;
 			}
 			break;
 		case PAUSED:
 			// disable grid
 			// add stuff before buttons
+
+			pos = get_center(title_panel->dims, dims);
+			pos.y = offset;
+			if ((state->game->player == CAT && state->game->num_steps_cat == 0) 
+					|| (state->game->player == MOUSE && state->game->num_steps_mouse == 0)) {
+				dims.y = G_TITLES_Y_START + 3*dims.h; // Human, waiting for next move
+			} else { // machine
+				dims.y = G_TITLES_Y_START + 5*dims.h; // Machine -computing
+			}
+
+			if (append(title_panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel)) == NULL) { // machine / human..
+				printf("Error appending status2 title widget\n");
+				return ERROR_APPEND_FAILED;
+			}
+
 
 			dims = (SDL_Rect) {NS_B_MESSAGE_X_START, NS_B_MESSAGE_Y_START + (2 * NS_T_H), NS_T_W, NS_T_H};
 			pos = get_center(top_buttons->pos, button_dims);
