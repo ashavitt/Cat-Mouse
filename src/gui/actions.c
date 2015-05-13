@@ -16,7 +16,7 @@ int pause_resume_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
-int new_game_action(Widget* widget, game_state* state) { // TODO main menu freeing?
+int start_game_action(Widget* widget, game_state* state) { // TODO main menu freeing?
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
 		return ERROR_NO_STATE;
@@ -33,6 +33,21 @@ int new_game_action(Widget* widget, game_state* state) { // TODO main menu freei
 	state->catormouse = CAT;
 	return 0;
 }
+
+int new_game_action(Widget* widget, game_state* state) { 
+	state->world_id = 1;
+	Game* game = load_world(state->world_id);
+	// free only the board inside the original game
+	free(state->game->board);
+	// copy the new game to the original one
+	memcpy(state->game, game, sizeof(Game));
+	// free only the game without it's board
+	free(game);
+
+	return start_game_action(widget, state);
+}
+
+
 
 int load_game_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
@@ -199,7 +214,7 @@ int choose_action(Widget* widget, game_state* state) {
 		// free only the game without it's board
 		free(game);
 
-		return new_game_action(widget, state);
+		return start_game_action(widget, state);
 	} else if (state->type == SAVE_GAME) {
 		game_state* old_state = state->previous_state;
 		old_state->world_id = state->number;
