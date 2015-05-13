@@ -3,7 +3,7 @@
 // can only print positive numbers
 // character spacing?
 // TODO braces ()
-#define SPACE_BETWEEN_WORLD_AND_NUMBER (20)
+#define SPACE_BETWEEN_WORLD_AND_NUMBER (50)
 Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widget* parent) {
 	SDL_Rect zeros = {0,0,0,0};
 	Widget* text = new_panel(id, main_pos, parent);
@@ -132,7 +132,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	text_dims.x = text_dims.y = 0; // text_dims and pos
 
 	if (state == NULL) {
-		//TODO print error
+		printf("Error: state is NULL\n");
 		return NULL;
 	}
 
@@ -140,7 +140,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, chooser);
 
 	if (chooser == NULL || bg == NULL) {
-		//TODO print error
+		printf("Error: widget is NULL\n");
 		return NULL;
 	}
 
@@ -149,7 +149,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		// numbers
 		text = number_to_graphic(UNFOCUSABLE, zeros, state->number, TEXT_SIZE_MEDIUM, bg);
 		if (text == NULL) {
-			//TODO print error
+			printf("Error: text widget is NULL\n");
 			return NULL;
 		}
 		text->pos = get_center(text_dims, text->dims);
@@ -159,16 +159,23 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 
 		// adds the "World "
 		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
+			printf("Error: append failed\n");
 			return NULL;
 		}
 		// pos is zeros
-		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER + world_t_dims.w;
+		
+		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER + world_t_dims.w; // TODO get rid of
 		if ((number = number_to_graphic(UNFOCUSABLE, pos, state->number, TEXT_SIZE_MEDIUM, text)) == NULL){
-			// TODO
+			printf("Error: number_to_graphic failed\n");
 			return NULL;
 		}
+		pos = get_center(world_t_dims, number->pos);
+		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER; // fix number location
+		number->pos = pos;
+
 		// adds number
 		if (append(text->children, number) == NULL) {
+			printf("Error: append failed\n");
 			return NULL;
 		}
 		text->dims.w = world_t_dims.w + number->dims.w + SPACE_BETWEEN_WORLD_AND_NUMBER;
@@ -177,7 +184,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	}
 
 	if (text == NULL) {
-		//TODO print error
+		printf("Error: text widget is NULL\n");
 		return NULL;
 	}
 
@@ -354,7 +361,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		}
 
 		pos.x += dims.w; // pos for number to the right of title
-		widget = number_to_graphic(UNFOCUSABLE, pos, state->game->turns, 0, title_panel); //number of turns left, with small size and ()
+		widget = number_to_graphic(UNFOCUSABLE, pos, state->game->turns, TEXT_SIZE_SMALL, title_panel); //number of turns left, with small size and ()
 		if (append(title_panel->children, widget) == NULL) {
 			printf("Error appending title widget\n");
 			return ERROR_APPEND_FAILED;
