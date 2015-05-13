@@ -292,6 +292,35 @@ int in_game_action(game_state* state, SDLKey key) {
 	return play_turn(dir, state);
 }
 
+int game_edit_action(game_state* state, SDLKey key) {
+	switch (key) {
+		case SDLK_UP:
+			if (GET_Y(state->focused) != 0) {
+				state->focused -= 1;
+			}
+			break;
+		case SDLK_RIGHT:
+			if (GET_X(state->focused) != BOARD_SIZE-1) {
+				state->focused += 10;
+			}
+			break;
+		case SDLK_DOWN:
+			if (GET_Y(state->focused) != BOARD_SIZE-1) {
+				state->focused += 1;
+			}
+			break;
+		case SDLK_LEFT:
+			if (GET_X(state->focused) != 0) {
+				state->focused -= 10;
+			}
+			break;
+		default:
+			//TODO error code
+			return 1;
+	}
+	return 0;
+}
+
 int grid_mouse_action(Widget* fake_widget, game_state* state) {
 	if (state->catormouse != PLAYING) {
 		return 0;
@@ -331,5 +360,60 @@ int edit_game_action(Widget* widget, game_state* state) {
 	state->previous_state = old_state;
 	state->type = GAME_EDIT;
 	state->focused = 0;
+	return 0;
+}
+
+int empty_place(game_state* state, int x, int y) {
+	if (state->game->cat_x == x && state->game->cat_y == y) {
+		state->game->cat_x = BOARD_SIZE;
+		state->game->cat_y = BOARD_SIZE;
+	}
+	if (state->game->mouse_x == x && state->game->mouse_y == y) {
+		state->game->mouse_x = BOARD_SIZE;
+		state->game->mouse_y = BOARD_SIZE;
+	}
+	if (state->game->cheese_x == x && state->game->cheese_y == y) {
+		state->game->cheese_x = BOARD_SIZE;
+		state->game->cheese_y = BOARD_SIZE;
+	}
+	return 0;
+}
+
+int place_wall_action(Widget* widget, game_state* state) {
+	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = WALL;
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	return 0;
+}
+
+int place_empty_action(Widget* widget, game_state* state) {
+	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = EMPTY;
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	return 0;
+}
+
+int place_cat_action(Widget* widget, game_state* state) {
+	//state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	state->game->cat_x = GET_X(state->focused);
+	state->game->cat_y = GET_Y(state->focused);
+	state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	return 0;
+}
+
+int place_mouse_action(Widget* widget, game_state* state) {
+	//state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	state->game->mouse_x = GET_X(state->focused);
+	state->game->mouse_y = GET_Y(state->focused);
+	state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	return 0;
+}
+
+int place_cheese_action(Widget* widget, game_state* state) {
+	//state->game->board->board[state->game->cheese_x][state->game->cheese_y] = EMPTY;
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	state->game->cheese_x = GET_X(state->focused);
+	state->game->cheese_y = GET_Y(state->focused);
+	state->game->board->board[state->game->cheese_x][state->game->cheese_y] = EMPTY;
 	return 0;
 }
