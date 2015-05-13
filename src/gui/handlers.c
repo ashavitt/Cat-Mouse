@@ -131,19 +131,20 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_ESCAPE:
 			return 1;
 		case SDLK_RETURN:
-			// TODO only on specific windows
-			widget = find_widget_by_id(window, get_objs_arr(state->type)[state->focused]);
-			if (widget == NULL) {
-				// focused widget must exist
-				printf("ERROR no widget with id:%d was found\n",state->focused);
-				return ERROR_FOCUSED_ID;
-			}
-			if ((err = (widget->onclick)(widget, state)) != 0) {
-				// "NULL pointer exception"
-				if (err != 1) { // if it is 1, then its just clean closing
-					printf("Error in onclick func of widget, code %d\n",err);
+			if (state->type != IN_GAME && state->type != GAME_EDIT) {
+				widget = find_widget_by_id(window, get_objs_arr(state->type)[state->focused]);
+				if (widget == NULL) {
+					// focused widget must exist
+					printf("ERROR no widget with id:%d was found\n",state->focused);
+					return ERROR_FOCUSED_ID;
 				}
-				return err;
+				if ((err = (widget->onclick)(widget, state)) != 0) {
+					// "NULL pointer exception"
+					if (err != 1) { // if it is 1, then its just clean closing
+						printf("Error in onclick func of widget, code %d\n",err);
+					}
+					return err;
+				}
 			}
 			break;
 		case SDLK_TAB:
