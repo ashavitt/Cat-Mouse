@@ -361,6 +361,14 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 	return 0; // nothing happens
 }
 
+int grid_edit_mouse_action(Widget* fake_widget, game_state* state) {
+	SDL_Rect mouse_pos = fake_widget->pos; // mouse position, relative to board
+	int x = mouse_pos.x / (GRID_W / 7);
+	int y = mouse_pos.y / (GRID_H / 7);
+	state->focused = 10*x+y;
+	return 0;
+}
+
 int create_game_action(Widget* widget, game_state* state) {
 	edit_game_action(widget, state);
 	Game* game = game_malloc();
