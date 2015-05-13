@@ -129,10 +129,11 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_ESCAPE:
 			return 1;
 		case SDLK_RETURN:
+			// TODO only on specific windows
 			widget = find_widget_by_id(window, get_objs_arr(state->type)[state->focused]);
 			if (widget == NULL) {
 				// focused widget must exist
-				printf("ERROR no widget with id:%d was found",state->focused);
+				printf("ERROR no widget with id:%d was found\n",state->focused);
 				return ERROR_FOCUSED_ID;
 			}
 			if ((err = (widget->onclick)(widget, state)) != 0) {
@@ -176,22 +177,22 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			}
 			break;
 		case SDLK_F1:
-			if (state->type == IN_GAME) {
+			if (state->type == IN_GAME && state->catormouse != PLAYING) {
 				id = RECONF_MOUSE_B;
 			}
 			break;
 		case SDLK_F2:
-			if (state->type == IN_GAME) {
+			if (state->type == IN_GAME && state->catormouse != PLAYING) {
 				id = RECONF_CAT_B;
 			}
 			break;
 		case SDLK_F3:
-			if (state->type == IN_GAME) {
+			if (state->type == IN_GAME && state->catormouse != PLAYING) {
 				id = RESTART_GAME_B;
 			}
 			break;
 		case SDLK_F4:
-			if (state->type == IN_GAME) {
+			if (state->type == IN_GAME && state->catormouse != PLAYING) {
 				id = GOTO_MAIN_MENU_B;
 			}
 			break;

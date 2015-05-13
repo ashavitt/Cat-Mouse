@@ -2,7 +2,6 @@
 
 // can only print positive numbers
 // character spacing?
-// TODO braces ()
 #define SPACE_BETWEEN_WORLD_AND_NUMBER (50)
 Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widget* parent) {
 	SDL_Rect zeros = {0,0,0,0};
