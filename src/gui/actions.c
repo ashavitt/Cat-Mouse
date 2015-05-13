@@ -362,3 +362,37 @@ int edit_game_action(Widget* widget, game_state* state) {
 	state->focused = 0;
 	return 0;
 }
+
+int place_wall_action(Widget* widget, game_state* state) {
+	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = WALL;
+	return 0;
+}
+
+int place_empty_action(Widget* widget, game_state* state) {
+	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = EMPTY;
+	return 0;
+}
+
+int place_cat_action(Widget* widget, game_state* state) {
+	state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	state->game->cat_x = GET_X(state->focused);
+	state->game->cat_y = GET_Y(state->focused);
+	state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	return 0;
+}
+
+int place_mouse_action(Widget* widget, game_state* state) {
+	state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	state->game->mouse_x = GET_X(state->focused);
+	state->game->mouse_y = GET_Y(state->focused);
+	state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	return 0;
+}
+
+int place_cheese_action(Widget* widget, game_state* state) {
+	state->game->board->board[state->game->cheese_x][state->game->cheese_y] = EMPTY;
+	state->game->cheese_x = GET_X(state->focused);
+	state->game->cheese_y = GET_Y(state->focused);
+	state->game->board->board[state->game->cheese_x][state->game->cheese_y] = EMPTY;
+	return 0;
+}

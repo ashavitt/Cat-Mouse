@@ -35,7 +35,18 @@ onclick goto_main_menu_action;
 onclick restart_game_action;
 
 onclick reconf_action;
+
 onclick edit_game_action;
+
+onclick place_wall_action;
+
+onclick place_empty_action;
+
+onclick place_cat_action;
+
+onclick place_mouse_action;
+
+onclick place_cheese_action;
 
 int in_game_action(game_state* state, SDLKey key);
 

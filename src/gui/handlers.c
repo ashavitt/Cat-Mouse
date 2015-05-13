@@ -171,6 +171,9 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			if (state->type == IN_GAME) {
 				return pause_resume_action(NULL, state);
 			}
+			if (state->type == GAME_EDIT) {
+				return place_empty_action(NULL, state);
+			}
 			break;
 		case SDLK_F1:
 			if (state->type == IN_GAME) {
@@ -190,6 +193,26 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_F4:
 			if (state->type == IN_GAME) {
 				id = GOTO_MAIN_MENU_B;
+			}
+			break;
+		case SDLK_m:
+			if (state->type == GAME_EDIT) {
+				return place_mouse_action(NULL, state);
+			}
+			break;
+		case SDLK_p:
+			if (state->type == GAME_EDIT) {
+				return place_cheese_action(NULL, state);
+			}
+			break;
+		case SDLK_c:
+			if (state->type == GAME_EDIT) {
+				return place_cat_action(NULL, state);
+			}
+			break;
+		case SDLK_w:
+			if (state->type == GAME_EDIT) {
+				return place_wall_action(NULL, state);
 			}
 			break;
 		default:
