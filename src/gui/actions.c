@@ -249,9 +249,12 @@ int do_nothing_action(Widget* widget, game_state* state) {
 }
 
 int restart_game_action(Widget* widget, game_state* state) {
+	int num_steps_cat = state->game->num_steps_cat, num_steps_mouse = state->game->num_steps_mouse;
 	game_free(state->game);
 	state->game = load_world(state->world_id);
 	state->catormouse = PLAYING;
+	state->game->num_steps_cat = num_steps_cat;
+	state->game->num_steps_mouse = num_steps_mouse;
 	if (state->game == NULL) {
 		printf("Failed loading world number: %d\n", state->world_id);
 		return 1; // TODO ERROR

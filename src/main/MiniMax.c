@@ -60,6 +60,11 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 
 	MiniMaxResult best;
 	best.index = -1;
+	if (isMaxPlayer) {
+		best.value = MIN_EVALUATION;
+	} else {
+		best.value = MAX_EVALUATION;
+	}
 	ListRef originalChildren = (*getChildren) (state); //load state's children
 	ListRef children = originalChildren; //save ALL the state's children for later
 
