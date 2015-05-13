@@ -5,7 +5,7 @@ Game* game_malloc() {
 	if (gamep == NULL) {
 		return NULL;
 	}
-	struct board* boardp = (struct board*) malloc (sizeof(struct board));
+	struct board* boardp = (struct board*) calloc (1,sizeof(struct board));
 	if (boardp == NULL) {
 		return NULL;
 	}

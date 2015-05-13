@@ -37,13 +37,7 @@ int start_game_action(Widget* widget, game_state* state) { // TODO main menu fre
 int new_game_action(Widget* widget, game_state* state) { 
 	state->world_id = 1;
 	Game* game = load_world(state->world_id);
-	// free only the board inside the original game
-	free(state->game->board);
-	// copy the new game to the original one
-	memcpy(state->game, game, sizeof(Game));
-	// free only the game without it's board
-	free(game);
-
+	state->game = game;
 	return start_game_action(widget, state);
 }
 
@@ -271,11 +265,11 @@ int goto_main_menu_action(Widget* widget, game_state* state) {
 	state->focused = 0;
 	state->previous_state = NULL;
 	game_free(state->game);
-	state->game = load_world(state->world_id);
+	/*state->game = load_world(state->world_id); // FIXME
 	if (state->game == NULL) {
 		printf("Failed loading world number: %d\n", state->world_id);
 		return 1; // TODO ERROR
-	}
+	}*/
 	return 0;
 }
 

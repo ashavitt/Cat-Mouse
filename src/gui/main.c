@@ -116,6 +116,7 @@ void cleanup() {
 	SDL_FreeSurface(grid_surface);
 	SDL_FreeSurface(bricks);
 	SDL_FreeSurface(cheese);
+	SDL_FreeSurface(black_surface);
 	//Quit SDL
 	SDL_Quit();
 }
@@ -148,7 +149,7 @@ int run_gui() {
 	state.previous_state = NULL;
 	state.world_id = 1;
 	state.number = 1;
-	state.game = load_world(state.world_id);
+	//state.game = load_world(state.world_id);
 
 
 	//main loop
@@ -208,7 +209,7 @@ int run_gui() {
 	free(event);
 	freeWidget(window);
 	SDL_FreeSurface(screen);
-	game_free(state.game);
+	//game_free(state.game);
 	free_state(state);
 	cleanup();
 	return quit;
