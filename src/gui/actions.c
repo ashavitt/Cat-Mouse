@@ -318,7 +318,7 @@ int in_game_action(game_state* state, SDLKey key) {
 	return play_turn(dir, state);
 }
 
-int game_edit_action(game_state* state, SDLKey key) {
+int game_editing_action(game_state* state, SDLKey key) {
 	switch (key) {
 		case SDLK_UP:
 			if (GET_Y(state->focused) != 0) {
@@ -381,7 +381,7 @@ int grid_edit_mouse_action(Widget* fake_widget, game_state* state) {
 }
 
 int create_game_action(Widget* widget, game_state* state) {
-	edit_game_action(widget, state);
+	game_edit_action(widget, state);
 	Game* game = game_malloc();
 	if (game == NULL) {
 		//TODO print error
@@ -411,6 +411,23 @@ int edit_game_action(Widget* widget, game_state* state) {
 	memcpy(old_state, state, sizeof(game_state));
 	// TODO free previous game?
 	//state->game = game_malloc(); // TODO should be function that loads some world
+	state->previous_state = old_state;
+	state->type = EDIT_GAME;
+	state->focused = 0;
+	return 0;
+}
+
+int game_edit_action(Widget* widget, game_state* state) {
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+	if (state == NULL) {
+		return ERROR_NO_STATE;
+	}
+	if (old_state == NULL) {
+		return ERROR_MALLOC_FAILED;
+	}
+	memcpy(old_state, state, sizeof(game_state));
+	// TODO free previous game?
+	state->game = load_world(state->world_id);
 	state->previous_state = old_state;
 	state->type = GAME_EDIT;
 	state->focused = 0;

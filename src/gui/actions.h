@@ -40,6 +40,8 @@ onclick reconf_action;
 
 onclick edit_game_action;
 
+onclick game_edit_action;
+
 onclick create_game_action;
 
 onclick place_wall_action;
@@ -54,5 +56,5 @@ onclick place_cheese_action;
 
 int in_game_action(game_state* state, SDLKey key);
 
-int game_edit_action(game_state* state, SDLKey key);
+int game_editing_action(game_state* state, SDLKey key);
 #endif
