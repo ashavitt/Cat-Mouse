@@ -139,6 +139,10 @@ ListRef getChildren(void* gameVoid) {
 	ListRef children = newList(NULL); // Creates an empty list
 
 	LIFT(children); // if malloc fails
+	// if game ended, there are no children for the state
+	if (check_end_game(gamep) != -1) {
+		return children;
+	}
 	ListRef tempList = children; // save original list for later
 
 	// Run over all directions
