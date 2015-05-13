@@ -63,12 +63,14 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 	if (widget->type == BUTTON) {
 		if ((e->button.x > abs_pos.x) && (e->button.x < abs_pos.x + dims.w) 
 			&& (e->button.y > abs_pos.y) && (e->button.y < abs_pos.y + dims.h)) {
-			ids = get_objs_arr(state->type);
-			array_size = get_obj_count(state->type);
-			for (int i=0; i<array_size; i++) {
-				if (ids[i] == widget->id && widget->id != UNFOCUSABLE) {
-					state->focused = i;
-					break;
+			if (state->type != GAME_EDIT) {
+				ids = get_objs_arr(state->type);
+				array_size = get_obj_count(state->type);
+				for (int i=0; i<array_size; i++) {
+					if (ids[i] == widget->id && widget->id != UNFOCUSABLE) {
+						state->focused = i;
+						break;
+					}
 				}
 			}
 			if (widget->id == GRID_B) {
