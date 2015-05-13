@@ -535,31 +535,31 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 		return ERROR_NO_WIDGET;
 	}
 	
-	if (append_menu(menu, PLACE_MOUSE_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, PLACE_MOUSE_B, text_dims, place_mouse_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, PLACE_CAT_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, PLACE_CAT_B, text_dims, place_cat_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, PLACE_CHEESE_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, PLACE_CHEESE_B, text_dims, place_cheese_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, PLACE_WALL_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, PLACE_WALL_B, text_dims, place_wall_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
 
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, PLACE_SPACE_B, text_dims, do_nothing_action, state) != 0) {
+	if (append_menu(menu, PLACE_SPACE_B, text_dims, place_empty_action, state) != 0) {
 		printf("Error: appending button\n");
 		return ERROR_APPEND_FAILED;
 	}
