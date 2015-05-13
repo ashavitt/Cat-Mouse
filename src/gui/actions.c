@@ -395,6 +395,7 @@ int create_game_action(Widget* widget, game_state* state) {
 	game->cheese_y = BOARD_SIZE;
 	//TODO magic number
 	state->game->turns = 20;
+	state->world_id = 0;
 	state->game = game;
 	return 0;
 }
