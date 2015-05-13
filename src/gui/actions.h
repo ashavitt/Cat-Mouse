@@ -40,8 +40,6 @@ onclick reconf_action;
 
 onclick edit_game_action;
 
-onclick game_edit_action;
-
 onclick create_game_action;
 
 onclick place_wall_action;
