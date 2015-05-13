@@ -292,6 +292,35 @@ int in_game_action(game_state* state, SDLKey key) {
 	return play_turn(dir, state);
 }
 
+int game_edit_action(game_state* state, SDLKey key) {
+	switch (key) {
+		case SDLK_UP:
+			if (GET_Y(state->focused) != 0) {
+				state->focused -= 1;
+			}
+			break;
+		case SDLK_RIGHT:
+			if (GET_X(state->focused) != BOARD_SIZE-1) {
+				state->focused += 10;
+			}
+			break;
+		case SDLK_DOWN:
+			if (GET_Y(state->focused) != BOARD_SIZE-1) {
+				state->focused += 1;
+			}
+			break;
+		case SDLK_LEFT:
+			if (GET_X(state->focused) != 0) {
+				state->focused -= 10;
+			}
+			break;
+		default:
+			//TODO error code
+			return 1;
+	}
+	return 0;
+}
+
 int grid_mouse_action(Widget* fake_widget, game_state* state) {
 	if (state->catormouse != PLAYING) {
 		return 0;

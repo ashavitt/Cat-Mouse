@@ -164,7 +164,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 				return in_game_action(state, event->key.keysym.sym);
 			}
 			if (state->type == GAME_EDIT) {
-				//move cursor to direction event->key.keysym.sym
+				return game_edit_action(state, event->key.keysym.sym);
 			}
 			break;
 		case SDLK_SPACE:

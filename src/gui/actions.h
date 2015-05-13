@@ -38,4 +38,6 @@ onclick reconf_action;
 onclick edit_game_action;
 
 int in_game_action(game_state* state, SDLKey key);
+
+int game_edit_action(game_state* state, SDLKey key);
 #endif
