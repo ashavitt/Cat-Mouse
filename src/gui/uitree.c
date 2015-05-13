@@ -582,7 +582,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 
 	pos.x -= button_dims.w * 1.7; // FIXME magic number
 	text_dims.y += text_dims.h;
-	widget = build_text_button(SAVE_WORLD_B, pos, button_dims, text_dims, top_buttons, do_nothing_action); // TODO save_world_action
+	widget = build_text_button(SAVE_WORLD_B, pos, button_dims, text_dims, top_buttons, save_game_action);
 	if (append(top_buttons->children, widget) == NULL) { 
 		printf("Error: appending SAVE_WORLD_B\n");
 		return ERROR_APPEND_FAILED;
@@ -591,7 +591,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	pos.x += button_dims.w * 1.7 * 2;
 	text_dims.y -= text_dims.h;
 	text_dims.x -= text_dims.w;
-	widget = build_text_button(QUIT_B, pos, button_dims, text_dims, top_buttons, quit_action); // TODO save_world_action
+	widget = build_text_button(QUIT_B, pos, button_dims, text_dims, top_buttons, quit_action);
 	if (append(top_buttons->children, widget) == NULL) { 
 		printf("Error: appending QUIT_B\n");
 		return ERROR_APPEND_FAILED;

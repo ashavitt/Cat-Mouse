@@ -67,6 +67,22 @@ int load_game_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+int save_game_action(Widget* widget, game_state* state) {
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+	if (state == NULL) {
+		return ERROR_NO_STATE;
+	}
+	if (old_state == NULL) {
+		return ERROR_MALLOC_FAILED;
+	}
+	memcpy(old_state, state, sizeof(game_state));
+	state->previous_state = old_state;
+	state->type = SAVE_GAME;
+	state->focused = 0;
+	state->number = DEFAULT_WORLD_INDEX;
+	return 0;
+}
+
 int reconf_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
