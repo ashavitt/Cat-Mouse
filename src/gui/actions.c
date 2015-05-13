@@ -200,6 +200,17 @@ int choose_action(Widget* widget, game_state* state) {
 		free(game);
 
 		return new_game_action(widget, state);
+	} else if (state->type == SAVE_GAME) {
+		game_state* old_state = state->previous_state;
+		old_state->world_id = state->number;
+		// save the world to file
+		if (save_world(old_state->world_id, state->game) != 0) {
+			//TODO error code
+			return 2;
+		}
+		// free this state
+		free(state);
+		state = old_state;
 	}
 
 	return 0;
