@@ -107,7 +107,6 @@ Game* load_world(int id) {
 		return NULL;
 	}
 	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
-	//printf("%s", dest_file_name);
 	
 	gamefile = fopen(dest_file_name, "r");
 	if (gamefile == NULL) {
@@ -122,26 +121,20 @@ Game* load_world(int id) {
 	return game;
 }
 
-Game* save_world(int id) {
+int save_world(int id, Game* game) {
 	FILE* gamefile;
 	char dest_file_name[128];
-	Game* game = game_malloc();
-	if (game == NULL) {
-		perror("Error: malloc failed.\n");
-		return NULL;
-	}
 	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
-	//printf("%s", dest_file_name);
 	
 	gamefile = fopen(dest_file_name, "r");
 	if (gamefile == NULL) {
 		perror("Error: fopen failed.\n");
-		return NULL;
+		return -1;
 	}
 	save_game(game, gamefile);
 	if (fclose(gamefile) != 0) {
 		perror("Error: fclose failed.\n");
-		return NULL;
+		return -1;
 	}
-	return game;
+	return 0;
 }

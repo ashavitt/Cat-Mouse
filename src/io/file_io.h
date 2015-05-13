@@ -19,5 +19,5 @@ int load_game(Game* gamep, FILE* file);
 
 Game* load_world(int id);
 
-Game* save_world(int id);
+int save_world(int id, Game* game);
 #endif /* FILE_IO_H_ */
