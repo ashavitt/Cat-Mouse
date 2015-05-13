@@ -397,6 +397,8 @@ int place_cat_action(Widget* widget, game_state* state) {
 	state->game->cat_x = GET_X(state->focused);
 	state->game->cat_y = GET_Y(state->focused);
 	state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	//set the first player
+	state->game->player = CAT;
 	return 0;
 }
 
@@ -406,6 +408,8 @@ int place_mouse_action(Widget* widget, game_state* state) {
 	state->game->mouse_x = GET_X(state->focused);
 	state->game->mouse_y = GET_Y(state->focused);
 	state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	//set the first player
+	state->game->player = MOUSE;
 	return 0;
 }
 
