@@ -149,9 +149,6 @@ int choose_action(Widget* widget, game_state* state) {
 	if (state == NULL) {
 		return ERROR_NO_STATE;
 	}
-	if (state->game == NULL) {
-		return ERROR_NO_GAME;
-	}
 	if (old_state == NULL) {
 		return ERROR_MALLOC_FAILED;
 	}
@@ -217,12 +214,13 @@ int choose_action(Widget* widget, game_state* state) {
 	} else if (state->type == LOAD_GAME) {
 		state->world_id = state->number;
 		Game* game = load_world(state->world_id);
-		// free only the board inside the original game
-		free(state->game->board);
-		// copy the new game to the original one
-		memcpy(state->game, game, sizeof(Game));
-		// free only the game without it's board
-		free(game);
+		state->game = game;
+		// // free only the board inside the original game
+		// free(state->game->board);
+		// // copy the new game to the original one
+		// memcpy(state->game, game, sizeof(Game));
+		// // free only the game without it's board
+		// free(game);
 
 		return start_game_action(widget, state);
 	} else if (state->type == SAVE_GAME) {
