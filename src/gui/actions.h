@@ -30,6 +30,8 @@ onclick restart_game_action;
 
 onclick grid_mouse_action;
 
+onclick grid_edit_mouse_action;
+
 onclick goto_main_menu_action;
 
 onclick restart_game_action;

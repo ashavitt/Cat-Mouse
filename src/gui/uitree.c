@@ -282,7 +282,12 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
 
-	grid_button = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
+	if (state->type == GAME_EDIT) {
+		grid_button = new_button(GRID_B, dims, pos, parent, grid_edit_mouse_action);
+	} else {
+		grid_button = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
+	}
+
 	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid_button);
 	if (append(grid_button->children, grid) == NULL) {
 		return NULL;
