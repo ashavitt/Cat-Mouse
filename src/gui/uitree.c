@@ -155,7 +155,11 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
 		text = new_panel(UNFOCUSABLE, text_dims, bg);
-
+		if (text == NULL) {
+			// TODO is this error enough
+			printf("Error: panel widget is NULL\n");
+			return NULL;
+		}
 		// adds the "World "
 		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
 			printf("Error: append failed\n");
@@ -189,6 +193,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 
 	arrow_pos.x = text_dims.w;
 	up = new_button(LEVEL_UP_B, arrow_dims, arrow_pos, bg, arrow_action);
+	// TODO error
 	up_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, up);
 	if (append(up->children, up_arrow) == NULL) {
 		printf("Error appending up_arrow\n");
@@ -198,6 +203,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	arrow_pos.y += arrow_dims.h;
 	arrow_dims.y += arrow_dims.h;
 	down = new_button(LEVEL_DN_B, arrow_dims, arrow_pos, bg, arrow_action);
+	// TODO error
 	down_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, down);
 	if (append(down->children, down_arrow) == NULL) {
 		printf("Error appending down_arrow\n");
@@ -989,6 +995,44 @@ int build_choose(Widget* window, game_state* state) {
 	return 0;
 }
 
+int build_error_dialog(Widget* window, game_state* state) {
+	Widget *panel;
+	SDL_Rect pos = {0,0,0,0};
+	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
+	
+	// We set real pos later
+	panel = new_panel(UNFOCUSABLE, pos, window);
+	if (panel == NULL) {
+		return ERROR_NO_WIDGET;
+	}
+	
+	SDL_Rect dims = {ERR_T_X_START, ERR_T_Y_START, ERR_T_W, ERR_T_H};
+	
+	dims.y += state->number * ERR_T_H; // in state->number we save the error number in the sprite
+	if (append(panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, panel)) == NULL) {
+		printf("Error: appending invalid world message\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	panel->pos.h += dims.h;
+	panel->pos.w += dims.w;
+	
+	pos.x += dims.h * 1.7;
+	
+	SDL_Rect text_dims = {MAIN_MENU_T_X_START + WL_T_W, MAIN_MENU_T_Y_START + 2*WL_T_H, WL_T_W, WL_T_H};
+
+	if (append(panel->children, build_text_button(BACK_B, pos, button_dims, text_dims, panel, back_action)) != 0) {
+		return ERROR_APPEND_FAILED;
+	}
+	
+	button_dims.y += WL_BUTTON_H;
+	if (set_focus_bg(window, button_dims, error_message_ids[state->focused]) != 0) {
+		return ERROR_NO_FOCUS;
+	}
+		
+	return 0;
+}
+
 int build_ui(Widget* window, game_state* state) {
 	ListRef children;
 	if ((children = window->children) != NULL) {
@@ -1011,8 +1055,8 @@ int build_ui(Widget* window, game_state* state) {
 		case IN_GAME:
 		case GAME_EDIT:
 			return build_game_scheme(window, state);
-		// case ERROR_DIALOG:
-		// return build_error_dialog(window, state);
+		case ERROR_DIALOG:
+			return build_error_dialog(window, state);
 		default:
 			return 0;
 	}
