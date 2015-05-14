@@ -10,6 +10,10 @@
 
 //typedef int (*onclick)(Widget*, game_state*);
 
+#define CAT_IS_MISSING_IND 0
+#define MOUSE_IS_MISSING_IND 2
+#define CHEESE_IS_MISSING_IND 1
+
 onclick quit_action;
 
 onclick back_action;

@@ -62,6 +62,7 @@ int load_game_action(Widget* widget, game_state* state) {
 }
 
 int save_game_action(Widget* widget, game_state* state) {
+	Game* game = state->game;
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
 		return ERROR_NO_STATE;
@@ -71,12 +72,25 @@ int save_game_action(Widget* widget, game_state* state) {
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	state->previous_state = old_state;
-	state->type = SAVE_GAME;
-	state->focused = 0;
-	if (state->world_id == 0) {
-		state->world_id = DEFAULT_WORLD_INDEX;
+	
+	if (!(game->cat_x < BOARD_SIZE && game->cat_x >= 0) || !(game->cat_y < BOARD_SIZE && game->cat_y >= 0)) {
+		state->number = CAT_IS_MISSING_IND;
+		state->type = ERROR_DIALOG;
+	} else if (!(game->mouse_x < BOARD_SIZE && game->mouse_x >= 0) || !(game->mouse_y < BOARD_SIZE && game->mouse_y >= 0)) {
+		state->number = MOUSE_IS_MISSING_IND;
+		state->type = ERROR_DIALOG;
+	} else if (!(game->cheese_x < BOARD_SIZE && game->cheese_x >= 0) || !(game->cheese_y < BOARD_SIZE && game->cheese_y >= 0)) {
+		state->number = CHEESE_IS_MISSING_IND;
+		state->type = ERROR_DIALOG;
+	} else { // world is valid
+		state->type = SAVE_GAME;
+		
+		if (state->world_id == 0) {
+			state->world_id = DEFAULT_WORLD_INDEX;
+		}
+		state->number = state->world_id;
 	}
-	state->number = state->world_id;
+	state->focused = 0;
 	return 0;
 }
 
