@@ -193,12 +193,10 @@ int choose_action(Widget* widget, game_state* state) {
 	if (state->type == CHOOSE_PLAYER) {
 		if (state->catormouse == CAT) {
 			if (widget->id == HUMAN_B) {
-				//printf("state->previous_state->type: %d\n", state->previous_state->type);
-				//printf("state->previous_state->previous_state->type: %d\n", state->previous_state->previous_state->type);
 				if (old_state->previous_state->type == IN_GAME) {
 					free_prev_states(state); // frees previous states before entering game
 					state->type = IN_GAME;
-					state->catormouse = PLAYING; // Maybe should be different
+					state->catormouse = PAUSED; // According to the forum
 				} else { // proceed to cat selection
 					state->catormouse = MOUSE;
 				}
@@ -217,7 +215,7 @@ int choose_action(Widget* widget, game_state* state) {
 				free_prev_states(state); // frees previous states before entering game
 				state->game->num_steps_mouse = 0; // human is 0 steps
 				state->type = IN_GAME;
-				state->catormouse = PLAYING;
+				state->catormouse = PLAYING; // TODO FIXME!!!!!!!
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
@@ -232,7 +230,7 @@ int choose_action(Widget* widget, game_state* state) {
 			if (old_state->previous_state->previous_state->type == IN_GAME) {
 				free_prev_states(state); // frees previous states before entering game
 				state->type = IN_GAME;
-				state->catormouse = PLAYING; // Maybe should be different
+				state->catormouse = PAUSED; // According to the forum
 			} else { // proceed to mouse selection
 				state->type = CHOOSE_PLAYER;
 				state->catormouse = MOUSE;
@@ -242,19 +240,12 @@ int choose_action(Widget* widget, game_state* state) {
 			free_prev_states(state); // frees previous states before entering game
 			state->game->num_steps_mouse = state->number;
 			state->type = IN_GAME;
-			state->catormouse = PLAYING;
+			state->catormouse = PLAYING;  // TODO FIXME!!!!!!!
 		}
 	} else if (state->type == LOAD_GAME) {
 		state->world_id = state->number;
 		Game* game = load_world(state->world_id);
 		state->game = game;
-		// // free only the board inside the original game
-		// free(state->game->board);
-		// // copy the new game to the original one
-		// memcpy(state->game, game, sizeof(Game));
-		// // free only the game without it's board
-		// free(game);
-
 		return start_game_action(widget, state);
 	} else if (state->type == EDIT_GAME) {
 		state->type = GAME_EDIT;
@@ -466,7 +457,6 @@ int edit_game_action(Widget* widget, game_state* state) {
 	//state->game = game_malloc(); // TODO should be function that loads some world
 	state->previous_state = old_state;
 	state->type = EDIT_GAME;
-	state->number = DEFAULT_WORLD_INDEX;
 	state->focused = 0;
 	return 0;
 }
