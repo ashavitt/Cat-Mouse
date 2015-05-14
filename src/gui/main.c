@@ -19,6 +19,7 @@ SDL_Surface* tiles;
 SDL_Surface* grid_surface;
 SDL_Surface* black_surface;
 SDL_Surface* red_surface;
+SDL_Surface* logo_surface;
 
 int init(SDL_Surface**  screen) {
 	//initialize SDL
@@ -42,12 +43,13 @@ int init(SDL_Surface**  screen) {
 int load_images() {
 	Uint32 text_colorkey;
 	Uint32 buttons_colorkey;
-	Uint32 cat_colorkey;
-	Uint32 mouse_colorkey;
-	Uint32 bricks_colorkey;
+	//Uint32 cat_colorkey;
+	//Uint32 mouse_colorkey;
+	//Uint32 bricks_colorkey;
 	Uint32 tiles_colorkey;
 	Uint32 grid_colorkey;
-	Uint32 cheese_colorkey;
+	//Uint32 cheese_colorkey;
+	
 	texts = SDL_LoadBMP("images/texts.bmp");
 	buttons = SDL_LoadBMP("images/buttons.bmp");
 	cat = SDL_LoadBMP("images/cat.bmp");
@@ -56,15 +58,12 @@ int load_images() {
 	cheese = SDL_LoadBMP("images/cheese.bmp");
 	tiles = SDL_LoadBMP("images/tiles.bmp");
 	grid_surface = SDL_LoadBMP("images/grid.bmp");
+	logo_surface = SDL_LoadBMP("images/logo.bmp");
 	
 	black_surface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0x000000ff);
 
 	red_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0); // 0xc22b31
 	// TODO change ordering of error checking
-	if (SDL_FillRect(red_surface, NULL, SDL_MapRGB(red_surface->format, 0xc2, 0x2b, 0x31)) != 0) { // NULL - paints whole surface
-		printf("Error: %s\n", SDL_GetError());
-		return -2;
-	}
 		
 	if (texts == NULL) {
 		return -1;
@@ -90,30 +89,40 @@ int load_images() {
 	if (grid_surface == NULL) {
 		return -2;
 	}
+	if (logo_surface == NULL) {
+		return -2;
+	}
 	if (black_surface == NULL) {
 		return -2;
 	}
 	if (red_surface == NULL) {
 		return -2;
 	}
-	Uint32 beige_color = SDL_MapRGB(cat->format, 0xDD, 0xC8, 0xB6);
-	//text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
+	//Uint32 beige_light_color = SDL_MapRGB(cat->format, 0xDD, 0xC8, 0xB6); 
+	Uint32 beige_color = SDL_MapRGB(cat->format, 0xD3, 0xB9, 0x9F);//d3b99f
+	Uint32 red_color = SDL_MapRGB(red_surface->format, 0xc2, 0x2b, 0x31);
+	if (SDL_FillRect(red_surface, NULL, red_color) != 0) { // NULL - paints whole surface
+		printf("Error: %s\n", SDL_GetError());
+		return -2;
+	}
+	// TODO tidy up	
 	text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
-	cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(cat,SDL_SRCCOLORKEY, cat_colorkey);
-	mouse_colorkey = SDL_MapRGB(mouse->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, mouse_colorkey);
+	//cat_colorkey = SDL_MapRGB(cat->format, 0xFF, 0xFF, 0xFF); //
+	SDL_SetColorKey(cat,SDL_SRCCOLORKEY, beige_color);
+	//mouse_colorkey = SDL_MapRGB(mouse->format, 0xFF, 0xFF, 0xFF); //
+	SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, beige_color);
 	tiles_colorkey = SDL_MapRGB(tiles->format, 0xC2, 0x2B, 0x31);
 	SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey);
-	cheese_colorkey = SDL_MapRGB(cheese->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(cheese,SDL_SRCCOLORKEY, cheese_colorkey);
-	bricks_colorkey = SDL_MapRGB(bricks->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(bricks,SDL_SRCCOLORKEY, bricks_colorkey);
+	//cheese_colorkey = SDL_MapRGB(cheese->format, 0xFF, 0xFF, 0xFF); //
+	SDL_SetColorKey(cheese,SDL_SRCCOLORKEY, beige_color);
+	//bricks_colorkey = SDL_MapRGB(bricks->format, 0xFF, 0xFF, 0xFF); //
+	SDL_SetColorKey(bricks,SDL_SRCCOLORKEY, red_color);
 	grid_colorkey = SDL_MapRGB(grid_surface->format, 0xFF, 0xFF, 0xFF);
-	SDL_SetColorKey(grid_surface,SDL_SRCCOLORKEY, grid_colorkey);
+	SDL_SetColorKey(grid_surface, SDL_SRCCOLORKEY, grid_colorkey);
+	//SDL_SetColorKey(logo_surface, SDL_SRCCOLORKEY, beige_light_color) // probably unneeded
 	return 0;
 }
 
@@ -128,6 +137,7 @@ void cleanup() {
 	SDL_FreeSurface(grid_surface);
 	SDL_FreeSurface(bricks);
 	SDL_FreeSurface(cheese);
+	SDL_FreeSurface(logo_surface);
 	SDL_FreeSurface(black_surface);
 	SDL_FreeSurface(red_surface);
 	//Quit SDL

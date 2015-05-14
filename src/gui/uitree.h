@@ -78,5 +78,8 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define NS_B_MESSAGE_X_START 185
 #define NS_B_MESSAGE_Y_START 612
 
+/* Logo */
+#define LOGO_W 600
+#define LOGO_H 156
 
 #endif

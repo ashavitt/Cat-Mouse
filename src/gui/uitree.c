@@ -735,8 +735,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 int build_main_menu(Widget* window, game_state* state) {
 	Widget *panel, *title;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
-	SDL_Rect text_dims;
-	SDL_Rect title_pos;
+	SDL_Rect text_dims, logo_dims, title_pos;
 
 	ListRef children;
 	if ((children = window->children) != NULL) {
@@ -745,19 +744,20 @@ int build_main_menu(Widget* window, game_state* state) {
 
 	children = newList(NULL);
 
-	//create the title
-	text_dims.w = WL_T_W;
-	text_dims.h = WL_T_H;
-	text_dims.x = TITLES_T_X_START;
-	text_dims.y = TITLES_T_Y_START;
-	title_pos = get_center(window->dims, text_dims);
-	//title_pos.y -= 5*WL_BUTTON_H;
-	title_pos.y = WL_BUTTON_H;
-	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
+	//create the title Cat & Mouse logo
+	logo_dims = (SDL_Rect) {0,0,LOGO_W,LOGO_H};
+	title_pos = get_center(window->dims, logo_dims);	
+	title_pos.y = 0.3*WL_BUTTON_H; // TODO magic number
+	title = new_graphic(UNFOCUSABLE, logo_dims, title_pos, logo_surface, window);
 	if (append(children, title) == NULL) {
 		return ERROR_APPEND_FAILED;
 	}
 
+	text_dims.w = WL_T_W;
+	text_dims.h = WL_T_H;
+	text_dims.x = TITLES_T_X_START;
+	text_dims.y = TITLES_T_Y_START;
+	
 	//creating a new panel for the buttons
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
