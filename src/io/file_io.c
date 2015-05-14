@@ -19,7 +19,7 @@ int save_game(Game* gamep, FILE* file) {
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
 		}
-		error = fprintf(file, (i != 0 ? "\r\n" : ""));
+		error = fprintf(file, (i != BOARD_SIZE-1 ? "\r\n" : ""));
 		CHECK(error)
 	}
 	return 0;
