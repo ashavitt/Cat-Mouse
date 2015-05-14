@@ -96,7 +96,7 @@ int load_images() {
 	if (red_surface == NULL) {
 		return -2;
 	}
-	
+	Uint32 beige_color = SDL_MapRGB(cat->format, 0xDD, 0xC8, 0xB6);
 	//text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
 	text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);

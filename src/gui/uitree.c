@@ -333,10 +333,13 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	}
 	if (state->type == GAME_EDIT) {
 		//cursor
-		tile_pos.x = GET_X(state->focused) * tile_dims.w;
-		tile_pos.y = GET_Y(state->focused) * tile_dims.h;
+		tile_pos.x = GET_X(state->focused) * tile_dims.w - 2; // TODO magic number
+		tile_pos.y = GET_Y(state->focused) * tile_dims.h - 2;
+		tile_dims.w += 6; // TODO magic number
+		tile_dims.h += 6;
 		obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, tiles, grid);
 		if (append(grid->children, obj) == NULL) {
+			printf("Error: appending cursor failed\n");
 			return NULL;
 		}
 	}

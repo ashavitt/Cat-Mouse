@@ -182,6 +182,8 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_F1:
 			if (state->type == IN_GAME && state->catormouse != PLAYING) {
 				id = RECONF_MOUSE_B;
+			} else if (state->type == GAME_EDIT) {
+				id = GOTO_MAIN_MENU_B;
 			}
 			break;
 		case SDLK_F2:
@@ -217,6 +219,11 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		case SDLK_w:
 			if (state->type == GAME_EDIT) {
 				return place_wall_action(NULL, state);
+			}
+			break;
+		case SDLK_s:
+			if (state->type == GAME_EDIT) {
+				id = SAVE_WORLD_B;
 			}
 			break;
 		default:
