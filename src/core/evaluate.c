@@ -119,7 +119,16 @@ int get_num_of_walls(struct board* board, byte x, byte y) {
 
 int evaluateGame(void* gamep) {
 	Game* game = (Game*) gamep;
-	int mouse_cheese, cat_mouse, cat_cheese;
+	int mouse_cheese, cat_mouse, cat_cheese, end_game_val;
+	if ((end_game_val = check_end_game(gamep)) != -1) {
+		if (end_game_val == MOUSE_WIN) {
+			return -10*INFINITY + game->turns;
+		} else if (end_game_val == CAT_WIN) {
+			return 10*INFINITY - game->turns;
+		} else if (end_game_val == TIE) {
+			return 0;
+		}
+	}
 	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
 	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y);
 	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
