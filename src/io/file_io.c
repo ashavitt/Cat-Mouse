@@ -126,7 +126,7 @@ int save_world(int id, Game* game) {
 	char dest_file_name[128];
 	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
 	
-	gamefile = fopen(dest_file_name, "r");
+	gamefile = fopen(dest_file_name, "w");
 	if (gamefile == NULL) {
 		perror("Error: fopen failed.\n");
 		return -1;
