@@ -148,11 +148,9 @@ int choose_action(Widget* widget, game_state* state) {
 	game_state* old_state;
 	if (state->type == SAVE_GAME) {
 		old_state = state->previous_state;
-		//printf("state->type: %d, old_state->type: %d\n", state->type, old_state->type);
 		old_state->world_id = state->number;
-		// save the world to file
-		//printf("old_state->game->board->board[0][0]: %u\n",old_state->game->board->board[0][0]);
 		// TODO test world validity
+		// save the world to file
 		if (save_world(old_state->world_id, old_state->game) != 0) {
 			//TODO error code
 			return 2;
@@ -411,7 +409,7 @@ int create_game_action(Widget* widget, game_state* state) {
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	// TODO free previous game?
-	state->game = load_world(state->world_id);
+	//state->game = load_world(state->world_id);
 	state->previous_state = old_state;
 	state->type = GAME_EDIT;
 	state->focused = 0;
@@ -428,9 +426,9 @@ int create_game_action(Widget* widget, game_state* state) {
 	game->cheese_x = BOARD_SIZE;
 	game->cheese_y = BOARD_SIZE;
 	//TODO magic number
+	state->game = game;
 	state->game->turns = 20;
 	state->world_id = 0;
-	state->game = game;
 	return 0;
 }
 
