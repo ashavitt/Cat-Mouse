@@ -18,6 +18,7 @@ SDL_Surface* bricks;
 SDL_Surface* tiles;
 SDL_Surface* grid_surface;
 SDL_Surface* black_surface;
+SDL_Surface* red_surface;
 
 int init(SDL_Surface**  screen) {
 	//initialize SDL
@@ -31,7 +32,7 @@ int init(SDL_Surface**  screen) {
 	if (*screen == NULL) {
 		return -1;
 	}
-
+	
 	//set window title
 	SDL_WM_SetCaption("Cat & Mouse", NULL);
 
@@ -57,6 +58,14 @@ int load_images() {
 	grid_surface = SDL_LoadBMP("images/grid.bmp");
 	
 	black_surface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0x000000ff);
+
+	red_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0); // 0xc22b31
+	// TODO change ordering of error checking
+	if (SDL_FillRect(red_surface, NULL, SDL_MapRGB(red_surface->format, 0xc2, 0x2b, 0x31)) != 0) { // NULL - paints whole surface
+		printf("Error: %s\n", SDL_GetError());
+		return -2;
+	}
+		
 	if (texts == NULL) {
 		return -1;
 	}
@@ -84,9 +93,12 @@ int load_images() {
 	if (black_surface == NULL) {
 		return -2;
 	}
+	if (red_surface == NULL) {
+		return -2;
+	}
 	
 	//text_colorkey = SDL_MapRGB(texts->format, 0xFF, 0xFF, 0xFF);
-  text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
+	text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey);
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey);
@@ -117,6 +129,7 @@ void cleanup() {
 	SDL_FreeSurface(bricks);
 	SDL_FreeSurface(cheese);
 	SDL_FreeSurface(black_surface);
+	SDL_FreeSurface(red_surface);
 	//Quit SDL
 	SDL_Quit();
 }
@@ -130,7 +143,7 @@ int run_gui() {
 	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
-	Uint32 white_colorkey;
+	Uint32 bg_colorkey;
 	//TODO check mallocs
 
 	if (init(&screen)) {
@@ -159,8 +172,8 @@ int run_gui() {
 			break;
 		}
 		//color the window white
-		white_colorkey = SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF);
-		if (SDL_FillRect(screen, NULL, white_colorkey) != 0) {
+		bg_colorkey = SDL_MapRGB(screen->format, 0xDD, 0xC8, 0xB6); 
+		if (SDL_FillRect(screen, NULL, bg_colorkey) != 0) {
 			printf("Error: %s\n", SDL_GetError());
 			quit = ERROR_FILL_RECT_FAILED;
 			break;

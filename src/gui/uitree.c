@@ -645,6 +645,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
 	//int y_offset;
 	int err;
+	SDL_Rect dims;
 	SDL_Rect pos = window->dims;
 
 	pos.x = pos.y = 0;
@@ -659,10 +660,23 @@ int build_game_scheme(Widget* window, game_state* state) {
 	pos.h = window->dims.h - pos.y;
 	pos.w = NL_BUTTON_W*1.15;
 	left_panel = new_panel(UNFOCUSABLE, pos, window);
+	
+	dims = pos;
+	dims.x = dims.y = 0;
+	if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, dims, red_surface, left_panel)) == 0) {
+		printf("Error: Appending bg to left_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
 
 	pos.x += pos.w;
 	pos.w = window->dims.w - pos.x;
 	grid_panel = new_panel(UNFOCUSABLE, pos, window);
+	dims = pos;
+	dims.x = dims.y = 0;
+	if (append(grid_panel->children, new_graphic(UNFOCUSABLE, dims, dims, red_surface, grid_panel)) == 0) {
+		printf("Error: Appending bg to left_panel\n");
+		return ERROR_APPEND_FAILED;
+	}
 
 	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
 		printf("Error: Some panel is null\n");

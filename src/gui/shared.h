@@ -57,6 +57,7 @@ extern SDL_Surface* bricks;
 extern SDL_Surface* tiles;
 extern SDL_Surface* grid_surface;
 extern SDL_Surface* black_surface;
+extern SDL_Surface* red_surface;
 #endif
 
 
