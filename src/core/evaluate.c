@@ -92,12 +92,38 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	return INFINITY;
 }
 
+int get_num_of_walls(struct board* board, byte x, byte y) {
+	int count = 0;
+	if (x + 1 == BOARD_SIZE) {
+		count += 1;
+	} else if (board->board[x+1][y] == WALL) {
+		count += 1;
+	}
+	if (y + 1 == BOARD_SIZE) {
+		count += 1;
+	} else if (board->board[x][y+1] == WALL) {
+		count += 1;
+	}
+	if (x - 1 == 0) {
+		count += 1;
+	} else if (board->board[x-1][y] == WALL) {
+		count += 1;
+	}
+	if (y - 1 == 0) {
+		count += 1;
+	} else if (board->board[x][y-1] == WALL) {
+		count += 1;
+	}
+	return count;
+}
+
 int evaluateGame(void* gamep) {
 	Game* game = (Game*) gamep;
 	int mouse_cheese, cat_mouse, cat_cheese;
 	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
 	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y);
 	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
+	int num_of_walls = get_num_of_walls(game->board, game->mouse_x, game->mouse_y);
 	//TODO define params
-	return 1*mouse_cheese -1*cat_cheese - 0.3*cat_mouse;
+	return 20*mouse_cheese -20*cat_cheese - 6*cat_mouse + num_of_walls;
 }
