@@ -409,7 +409,6 @@ int create_game_action(Widget* widget, game_state* state) {
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	// TODO free previous game?
-	//state->game = load_world(state->world_id);
 	state->previous_state = old_state;
 	state->type = GAME_EDIT;
 	state->focused = 0;
@@ -418,6 +417,11 @@ int create_game_action(Widget* widget, game_state* state) {
 	if (game == NULL) {
 		//TODO print error
 		return 1;
+	}
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			game->board->board[i][j] = EMPTY;
+		}
 	}
 	game->cat_x = BOARD_SIZE;
 	game->cat_y = BOARD_SIZE;
