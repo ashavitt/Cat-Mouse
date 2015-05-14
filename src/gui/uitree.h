@@ -82,4 +82,10 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 #define LOGO_W 600
 #define LOGO_H 156
 
+/* Error Messages */
+#define ERR_T_X_START 264
+#define ERR_T_Y_START 373
+#define ERR_T_W 264
+#define ERR_T_H 51
+
 #endif
