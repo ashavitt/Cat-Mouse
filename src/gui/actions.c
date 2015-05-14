@@ -73,6 +73,9 @@ int save_game_action(Widget* widget, game_state* state) {
 	state->previous_state = old_state;
 	state->type = SAVE_GAME;
 	state->focused = 0;
+	if (state->world_id == 0) {
+		state->world_id = DEFAULT_WORLD_INDEX;
+	}
 	state->number = state->world_id;
 	return 0;
 }
