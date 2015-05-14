@@ -452,6 +452,7 @@ int edit_game_action(Widget* widget, game_state* state) {
 	//state->game = game_malloc(); // TODO should be function that loads some world
 	state->previous_state = old_state;
 	state->type = EDIT_GAME;
+	state->number = DEFAULT_WORLD_INDEX;
 	state->focused = 0;
 	return 0;
 }
