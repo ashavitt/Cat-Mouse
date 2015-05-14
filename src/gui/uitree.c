@@ -996,37 +996,50 @@ int build_choose(Widget* window, game_state* state) {
 }
 
 int build_error_dialog(Widget* window, game_state* state) {
-	Widget *panel;
+	Widget *panel, *button;
 	SDL_Rect pos = {0,0,0,0};
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
+	SDL_Rect dims = {ERR_T_X_START, ERR_T_Y_START, ERR_T_W, ERR_T_H};
+	pos.h = dims.h * 1.7 + button_dims.h;
+	pos.w = dims.w;
 	
 	// We set real pos later
 	panel = new_panel(UNFOCUSABLE, pos, window);
 	if (panel == NULL) {
+		printf("Error: new_panel() failed\n");
 		return ERROR_NO_WIDGET;
 	}
 	
-	SDL_Rect dims = {ERR_T_X_START, ERR_T_Y_START, ERR_T_W, ERR_T_H};
 	
 	dims.y += state->number * ERR_T_H; // in state->number we save the error number in the sprite
-	if (append(panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, panel)) == NULL) {
+	if (append(panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, panel)) == 0) {
 		printf("Error: appending invalid world message\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
-	panel->pos.h += dims.h;
-	panel->pos.w += dims.w;
-	
-	pos.x += dims.h * 1.7;
+	pos.y += dims.h * 1.7;
 	
 	SDL_Rect text_dims = {MAIN_MENU_T_X_START + WL_T_W, MAIN_MENU_T_Y_START + 2*WL_T_H, WL_T_W, WL_T_H};
-
-	if (append(panel->children, build_text_button(BACK_B, pos, button_dims, text_dims, panel, back_action)) != 0) {
+	button = build_text_button(BACK_B, pos, button_dims, text_dims, panel, back_action);
+	if (button == NULL) {
+		printf("Error creating button\n");
+		return ERROR_NO_WIDGET;
+	}
+	if (append(panel->children, button) == 0) {
+		printf("Error appending back button\n");
+		return ERROR_APPEND_FAILED;
+	}
+	
+	panel->pos = get_center(window->dims, panel->pos);
+	
+	if (append(window->children, panel) == 0) {
+		printf("Error appending panel\n");
 		return ERROR_APPEND_FAILED;
 	}
 	
 	button_dims.y += WL_BUTTON_H;
 	if (set_focus_bg(window, button_dims, error_message_ids[state->focused]) != 0) {
+		printf("Error setting focused background\n");
 		return ERROR_NO_FOCUS;
 	}
 		
