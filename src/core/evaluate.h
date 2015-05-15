@@ -3,9 +3,10 @@
 #include "../core/board.h"
 #include "../error/error.h"
 #include <stdio.h>
+#include <math.h>
 
 #define FREE -1
-#define INFINITY 100000
+#define INFTY 100000
 
 #ifndef __BYTE__
 #define __BYTE__
