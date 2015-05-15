@@ -7,6 +7,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* Defines */
+#define BFLEN 10
+
 /* Macros */
 
 #define CHECK(num) if((num)<0) {return (num);}

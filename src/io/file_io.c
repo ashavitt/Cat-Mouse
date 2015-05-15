@@ -1,5 +1,6 @@
 #include "file_io.h"
 
+/** saves a game to a file */
 int save_game(Game* gamep, FILE* file) {
 	int error;
 	struct board tempboard = *(gamep->board);
@@ -19,12 +20,14 @@ int save_game(Game* gamep, FILE* file) {
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
 		}
-		error = fprintf(file, (i != BOARD_SIZE-1 ? "\r\n" : ""));
+		//TODO should it be linux new line or windows new line?
+		error = fprintf(file, (i != (BOARD_SIZE - 1) ? "\r\n" : ""));
 		CHECK(error)
 	}
 	return 0;
 }
 
+/** finds an obj (CAT, MOUSE, CHEESE) in the board and sets its coordinates */
 void find_obj(Game* gamep, char obj) {
 	int count = 0;
 	int x = 0, y = 0;
@@ -55,14 +58,13 @@ void find_obj(Game* gamep, char obj) {
 	}
 }
 
-#define BFLEN 10
 int load_game(Game* gamep, FILE* file) {
 	int error;
 	char* checker;
 	char buffer[BFLEN]; // a buffer to read the file into
 	buffer[BFLEN-1] = EOF;
 	if (fgets(buffer, BFLEN, file) == NULL) {
-		perror("Error: reading the world file failed\n");
+		fprintf(stderr, "Error: reading the world file failed\n");
 		return 1;
 	}
 	// get the first line
@@ -71,7 +73,7 @@ int load_game(Game* gamep, FILE* file) {
 	
 	// get the second line
 	if (fgets(buffer, BFLEN, file) == NULL) {
-		perror("Error: reading the world file failed\n");
+		fprintf(stderr, "Error: reading the world file failed\n");
 		return 1;
 	}
 	gamep->player = (strstr(buffer, "cat") == NULL) ? MOUSE : CAT; //set the next player
@@ -80,7 +82,7 @@ int load_game(Game* gamep, FILE* file) {
 	checker = fgets(buffer, BFLEN, file);
 	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
 		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
-			perror("Error: world file is not valid\n");
+			fprintf(stderr, "Error: world file is not valid\n");
 			return 1;
 		}
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
@@ -98,43 +100,57 @@ int load_game(Game* gamep, FILE* file) {
 	return 0;
 }
 
+/** Wrapper function for load_game
+  * it recieves a world_id, mallocs the game and finds the correct world file */
 Game* load_world(int id) {
 	FILE* gamefile;
 	char dest_file_name[128];
 	Game* game = game_malloc();
 	if (game == NULL) {
-		perror("Error: malloc failed.\n");
+		fprintf(stderr, "Error: malloc failed.\n");
 		return NULL;
 	}
+	// create the string of the world file path
 	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
 	
+	// open the world file
 	gamefile = fopen(dest_file_name, "r");
 	if (gamefile == NULL) {
-		perror("Error: fopen failed.\n");
+		fprintf(stderr, "Error: fopen failed.\n");
 		return NULL;
 	}
-	load_game(game, gamefile);
+	// call the load_game function
+	if (load_game(game, gamefile) != 0) {
+		fprintf(stderr, "Error: loading game %d from the file failed.\n", id);
+		return NULL;
+	}
 	if (fclose(gamefile) != 0) {
-		perror("Error: fclose failed.\n");
+		fprintf(stderr, "Error: fclose failed.\n");
 		return NULL;
 	}
 	return game;
 }
 
+/** Wrapper function for save_game
+  * it recieves a world_id, game, and finds the correct world file */
 int save_world(int id, Game* game) {
 	FILE* gamefile;
 	char dest_file_name[128];
+	// create the string of the world file path
 	snprintf(dest_file_name, 128, "worlds/world_%d.txt", id);
 	
 	gamefile = fopen(dest_file_name, "w");
 	if (gamefile == NULL) {
-		perror("Error: fopen failed.\n");
-		return -1;
+		fprintf(stderr, "Error: fopen failed.\n");
+		return 1;
 	}
-	save_game(game, gamefile);
+	if (save_game(game, gamefile) != 0) {
+		fprintf(stderr, "Error: saving game %d to the file failed.\n", id);
+		return 1;
+	}
 	if (fclose(gamefile) != 0) {
-		perror("Error: fclose failed.\n");
-		return -1;
+		fprintf(stderr, "Error: fclose failed.\n");
+		return 1;
 	}
 	return 0;
 }
