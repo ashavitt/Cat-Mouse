@@ -10,7 +10,7 @@ typedef struct MiniMaxResult MiniMaxResult;
   * if(isMaxPlayer) maximal value and otherwise minimal value.
   */
 MiniMaxResult getBetter(MiniMaxResult best, MiniMaxResult result, int isMaxPlayer) {
-	if(best.index < 0) {
+	if (best.index < 0) {
 		return result;
 	} else {
 		if (isMaxPlayer) { //this is instructive
@@ -58,7 +58,8 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		int alpha,
 		int beta) {
 
-	MiniMaxResult best;
+	MiniMaxResult best, bestChild, bottomChildResult;
+
 	best.index = -1;
 	if (isMaxPlayer) {
 		best.value = MIN_EVALUATION;
@@ -67,18 +68,18 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 	}
 	ListRef originalChildren = (*getChildren) (state); //load state's children
 	ListRef children = originalChildren; //save ALL the state's children for later
-
-	int myeval = evaluate(state);
+	
+	// TODO FIXME
+	/*int myeval = evaluate(state);
 	if (myeval == MAX_EVALUATION || myeval == MIN_EVALUATION) {
 		children = NULL;
 		best.value = myeval;
-	}
+	}*/
 
 	int index = 0; //counting how many children were inserted to childrenResults by now
 	//Assuming maxDepth>0
 	while (children != NULL && !isEmpty(children)) { //we run over the list of children
 		if (maxDepth == 1) { //then this is the last recursion level
-			MiniMaxResult bottomChildResult;
 			bottomChildResult.index = index;
 
 			int eval = (*evaluate) (headData(children)); //evaluation of the child
@@ -89,7 +90,7 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 			bottomChildResult.value = eval;
 			best = getBetter(best,bottomChildResult,isMaxPlayer);
 		} else {
-			MiniMaxResult bestChild = getBestChildAlphaBeta(headData(children),
+			bestChild = getBestChildAlphaBeta(headData(children),
 				maxDepth - 1, getChildren, freeState, evaluate, !isMaxPlayer,
 				alpha, beta);
 			bestChild.index = index;
@@ -122,7 +123,6 @@ MiniMaxResult getBestChild(void* state,
 		FreeFunc freeState,
 		int (*evaluate) (void*),
 		int isMaxPlayer) {
-
 	return getBestChildAlphaBeta(state, maxDepth, getChildren, freeState,
 		 evaluate, isMaxPlayer, MIN_EVALUATION, MAX_EVALUATION);
 }
