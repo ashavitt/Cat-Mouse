@@ -541,8 +541,6 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
  	SDL_Rect pos = get_center(title_panel->pos, rect);
  	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
- 	SDL_Rect zeros = {0,0,0,0};
- 	int offset;
  	/* Title Panel */
  	if (state->world_id != 0) {
 	 	/*title_text = new_panel(UNFOCUSABLE, pos, title_panel); // BAD POS! Edited later..
@@ -562,9 +560,10 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 		}
 		//offset = dims.w;
 		//pos.x = dims.w;
-		widget = number_to_graphic(UNFOCUSABLE, pos, state->world_id, TEXT_SIZE_LARGE, title_text); // world number
-		pos = get_center(dims, widget->pos); //widget->pos updated with w,h
-		pos.x += dims.w / 4; // TODO FIXME
+		widget = number_to_graphic(UNFOCUSABLE, pos, state->world_id, TEXT_SIZE_LARGE, title_panel); // world number
+		pos = get_center(title_panel->pos, widget->pos); //widget->pos updated with w,h
+		pos.x += dims.w / 8; // TODO FIXME
+		pos.y -= 1;
 		widget->pos = pos;
 		if (append(title_panel->children, widget) == NULL) {
 			printf("Error: appending world number\n");
