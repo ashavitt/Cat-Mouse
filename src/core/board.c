@@ -148,7 +148,7 @@ ListRef getChildren(void* gameVoid) {
 	// Run over all directions
 	for(int i = 0; i < 4; i++) {
 		if (dir_is_valid(gamep, i)) { // Direction is valid
-			Game* child = game_malloc(); // Allocate memory for child
+			Game* child = (Game*) malloc (sizeof(Game)); // Allocate memory for child
 			if (child == NULL) { // malloc failed
 				destroyList(children, free);
 				return NULL;
