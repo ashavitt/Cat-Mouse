@@ -537,7 +537,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
  }
  
 int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
- 	Widget *widget, *menu, *title_text;
+ 	Widget *widget, *menu;//, *title_text;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
  	SDL_Rect pos = get_center(title_panel->pos, rect);
  	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
@@ -545,30 +545,34 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
  	int offset;
  	/* Title Panel */
  	if (state->world_id != 0) {
-	 	title_text = new_panel(UNFOCUSABLE, pos, title_panel); // BAD POS! Edited later..
+	 	/*title_text = new_panel(UNFOCUSABLE, pos, title_panel); // BAD POS! Edited later..
 	 	if (append(title_panel->children, title_text) == NULL) {
 			printf("Error: appending title_text\n");
 			return ERROR_APPEND_FAILED;
-		}
+		}*/
 
 		// Dims for 'World' sprite
 		dims.x += 2*dims.w;
 		dims.y += dims.h;
-		widget = new_graphic(UNFOCUSABLE, dims, zeros, texts, title_text); // 'World'
-		if (append(title_text->children, widget) == NULL) {
+		pos = get_center(title_panel->pos, dims);
+		widget = new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel); // 'World'
+		if (append(title_panel->children, widget) == NULL) {
 			printf("Error: appending world heading\n");
 			return ERROR_APPEND_FAILED;
 		}
-		offset = dims.w;
-		pos.x = dims.w;
+		//offset = dims.w;
+		//pos.x = dims.w;
 		widget = number_to_graphic(UNFOCUSABLE, pos, state->world_id, TEXT_SIZE_LARGE, title_text); // world number
-		if (append(title_text->children, widget) == NULL) {
+		pos = get_center(dims, widget->pos); //widget->pos updated with w,h
+		pos.x += dims.w / 4; // TODO FIXME
+		widget->pos = pos;
+		if (append(title_panel->children, widget) == NULL) {
 			printf("Error: appending world number\n");
 			return ERROR_APPEND_FAILED;
 		}
-		offset += widget->pos.w; //FIXME
+		/*offset += widget->pos.w; //FIXME
 		dims = (SDL_Rect) {0,0,offset,title_panel->pos.h};
-		title_text->pos = get_center(title_panel->pos, dims); //FIXME
+		title_text->pos = get_center(title_panel->pos, dims);*/ //FIXME
 	} else { //world_id == 0		
 		dims.y += dims.h;
 		pos = get_center(title_panel->pos, dims);
@@ -577,7 +581,6 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 			printf("Error: appending world heading\n");
 			return ERROR_APPEND_FAILED;
 		}
-		
 	}
  	/* Top Buttons */
 	button_dims = (SDL_Rect) {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = (SDL_Rect) {0,0,NL_T_W,NL_T_H};
