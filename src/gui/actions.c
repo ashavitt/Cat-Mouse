@@ -460,6 +460,7 @@ int edit_game_action(Widget* widget, game_state* state) {
 	state->previous_state = old_state;
 	state->type = EDIT_GAME;
 	state->focused = 0;
+	state->number = DEFAULT_WORLD_INDEX;
 	return 0;
 }
 
