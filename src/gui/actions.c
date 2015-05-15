@@ -12,7 +12,9 @@ int back_action(Widget* widget, game_state* state) {
 }
 
 int pause_resume_action(Widget* widget, game_state* state) {
-	state->catormouse = (state->catormouse == PLAYING) ? PAUSED : PLAYING;
+	if (state->catormouse == PLAYING || state->catormouse == PAUSED) { // if someone has won, don't un/pause
+		state->catormouse = (state->catormouse == PLAYING) ? PAUSED : PLAYING;
+	}
 	return 0;
 }
 
