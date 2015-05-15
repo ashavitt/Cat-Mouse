@@ -6,7 +6,7 @@
 #include <math.h>
 
 #define FREE -1
-#define INFTY 100000
+#define INFTY 100
 
 #ifndef __BYTE__
 #define __BYTE__

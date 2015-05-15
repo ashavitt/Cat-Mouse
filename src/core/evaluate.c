@@ -124,11 +124,12 @@ int get_euclidean_dist(byte x1, byte y1, byte x2, byte y2) {
 int evaluateGame(void* gamep) {
 	Game* game = (Game*) gamep;
 	int mouse_cheese, cat_mouse, cat_cheese, end_game_val;
+	// first we check if game ended
 	if ((end_game_val = check_end_game(gamep)) != -1) {
 		if (end_game_val == MOUSE_WIN) {
-			return -10*INFTY + game->turns;
+			return -50*INFTY - game->turns;
 		} else if (end_game_val == CAT_WIN) {
-			return 10*INFTY - game->turns;
+			return 50*INFTY + game->turns;
 		} else if (end_game_val == TIE) {
 			return 0;
 		}
@@ -140,12 +141,18 @@ int evaluateGame(void* gamep) {
 	int euclidean_dist = get_euclidean_dist(game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
 	// check if the mouse can get to the cheese
 	int turns_left_mouse = (game->player == MOUSE) ? (game->turns / 2 + 1) : (game->turns / 2);
-	printf("mouse_cheese: %d, cat_cheese %d, cat_mouse %d, euclidean_dist %d, turns_left_mouse %d\n", mouse_cheese, cat_cheese, cat_mouse, euclidean_dist, turns_left_mouse);
+	//printf("mouse_cheese: %d, cat_cheese %d, cat_mouse %d, euclidean_dist %d, turns_left_mouse %d\n", mouse_cheese, cat_cheese, cat_mouse, euclidean_dist, turns_left_mouse);
 	// if the mouse can't get to the cheese we can ignore the distance between the mouse and the cheese
 	if (turns_left_mouse < mouse_cheese) {
-		printf("eval: %d\n", (20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist));
+		//printf("eval: %d\n", (20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist));
+		return (-6*cat_mouse) + num_of_walls - euclidean_dist + 10*turns_left_mouse;
+	}
+	// if the cat can still outrun the mouse to the cheese it should go towards the mouse
+	if (mouse_cheese - 2 >= cat_cheese) {
 		return (-6*cat_mouse) + num_of_walls - euclidean_dist;
 	}
+
 	//TODO define params
-	return 20*mouse_cheese -20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist;
+	//printf("eval: %d\n\n", 20*mouse_cheese -20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist);
+	return 10*mouse_cheese -20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist;
 }

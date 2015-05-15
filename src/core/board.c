@@ -247,6 +247,8 @@ int check_end_game(Game* gamep) {
 				return CAT_WIN;
 			}
 		}
+	}
+	for (int i = 0; i < 4; i++) {
 		//check if mouse won
 		if (gamep->cheese_x + dx[i] == gamep->mouse_x) {
 			if (gamep->cheese_y + dy[i] == gamep->mouse_y) {
