@@ -998,7 +998,7 @@ int build_choose(Widget* window, game_state* state) {
 int build_error_dialog(Widget* window, game_state* state) {
 	Widget *panel, *button;
 	SDL_Rect pos = {0,0,0,0};
-	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
+	SDL_Rect button_dims = {0, 2*WL_BUTTON_H, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect dims = {ERR_T_X_START, ERR_T_Y_START, ERR_T_W, ERR_T_H};
 	pos.h = dims.h * 1.7 + button_dims.h;
 	pos.w = dims.w;
@@ -1009,7 +1009,6 @@ int build_error_dialog(Widget* window, game_state* state) {
 		printf("Error: new_panel() failed\n");
 		return ERROR_NO_WIDGET;
 	}
-	
 	
 	dims.y += state->number * ERR_T_H; // in state->number we save the error number in the sprite
 	if (append(panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, panel)) == 0) {
@@ -1030,19 +1029,13 @@ int build_error_dialog(Widget* window, game_state* state) {
 		return ERROR_APPEND_FAILED;
 	}
 	
-	panel->pos = get_center(window->dims, panel->pos);
+	panel->pos = get_center(window->dims, panel->pos); // fix position for whole panel
 	
 	if (append(window->children, panel) == 0) {
 		printf("Error appending panel\n");
 		return ERROR_APPEND_FAILED;
 	}
-	
-	button_dims.y += WL_BUTTON_H;
-	if (set_focus_bg(window, button_dims, error_message_ids[state->focused]) != 0) {
-		printf("Error setting focused background\n");
-		return ERROR_NO_FOCUS;
-	}
-		
+			
 	return 0;
 }
 
