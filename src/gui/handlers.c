@@ -124,6 +124,10 @@ int handle_mouse_click(SDL_Event* event, Widget* window, game_state* state) {
 }
 
 int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
+	if (state == NULL) {
+		printf("Error state is null\n");
+		return ERROR_NO_STATE;
+	}
 	Widget* widget;
 	int err;
 	int id = -1;
@@ -148,11 +152,9 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			}
 			break;
 		case SDLK_TAB:
-			if (state == NULL) {
-				printf("Error state is null\n");
-				return ERROR_NO_STATE;
+			if (state->type != IN_GAME && state->type != GAME_EDIT) {
+				state->focused = (state->focused + 1) % get_obj_count(state->type);
 			}
-			state->focused = (state->focused + 1) % get_obj_count(state->type);
 			break;
 		case SDLK_UP:
 		case SDLK_DOWN:
