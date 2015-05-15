@@ -59,6 +59,7 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		int beta) {
 
 	MiniMaxResult best, bestChild, bottomChildResult;
+	int eval;
 
 	best.index = -1;
 	if (isMaxPlayer) {
@@ -75,6 +76,13 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		children = NULL;
 		best.value = myeval;
 	}*/
+	if (children == NULL || isEmpty(children)) {
+		eval = (*evaluate) (state); //evaluation of the child
+		//overflow check, Probably useless
+		eval = eval > MAX_EVALUATION ? MAX_EVALUATION : eval;
+		eval = eval < MIN_EVALUATION ? MIN_EVALUATION : eval;
+		best.value = eval;
+	}
 
 	int index = 0; //counting how many children were inserted to childrenResults by now
 	//Assuming maxDepth>0
@@ -82,7 +90,7 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		if (maxDepth == 1) { //then this is the last recursion level
 			bottomChildResult.index = index;
 
-			int eval = (*evaluate) (headData(children)); //evaluation of the child
+			eval = (*evaluate) (headData(children)); //evaluation of the child
 			//overflow check, Probably useless
 			eval = eval > MAX_EVALUATION ? MAX_EVALUATION : eval;
 			eval = eval < MIN_EVALUATION ? MIN_EVALUATION : eval;
