@@ -104,12 +104,12 @@ int get_num_of_walls(struct board* board, byte x, byte y) {
 	} else if (board->board[x][y+1] == WALL) {
 		count += 1;
 	}
-	if (x - 1 == 0) {
+	if (x == 0) {
 		count += 1;
 	} else if (board->board[x-1][y] == WALL) {
 		count += 1;
 	}
-	if (y - 1 == 0) {
+	if (y == 0) {
 		count += 1;
 	} else if (board->board[x][y-1] == WALL) {
 		count += 1;
