@@ -126,7 +126,6 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
 	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
-	Widget *temp_widget;
 	SDL_Rect zeros = {0,0,0,0};
 	SDL_Rect arrow_dims = {UP_ARROW_B_X, UP_ARROW_B_Y, UP_ARROW_B_W, UP_ARROW_B_H};
 	SDL_Rect world_t_dims = {TITLES_T_X_START, TITLES_T_Y_START - WL_T_H, WL_T_W, WL_T_H};
@@ -167,6 +166,12 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 			return NULL;
 		}
 		text->pos = get_center(text_dims, text->dims);
+		if (append(bg->children, text) == NULL) {
+			fprintf(stderr, "Error: append failed\n");
+			freeWidget(chooser);
+			freeWidget(text);
+			return NULL;
+		}
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
 		text = new_panel(UNFOCUSABLE, text_dims, bg);
@@ -176,7 +181,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 			return NULL;
 		}
 		// adds the "World "
-		if ((temp_widget = new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
+		if (new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text) == NULL) {
 			fprintf(stderr, "Error: new_graphic failed\n");
 			freeWidget(chooser);
 			return NULL;
@@ -186,6 +191,12 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		if ((number = number_to_graphic(UNFOCUSABLE, pos, state->number, TEXT_SIZE_MEDIUM, text)) == NULL){
 			fprintf(stderr, "Error: number_to_graphic failed\n");
 			freeWidget(chooser);
+			return NULL;
+		}
+		if (append(text->children, number) == NULL) {
+			fprintf(stderr, "Error: append failed\n");
+			freeWidget(chooser);
+			freeWidget(number);
 			return NULL;
 		}
 		pos = get_center(world_t_dims, number->pos);
@@ -274,7 +285,7 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 		fprintf(stderr, "Error: button creation failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
-	if (append(menu->children, button) == NULL); {
+	if (append(menu->children, button) == NULL) {
 		fprintf(stderr, "Error: append failed.\n");
 		freeWidget(button);
 		return ERROR_APPEND_FAILED;
