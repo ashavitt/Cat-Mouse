@@ -1094,6 +1094,10 @@ int build_ui(Widget* window, game_state* state) {
 	}
 
 	children = newList(NULL);
+	if (children == NULL) { 
+		fprintf(stderr, "Error: newList failed\n");
+		return ERROR_NEWLIST_FAILED;
+	}
 	window->children = children; // note: if this is here, we must used window->children throughout the entire function
 
 	switch (state->type) {
