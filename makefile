@@ -25,6 +25,12 @@ file_io_test: file_io_test.o file_io.o board.o ListUtils.o
 getChildren_test: getChildren_test.o file_io.o board.o ListUtils.o
 	gcc -o $@ $^ $(CFLAGS)
 
+CatAndMouse: CatAndMouse.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
+	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
+
+CatAndMouse.o: CatAndMouse.c CatAndMouse.h main.h
+	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+
 ListUtilsDemo.o: ListUtilsDemo.c  ListUtils.h
 	gcc -c $(CFLAGS) $<
 
