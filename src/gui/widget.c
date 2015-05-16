@@ -1,6 +1,8 @@
 #include "widget.h"
 #include <stdio.h>
 
+/** substituting 2 rects
+  * substituting only x, y values */
 int sub_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	if (rect1 == NULL) {
 		return ERROR_NO_RECT1;
@@ -15,6 +17,8 @@ int sub_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	//maybe change w,h
 }
 
+/** adding 2 rects
+  * adding only x, y values */
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	if (rect1 == NULL) {
 		return ERROR_NO_RECT1;
@@ -29,6 +33,8 @@ int add_rect(SDL_Rect* rect1, SDL_Rect* rect2) {
 	//maybe change w,h
 }
 
+/** draws the widget tree
+  * it receives the widget which is the root of the uitree */
 int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	ListRef children;
 	int err = 0;
@@ -41,11 +47,12 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	if ((err = add_rect(&abs_pos,&(widget->pos))) != 0) {
 		return err;
 	}
+	// if its drawable
 	if (widget->type == GRAPHIC) {
 		//if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
 		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &abs_pos) != 0) {
 			//SDL_FreeSurface(img);
-			printf("ERROR: failed to blit image: %s\n", SDL_GetError());
+			fprintf(stderr, "ERROR: failed to blit image: %s\n", SDL_GetError());
 			return ERROR_BLIT_FAIL; //TODO
 		}
 	}
@@ -63,7 +70,7 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 			break;
 		}
 		if ((err = draw_widget((Widget*) headData(children), window, abs_pos)) != 0) {
-			printf("error drawing child\n");
+			fprintf(stderr, "Error: drawing child failed\n");
 			return err;
 		}
 		children = tail(children); //cutting the head
@@ -72,7 +79,9 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	return err;
 }
 
-// TODO
+/** frees the widget and its children
+  * it is received as a freeFunc to destroy list
+  * it calls destroy list recursively with itself on the children list */
 void freeWidget(void* data) {
 	Widget* widget = (Widget*) data;
 	ListRef children;
@@ -85,16 +94,14 @@ void freeWidget(void* data) {
 		free(widget);
 		return;
 	}
-	// while (children != NULL) { //we run over the list of children
-	// 	freeWidget((void*) headData(children));
-	// 	children = tail(children); //cutting the head
-	// }
+	// calls destroy list on children with freeWidget recursively
 	destroyList(children,&freeWidget);
 
 	free(widget);
 	return;
 }
 
+/** finds a widget in the tree under root according to the id */
 Widget* find_widget_by_id(Widget* root, int id) {
 	ListRef children;
 	Widget* found = NULL;
@@ -144,6 +151,7 @@ int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_R
 	if (children == NULL) {
 		children = newList(NULL);
 		if (children == NULL) {
+			fprintf(stderr, "Error: malloc failed\n");
 			return ERROR_MALLOC_FAILED;
 		}
 	}
@@ -166,11 +174,11 @@ int graphicFactory(Widget* widget, int id,  SDL_Rect dims, SDL_Rect pos, SDL_Sur
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
-		printf("Error: malloc failed.\n");
+		fprintf(stderr, "Error: malloc failed.\n");
 		return NULL;
 	}
 	if (graphicFactory(widget, id, dims, pos, imgsrc, parent, NULL, 0, 1) != 0) {
-		printf("graphicFactory failed.\n");
+		fprintf(stderr, "Error: graphicFactory failed.\n");
 		return NULL;
 	}
 	return widget;
@@ -190,11 +198,11 @@ int panelFactory(Widget* widget, int id, SDL_Rect pos, Widget* parent, ListRef c
 Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick* onClick) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
-		//TODO error message
+		fprintf(stderr, "Error: malloc failed\n");
 		return NULL;
 	}
 	if (buttonFactory(widget, id, dims, pos, parent, NULL, 0, 1, onClick) != 0) {
-		printf("buttonFactory failed.\n");
+		fprintf(stderr, "Error: buttonFactory failed.\n");
 		return NULL;
 	}
 	return widget;
@@ -203,11 +211,11 @@ Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick*
 Widget* new_panel(int id, SDL_Rect pos, Widget* parent) {
 	Widget* widget = (Widget*) malloc(sizeof(Widget));
 	if (widget == NULL) {
-		//TODO
+		fprintf(stderr, "Error: malloc failed\n");
 		return NULL;
 	}
 	if (panelFactory(widget, id, pos, parent, NULL, 0, 1) != 0) {
-		printf("panelFactory failed.\n");
+		fprintf(stderr, "Error: panelFactory failed.\n");
 		return NULL;
 	}
 	return widget;
