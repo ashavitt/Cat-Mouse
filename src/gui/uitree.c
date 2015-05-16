@@ -246,6 +246,7 @@ Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
 	return menu;
 }
 
+/** appends a button to the menu */
 int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game_state* state) {
 	SDL_Rect main_pos = {0,0,0,0};
 	Widget* button;
@@ -275,12 +276,6 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 		fprintf(stderr, "Error: button creation failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
-	if (append(menu->children, button) == NULL) {
-		fprintf(stderr, "Error: append failed\n");
-		freeWidget(button);
-		return ERROR_APPEND_FAILED;
-	}
-		
 	return 0;
 }
 
@@ -302,25 +297,20 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 
 	// build the clickable widget
 	if (state->type == GAME_EDIT) {
-		grid_button = new_button(GRID_B, dims, pos, parent, grid_edit_mouse_action);
+		grid_button = new_button(GRID_B, dims, pos, NULL, grid_edit_mouse_action);
 	} else {
-		grid_button = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
+		grid_button = new_button(GRID_B, dims, pos, NULL, grid_mouse_action);
 	}
 	if (grid_button == NULL) {
 		fprintf(stderr, "Error: new_button failed\n");
 		return NULL;
 	}
+	grid_button->parent = parent;
 	//build the graphic of the grid
 	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid_button);
 	if (grid == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
 		freeWidget(grid_button);
-		return NULL;
-	}
-	if (append(grid_button->children, grid) == NULL) {
-		fprintf(stderr, "Error: append failed\n");
-		freeWidget(grid_button);
-		freeWidget(grid);
 		return NULL;
 	}
 	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
@@ -334,12 +324,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cat, grid);
 	if (obj == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
-		return NULL;
-	}
-	if (append(grid->children, obj) == NULL) {
-		fprintf(stderr, "Error: append failed\n");
 		freeWidget(grid_button);
-		freeWidget(obj);
 		return NULL;
 	}
 	//mouse
@@ -348,12 +333,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, mouse, grid);
 	if (obj == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
-		return NULL;
-	}
-	if (append(grid->children, obj) == NULL) {
-		fprintf(stderr, "Error: append failed\n");
 		freeWidget(grid_button);
-		freeWidget(obj);
 		return NULL;
 	}
 	//cheese
@@ -362,12 +342,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cheese, grid);
 	if (obj == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
-		return NULL;
-	}
-	if (append(grid->children, obj) == NULL) {
-		fprintf(stderr, "Error: append failed\n");
 		freeWidget(grid_button);
-		freeWidget(obj);
 		return NULL;
 	}
 	//walls
@@ -379,12 +354,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 				obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, bricks, grid);
 				if (obj == NULL) {
 					fprintf(stderr, "Error: new_graphic failed\n");
-					return NULL;
-				}
-				if (append(grid->children, obj) == NULL) {
-					fprintf(stderr, "Error: append failed\n");
 					freeWidget(grid_button);
-					freeWidget(obj);
 					return NULL;
 				}
 			}
@@ -399,12 +369,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 		obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, tiles, grid);
 		if (obj == NULL) {
 			fprintf(stderr, "Error: new_graphic failed\n");
-			return NULL;
-		}
-		if (append(grid->children, obj) == NULL) {
-			fprintf(stderr, "Error: append failed\n");
 			freeWidget(grid_button);
-			freeWidget(obj);
 			return NULL;
 		}
 	}
@@ -804,21 +769,23 @@ int build_main_menu(Widget* window, game_state* state) {
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims, logo_dims, title_pos;
 
-	ListRef children;
-	if ((children = window->children) != NULL) {
-		destroyList(children, &freeWidget);
-	}
+	//ListRef children;
+	//if ((children = window->children) != NULL) {
+	//	destroyList(children, &freeWidget);
+	//}
 
-	children = newList(NULL);
+	//children = newList(NULL);
+	//window->children = children;
+	ListRef children= window->children;
 
 	//create the title Cat & Mouse logo
 	logo_dims = (SDL_Rect) {0,0,LOGO_W,LOGO_H};
 	title_pos = get_center(window->dims, logo_dims);	
 	title_pos.y = 0.3*WL_BUTTON_H; // TODO magic number
 	title = new_graphic(UNFOCUSABLE, logo_dims, title_pos, logo_surface, window);
-	if (append(children, title) == NULL) {
-		return ERROR_APPEND_FAILED;
-	}
+	//if (append(children, title) == NULL) {
+	//	return ERROR_APPEND_FAILED;
+	//}
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
@@ -872,7 +839,6 @@ int build_main_menu(Widget* window, game_state* state) {
 	panel->pos = get_center(window->dims, panel->pos);
 
 	button_dims.y += WL_BUTTON_H;
-	window->children = children;
 
 	if (set_focus_bg(window, button_dims, main_menu_ids[state->focused]) != 0) {
 		return ERROR_NO_FOCUS;
