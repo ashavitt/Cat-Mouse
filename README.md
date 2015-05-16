@@ -84,7 +84,19 @@ MiniMax             ListUtils
 ```
 
 ## Directory Hierarchy
-
+- src - Source Files
+  - main - Main program, MiniMax and ListUtils
+  - core - All related to the game itself
+  - io - Input-Output operations
+  - gui - Everything relating the gui
+  - error - Error codes
+- images - All sprites
+- worlds - World files
+- test - Test source files
+  - core
+  - io  
+  - gui
+  
 ## Utility evaluation function:
 	high level description - 
 	reasoning -
