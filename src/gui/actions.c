@@ -35,7 +35,7 @@ int start_game_action(Widget* widget, game_state* state) { // TODO main menu fre
 	// Allocating space and adding the last state to the state stack
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
-		fprintf(stderr, "Error: start_game_action given NULL pointer")
+		fprintf(stderr, "Error: start_game_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
 	if (old_state == NULL) {
@@ -58,7 +58,7 @@ int start_game_action(Widget* widget, game_state* state) { // TODO main menu fre
  */
 int new_game_action(Widget* widget, game_state* state) { 
 	if (state == NULL) {
-		fprintf(stderr, "Error: new_game_action given NULL pointer")
+		fprintf(stderr, "Error: new_game_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
 	state->world_id = 1;
@@ -94,7 +94,7 @@ int load_game_action(Widget* widget, game_state* state) {
 /* Starts saving screen */
 int save_game_action(Widget* widget, game_state* state) {
 	if (state == NULL) {
-		fprintf(stderr, "Error: save_game_action given NULL pointer")
+		fprintf(stderr, "Error: save_game_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
 	Game* game = state->game;

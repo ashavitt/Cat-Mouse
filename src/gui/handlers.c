@@ -1,5 +1,6 @@
 #include "handlers.h"
 
+/** returns the number of focusable widgets in each window */
 byte get_obj_count(state_type type) {
 	switch (type) {
 		case MAIN_MENU:
@@ -22,6 +23,7 @@ byte get_obj_count(state_type type) {
 	return 0;
 }
 
+/** returns the array of focusable widgets in each window */
 byte* get_objs_arr(state_type type) {
 	switch (type) {
 		case MAIN_MENU:
@@ -44,8 +46,9 @@ byte* get_objs_arr(state_type type) {
 	return NULL;
 }
 
-
-
+/** a recursive function to handle a mouse click
+  * goes through the tree beneath widget and checks which clickable widgets were clicked
+  * calls the appropriate actions */
 int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_Rect abs_pos) {
 	ListRef children;
 	int err, array_size;
@@ -56,7 +59,7 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 		return ERROR_NO_SDLEVENT;
 	}
 	if ((err = add_rect(&abs_pos,&(widget->pos))) != 0) {
-		printf("Error in add_rect, %d\n",err);
+		fprintf(stderr, "Error: in add_rect, %d\n",err);
 		return err;
 	}
 
@@ -66,6 +69,7 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			if (state->type != GAME_EDIT) {
 				ids = get_objs_arr(state->type);
 				array_size = get_obj_count(state->type);
+				// set the focus
 				for (int i=0; i<array_size; i++) {
 					if (ids[i] == widget->id && widget->id != UNFOCUSABLE) {
 						state->focused = i;
@@ -74,17 +78,19 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 				}
 			}
 			if (widget->id == GRID_B) {
+				// create a widget to hold the coordinates of the mouse click
+				// we use the coordinates to determine which block inside the grid was pressed
 				widget2 = new_panel(0, (SDL_Rect) {e->button.x - abs_pos.x, e->button.y - abs_pos.y,0,0}, NULL);
 				if (widget2 == NULL) {
-					//TODO error
-					return -1;
+					fprintf(stderr, "Error: new_panel failed\n");
+					return 1;
 				}
 			} else {
 				widget2 = widget;
 			}
 			if ((err = (widget->onclick)(widget2, state)) != 0) {
 				if (err != 1) {
-					printf("Error in onclick func of widget, code %d\n",err);
+					fprintf(stderr, "Error: onclick func of widget failed, code %d\n",err);
 				}
 				return err;
 			}
@@ -93,7 +99,6 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			}
 		}
 	}
-//???
 	//TODO later we should cut the graphics to fit in the panel ???
 	if (widget->type == PANEL) {
 		abs_pos.w = (widget->pos).w;
@@ -107,8 +112,9 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			break;
 		}
 		if ((err = handle_mouse_click_rec(e, (Widget*) headData(children), state, abs_pos)) != 0) {
+			// err == 1 means quit was pressed
 			if (err != 1) {
-				printf("error handling click for child\n");
+				fprintf(stderr, "Error: handling click for child failed\n");
 			}
 			return err;
 		}
@@ -125,7 +131,7 @@ int handle_mouse_click(SDL_Event* event, Widget* window, game_state* state) {
 
 int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 	if (state == NULL) {
-		printf("Error state is null\n");
+		fprintf(stderr, "Error: state is null\n");
 		return ERROR_NO_STATE;
 	}
 	Widget* widget;
@@ -133,19 +139,20 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 	int id = -1;
 	switch(event->key.keysym.sym) {
 		case SDLK_ESCAPE:
+			//TODO when should this work?
 			return 1;
 		case SDLK_RETURN:
 			if (state->type != IN_GAME && state->type != GAME_EDIT) {
 				widget = find_widget_by_id(window, get_objs_arr(state->type)[state->focused]);
 				if (widget == NULL) {
 					// focused widget must exist
-					printf("ERROR no widget with id:%d was found\n",state->focused);
+					fprintf(stderr, "Error: no widget with id:%d was found\n",state->focused);
 					return ERROR_FOCUSED_ID;
 				}
 				if ((err = (widget->onclick)(widget, state)) != 0) {
 					// "NULL pointer exception"
 					if (err != 1) { // if it is 1, then its just clean closing
-						printf("Error in onclick func of widget, code %d\n",err);
+						fprintf(stderr, "Error: onclick func of widget failed, code %d\n",err);
 					}
 					return err;
 				}
@@ -153,6 +160,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 			break;
 		case SDLK_TAB:
 			if (state->type != IN_GAME && state->type != GAME_EDIT) {
+				// update the focused widget
 				state->focused = (state->focused + 1) % get_obj_count(state->type);
 			}
 			break;
@@ -231,17 +239,18 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 		default:
 			break;
 	}
+	// call the action of the pressed widget
 	if (id != -1) {
 		widget = find_widget_by_id(window, id);
 		if (widget == NULL) {
 			// focused widget must exist
-			printf("ERROR no widget with id:%d was found",state->focused);
+			fprintf(stderr, "Error: no widget with id:%d was found\n",state->focused);
 			return ERROR_FOCUSED_ID;
 		}
 		if ((err = (widget->onclick)(widget, state)) != 0) {
 			// "NULL pointer exception"
 			if (err != 1) { // if it is 1, then its just clean closing
-				printf("Error in onclick func of widget, code %d\n",err);
+				fprintf(stderr, "Error: onclick func of widget failed, code %d\n",err);
 			}
 			return err;
 		}
