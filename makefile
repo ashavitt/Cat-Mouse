@@ -11,15 +11,15 @@ VPATH = test/io/:src/io/:src/main/:src/core/:src/gui/:src/error/:test/core/:test
 all: ListUtilsDemo MiniMaxDemo CatAndMouse test
 
 clean:
-	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test
+	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test gui_main_test CatAndMouse
+
+test: file_io_test getChildren_test gui_main_test
 
 ListUtilsDemo: ListUtilsDemo.o ListUtils.o
 	$(LINKER)
                
-MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
+MiniMaxDemo: MiniMaxDemo.o ListUtils.o MiniMax.o
 	$(LINKER)
-
-test: file_io_test getChildren_test gui_main_test
 
 gui_main_test: main_test.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
 	$(GUI_LINKER)
@@ -30,7 +30,7 @@ file_io_test: file_io_test.o file_io.o board.o ListUtils.o
 getChildren_test: getChildren_test.o file_io.o board.o ListUtils.o
 	$(LINKER)
 
-CatAndMouse: CatAndMouse.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
+CatAndMouse: $(O_FILES)
 	$(GUI_LINKER)
 
 CatAndMouse.o: CatAndMouse.c CatAndMouse.h main.h
