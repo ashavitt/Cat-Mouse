@@ -9,17 +9,7 @@ const byte create_game_ids[CREATE_GAME_OBJS] = {GRID_B, PLACE_MOUSE_B, PLACE_CAT
 const byte load_game_ids[LOAD_GAME_OBJS] = {WORLD_CHOOSER, DONE_B, BACK_B};
 const byte error_message_ids[ERROR_MESSAGE_OBJS] = {BACK_B};
 
-SDL_Surface* texts;
-SDL_Surface* buttons;
-SDL_Surface* cat;
-SDL_Surface* mouse;
-SDL_Surface* cheese;
-SDL_Surface* bricks;
-SDL_Surface* tiles;
-SDL_Surface* grid_surface;
-SDL_Surface* black_surface;
-SDL_Surface* red_surface;
-SDL_Surface* logo_surface;
+SDL_Surface *texts, *buttons, *cat, *mouse, *cheese, *bricks, *tiles, *grid_surface, *black_surface, *red_surface, *logo_surface;
 
 /** initializes SDL */
 int init(SDL_Surface**  screen) {
@@ -45,120 +35,115 @@ int init(SDL_Surface**  screen) {
 
 /** loads all images for the GUI */
 int load_images() {
-	Uint32 text_colorkey;
-	Uint32 buttons_colorkey;
-	//Uint32 cat_colorkey;
-	//Uint32 mouse_colorkey;
-	//Uint32 bricks_colorkey;
-	Uint32 tiles_colorkey;
-	Uint32 grid_colorkey;
-	//Uint32 cheese_colorkey;
+	Uint32 text_colorkey, buttons_colorkey, tiles_colorkey, grid_colorkey;
+	//Uint32 cat_colorkey;	//Uint32 mouse_colorkey; //Uint32 bricks_colorkey; //Uint32 cheese_colorkey;
 	
 	texts = SDL_LoadBMP("images/texts.bmp");
 	if (texts == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 1;
+		return ERROR_SDL;
 	}
 	buttons = SDL_LoadBMP("images/buttons.bmp");
 	if (buttons == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	cat = SDL_LoadBMP("images/cat.bmp");
 	if (cat == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	mouse = SDL_LoadBMP("images/mouse.bmp");
 	if (mouse == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	bricks = SDL_LoadBMP("images/bricks.bmp");
 	if (bricks == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	cheese = SDL_LoadBMP("images/cheese.bmp");
 	if (cheese == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	tiles = SDL_LoadBMP("images/tiles.bmp");
 	if (tiles == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	grid_surface = SDL_LoadBMP("images/grid.bmp");
 	if (grid_surface == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	logo_surface = SDL_LoadBMP("images/logo.bmp");
 	if (logo_surface == NULL) {
 		fprintf(stderr, "Error: SDL_LoadBMP failed: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	
 	black_surface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0x000000ff);
 	if (black_surface == NULL) {
 		fprintf(stderr, "Error: SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
-		return 3;
+		return ERROR_SDL;
 	}
 
 	red_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0); // 0xc22b31
 	if (red_surface == NULL) {
 		fprintf(stderr, "Error: SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
-		return 3;
+		return ERROR_SDL;
 	}
 	Uint32 beige_color = SDL_MapRGB(cat->format, 0xD3, 0xB9, 0x9F);//d3b99f
 	Uint32 red_color = SDL_MapRGB(red_surface->format, 0xc2, 0x2b, 0x31);
 	if (SDL_FillRect(red_surface, NULL, red_color) != 0) { // NULL - paints whole surface
 		fprintf(stderr, "Error: %s\n", SDL_GetError());
-		return 2;
+		return ERROR_SDL;
 	}
 	// TODO tidy up	
 	text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	if (SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	buttons_colorkey = SDL_MapRGB(buttons->format, 0xFF, 0xFF, 0xFF);
 	if (SDL_SetColorKey(buttons,SDL_SRCCOLORKEY, buttons_colorkey) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	if (SDL_SetColorKey(cat,SDL_SRCCOLORKEY, beige_color) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	if (SDL_SetColorKey(mouse,SDL_SRCCOLORKEY, beige_color) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	tiles_colorkey = SDL_MapRGB(tiles->format, 0xC2, 0x2B, 0x31);
 	if (SDL_SetColorKey(tiles,SDL_SRCCOLORKEY, tiles_colorkey) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	if (SDL_SetColorKey(cheese,SDL_SRCCOLORKEY, beige_color) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	if (SDL_SetColorKey(bricks,SDL_SRCCOLORKEY, red_color) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	grid_colorkey = SDL_MapRGB(grid_surface->format, 0xFF, 0xFF, 0xFF);
 	if (SDL_SetColorKey(grid_surface, SDL_SRCCOLORKEY, grid_colorkey) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
-		return 6;
+		return ERROR_SDL;
 	}
 	return 0;
 }
 
 /** frees all the images and calls SDL_Quit*/
 void cleanup() {
+	// Free all surfaces
 	SDL_FreeSurface(texts);
 	SDL_FreeSurface(buttons);
 	SDL_FreeSurface(cat);
@@ -170,7 +155,7 @@ void cleanup() {
 	SDL_FreeSurface(logo_surface);
 	SDL_FreeSurface(black_surface);
 	SDL_FreeSurface(red_surface);
-	//Quit SDL
+	//Then quit SDL
 	SDL_Quit();
 }
 
@@ -186,20 +171,20 @@ int run_gui() {
 	Uint32 bg_colorkey;
 	if (event == NULL) {
 		fprintf(stderr, "Error: malloc failed\n");
-		return 3;
+		return ERROR_MALLOC_FAILED;
 	}
 	if (window == NULL) {
 		fprintf(stderr, "Error: malloc failed\n");
-		return 3;
+		return ERROR_MALLOC_FAILED;
 	}
 
 	if (init(&screen)) {
 		fprintf(stderr, "Error: init failed\n");
-		return 1;
+		return ERROR_SDL;
 	}
 	if (load_images()) {
 		fprintf(stderr, "Error: load_images failed\n");
-		return 2;
+		return ERROR_SDL;
 	}
 
 	if (widgetFactory(window, 0, WINDOW, window_rect, window_rect, NULL, NULL, NULL, 0, 1, NULL) != 0) {
@@ -214,7 +199,7 @@ int run_gui() {
 	state.world_id = 1;
 	state.number = 1;
 
-	//main loop
+	// Main loop
 	while (quit == 0) {
 		if (build_ui(window, &state) != 0) {
 			fprintf(stderr, "Error: build_ui failed\n");
