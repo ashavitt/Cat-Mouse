@@ -1,6 +1,7 @@
 # Cat-Mouse - Software Project - TAU 2015
-README.txt | C final project
-Tip: read with line wrapping.
+README.txt | C final project | Tip: read with line wrapping.
+
+git repository: https://github.com/ashavitt/Cat-Mouse
 ###### Partners: Amir Shavitt and Nitzan Pomerantz
 
 ## Introduction
