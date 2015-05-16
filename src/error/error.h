@@ -2,6 +2,9 @@
 #define __ERROR__
 
 
+/*** IO ***/
+#define ERROR_LOAD_WORLD_FAILED 200
+
 /*** GUI ***/
 /** Widget **/
 
