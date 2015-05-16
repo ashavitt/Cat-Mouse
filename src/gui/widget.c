@@ -45,6 +45,7 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 		return ERROR_NO_WINDOW;
 	}
 	if ((err = add_rect(&abs_pos,&(widget->pos))) != 0) {
+		fprintf(stderr, "Error: add_rect failed\n");
 		return err;
 	}
 	// if its drawable
