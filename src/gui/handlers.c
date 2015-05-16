@@ -99,7 +99,7 @@ int handle_mouse_click_rec(SDL_Event* e, Widget* widget, game_state* state, SDL_
 			}
 		}
 	}
-	//TODO later we should cut the graphics to fit in the panel ???
+	// this update is probably never used:
 	if (widget->type == PANEL) {
 		abs_pos.w = (widget->pos).w;
 		abs_pos.h = (widget->pos).h;
@@ -139,7 +139,7 @@ int handle_keyboard(SDL_Event* event, Widget* window, game_state* state) {
 	int id = -1;
 	switch(event->key.keysym.sym) {
 		case SDLK_ESCAPE:
-			//TODO when should this work?
+			// According to the forum - this always works
 			return 1;
 		case SDLK_RETURN:
 			if (state->type != IN_GAME && state->type != GAME_EDIT) {

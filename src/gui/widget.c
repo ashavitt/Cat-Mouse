@@ -50,15 +50,14 @@ int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos) {
 	}
 	// if its drawable
 	if (widget->type == GRAPHIC) {
-		//if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &(widget->pos)) != 0) {
 		if (SDL_BlitSurface(widget->imgsrc, &(widget->dims), window, &abs_pos) != 0) {
 			//SDL_FreeSurface(img);
 			fprintf(stderr, "ERROR: failed to blit image: %s\n", SDL_GetError());
-			return ERROR_BLIT_FAIL; //TODO
+			return ERROR_BLIT_FAIL;
 		}
 	}
 
-	//TODO later we should cut the graphics to fit in the panel
+	// we cut the graphics to fit in the panel 
 	if (widget->type == PANEL) {
 		abs_pos.w = (widget->pos).w;
 		abs_pos.h = (widget->pos).h;

@@ -232,7 +232,7 @@ int run_gui() {
 				} else if (ai_move(state.game) == 1) {
 					//if the ai played, we delay the game by half a second
 					state.catormouse = check_end_game(state.game);
-					SDL_Delay(500); //TODO how much?!
+					SDL_Delay(WAIT_TIME_MACHINE_MOVE);
 				}
 			}
 		}

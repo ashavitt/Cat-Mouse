@@ -68,14 +68,11 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		best.value = MAX_EVALUATION;
 	}
 	ListRef originalChildren = (*getChildren) (state); //load state's children
+	if (originalChildren == NULL) {
+		return best;
+	}
 	ListRef children = originalChildren; //save ALL the state's children for later
 	
-	// TODO FIXME
-	/*int myeval = evaluate(state);
-	if (myeval == MAX_EVALUATION || myeval == MIN_EVALUATION) {
-		children = NULL;
-		best.value = myeval;
-	}*/
 	if (children == NULL || isEmpty(children)) {
 		eval = (*evaluate) (state); //evaluation of the child
 		//overflow check, Probably useless
