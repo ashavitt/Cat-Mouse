@@ -55,6 +55,33 @@ Using the id field, we can set focus to widgets. In the project we have only set
 ## Error Handling
 We check for general runtime errors (allocation errors, SDL errors) every time such possible errors may occur. If such an error occurs, we print an error message to stderr and return some value to indicate an error occured. Such a value is NULL for functions returning pointers or some number other than 0, according to the error codes defined in error/error.h . The function calling the function where the error occured, will recieve an error code and print to stderr the higher level message about the error. Thus messages will be printed in all function-call depth, explaining exactly where the error occured. Eventually, some information may be retrieved from the program's return value using the $? command.
 ## Dependency Tree
+```
+MiniMax             ListUtils                                            
+  +                     +                                                
+  |                     |                                                
+  |                     +                                                
+  |                   board                                              
+  |        +------------+---------------------+                          
+  |        |            |                     |                          
+  |        +            +                     +                          
+  |    evaluate        shared                 io            game_settings
+  |    +                 +                     +    +------------+       
+  |    |                 |                     |    |                    
+  +----+                 +                     +    +                    
+       ai              widget                 actions                    
+                         +  +--               /  +                       
+                         |     \             /   |                       
+                         |      ------------/-+  |                       
+                         |                 /  |  |                       
+                         + +---------------   +  +                       
+                       uitree                 handlers                   
+                          +                      +                       
+                          |                      |                       
+                          +-------+  +-----------+                       
+                                  |  |                                   
+                                  +  +                                   
+                                  main                                   
+```
 
 ## Directory Hierarchy
 
