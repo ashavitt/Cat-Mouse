@@ -3,7 +3,7 @@
 /** checks if [x][y] is a valid place ignoring cat/mouse/cheese
  *
  */
-int node_is_valid(struct board* board, byte x, byte y) {
+int node_is_valid(struct board* board, byte x, byte y, byte ignore_x, byte ignore_y) {
 	if (x > BOARD_SIZE-1) {
 		return 0;
 	}
@@ -19,13 +19,19 @@ int node_is_valid(struct board* board, byte x, byte y) {
 	if (board->board[x][y] == WALL) {
 		return 0;
 	}
+	// we can set ignore coordinates
+	// we use it to ignore the third example
+	// e.g. we ignore the cheese between the cat and the mouse
+	if (ignore_x == x && ignore_y == y) {
+		return 0;
+	}
 	return 1;
 }
 
 /** BFS algorithm
  * runs in O(|E|+|V|) = O(n^2)
  */
-int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_y) {
+int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_y, byte ignore_x, byte ignore_y) {
 	byte dx[] = {0,1,0,-1};
 	byte dy[] = {-1,0,1,0};
 	char sign[BOARD_SIZE][BOARD_SIZE];
@@ -72,7 +78,7 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 			temp2->x = temp1->x + dx[i];
 			temp2->y = temp1->y + dy[i];
 			//first check the coordinates are valid
-			if (node_is_valid(board, temp2->x, temp2->y)) {
+			if (node_is_valid(board, temp2->x, temp2->y, ignore_x, ignore_y)) {
 				//check if the coordinates were searched already
 				if (sign[temp2->x][temp2->y] == FREE) {
 					//set the appropriate depth
@@ -140,23 +146,23 @@ int evaluateGame(void* gamep) {
 			return 0;
 		}
 	}
-	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
-	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y);
-	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
+	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y, BOARD_SIZE, BOARD_SIZE);
+	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y, BOARD_SIZE, BOARD_SIZE);
+	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
 	int num_of_walls = get_num_of_walls(game->board, game->mouse_x, game->mouse_y);
 	int euclidean_dist = get_euclidean_dist(game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
 	// check if the mouse can get to the cheese
 	int turns_left_mouse = (game->player == MOUSE) ? (game->turns / 2 + 1) : (game->turns / 2);
 	//printf("mouse_cheese: %d, cat_cheese %d, cat_mouse %d, euclidean_dist %d, turns_left_mouse %d\n", mouse_cheese, cat_cheese, cat_mouse, euclidean_dist, turns_left_mouse);
 	// if the mouse can't get to the cheese we can ignore the distance between the mouse and the cheese
-	if (turns_left_mouse < mouse_cheese) {
+	if (turns_left_mouse < mouse_cheese - 1) {
 		//printf("%d eval: %d\n", game->turns, (20*cat_cheese - 6*cat_mouse + num_of_walls - euclidean_dist));
 		return (-6*cat_mouse) + num_of_walls - euclidean_dist + 10*turns_left_mouse;
 	}
 	// if the cat can still outrun the mouse to the cheese it should go towards the mouse
 	if (mouse_cheese - 2 >= cat_cheese) {
 		//printf("%d eval: %d\n", game->turns, (-6*cat_mouse) + num_of_walls - euclidean_dist);
-		return (-6*cat_mouse) + num_of_walls - euclidean_dist;
+		return (-6*cat_mouse) + num_of_walls - euclidean_dist + 10*turns_left_mouse;
 	}
 
 	//TODO define params
