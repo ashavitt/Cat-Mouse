@@ -1,7 +1,7 @@
 #ifndef __WIDGET__
 #define __WIDGET__
 
-// includes
+/* Includes */
 #include "shared.h"
 #include "../main/ListUtils.h"
 #include "../error/error.h"
@@ -11,35 +11,49 @@
 typedef unsigned char byte;
 #endif
 
-
+/** Possible types for a widget.
+	Window:
+		There is only one window, it is the root of the whole widget tree for a specific screen (state).
+		As such parent=NULL for it.
+	Panel:
+		Holds a subgroup of several widgets
+	Graphic:
+		A widget to be used to blit some given part of an SDL_Surface to the screen
+	Button:
+		A widget to be clicked by a mouse.
+**/
 typedef enum {
 	WINDOW, PANEL, GRAPHIC, BUTTON
 } widget_type;
 
+/** Widget Definition **/
 typedef struct widget
 {
-	int id;
-	widget_type type;
+	int id; // widget id. Can be used to find widgets later and distinguish between widgets.
+		// Mostly, if we need not set focus to the widget, this is set to UNFOCUSABLE
+	widget_type type; // the widget type as defined above
+	//unsigned int
+	SDL_Rect dims; // defines dimensions in w,h and location in the original sprite for GRAPHIC
+		       // SDL_Rect = {x,y,w,h}, when x,y are from top left of sprite
+	SDL_Rect pos; // destination position - SDL_Rect = {x,y,w,h},
+		      //when x,y are from top left of sprite i.e. relative location
+	SDL_Surface* imgsrc; // source surface for blitting when type=GRAPHIC
 
-	//unsigned int x,y,w,h; // from top left of parent
-	SDL_Rect dims;
-	SDL_Rect pos; // destination position - should be relative to parent
-	SDL_Surface* imgsrc;
+	struct widget* parent; // pointer to the parent widget
+	ListRef children; // List of widget children for a widget. Children are viewd as "on top of" the parent
 
-	struct widget* parent;
+	byte focused; // DEPRECATED
+	byte updated; // DEPRECATED
+	byte disabled; // for buttons // DEPRECATED
 
-	ListRef children; // of struct widget
-
-	byte focused;
-	byte updated;
-	byte disabled; // for buttons
-
-	int (*onclick)(struct widget*, game_state*);
+	int (*onclick)(struct widget*, game_state*); // click handler for button
 } Widget;
 
+/* Typedef for a click handler of a button */
 typedef int (onclick)(Widget*, game_state*);
-typedef int (*onclickp)(Widget*, game_state*);
+typedef int (*onclickp)(Widget*, game_state*); // pointer
 
+/** Function Headers **/
 Widget* find_widget_by_id(Widget* root, int id);
 
 int add_rect(SDL_Rect* rect1, SDL_Rect* rect2);
@@ -50,17 +64,14 @@ void freeWidget(void* data);
 SDL_Rect get_center(SDL_Rect parent_dims, SDL_Rect size);
 
 Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, Widget* parent);
-
 Widget* new_button(int id,  SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick onClick);
-
 Widget* new_panel(int id, SDL_Rect pos, Widget* parent);
-
-int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
-
 int widgetFactory(Widget* widget, int id, widget_type type, SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc,
 	Widget* parent, ListRef children, byte focused, byte updated, onclick onClick);
 	
+int draw_widget(Widget* widget, SDL_Surface* window, SDL_Rect abs_pos);
 	
+/*** Widget IDs ***/
 /** General **/
 #define BACK_B 1
 #define QUIT_B 6
