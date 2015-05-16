@@ -1,56 +1,84 @@
 #include "actions.h"
 
+/*** actions.c
+ * This file includes action functions to be called by some GUI interaction.
+ * All actions are formatted as:
+ ** int action_name(Widget*,game_state*)
+ * Usually returns 0 when OK and else when an error occured
+ **/
+
+/* Quit Game Action */
 int quit_action(Widget* widget, game_state* state) {
-	return 1;
+	return 1; // 1 (specifically) will tell the main loop to quit the game cleanly
 }
 
+/* Go Back Action */
 int back_action(Widget* widget, game_state* state) {
-	game_state temp_state = *(state->previous_state);
-	free(state->previous_state);
-	*state = temp_state;
+	game_state temp_state = *(state->previous_state); // save the previous state's data
+	free(state->previous_state); // frees previous state
+	*state = temp_state; // place the previous state instead of the current
 	return 0;
 }
 
+/* Pause / Resume when IN_GAME */
 int pause_resume_action(Widget* widget, game_state* state) {
 	if (state->catormouse == PLAYING || state->catormouse == PAUSED) { // if someone has won, don't un/pause
-		state->catormouse = (state->catormouse == PLAYING) ? PAUSED : PLAYING;
+		state->catormouse = (state->catormouse == PLAYING) ? PAUSED : PLAYING; // instructive
 	}
 	return 0;
 }
 
+/* Start game helper function
+ * Not called from outside
+ */
 int start_game_action(Widget* widget, game_state* state) { // TODO main menu freeing?
+	// Allocating space and adding the last state to the state stack
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
+		fprintf(stderr, "Error: start_game_action given NULL pointer")
 		return ERROR_NO_STATE;
 	}
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	// TODO free previous game?
-	//state->game = game_malloc(); // TODO should be function that loads some world
+	// we've already loaded the world in the function calling this
 	state->previous_state = old_state;
 	state->type = CHOOSE_PLAYER;
 	state->focused = 0;
-	state->catormouse = CAT;
+	state->catormouse = CAT; // TODO
 	return 0;
 }
 
+/* New Game Action
+ * Called by the New Game button in the main menu
+ * Loads world 1 and starts the game
+ */
 int new_game_action(Widget* widget, game_state* state) { 
+	if (state == NULL) {
+		fprintf(stderr, "Error: new_game_action given NULL pointer")
+		return ERROR_NO_STATE;
+	}
 	state->world_id = 1;
 	Game* game = load_world(state->world_id);
+	if (game == NULL) {
+		fprintf(stderr, "Error: load_world failed. world_id=%d\n",state->world_id);
+		return ERROR_LOAD_WORLD_FAILED;
+	}
 	state->game = game;
 	return start_game_action(widget, state);
 }
 
-
-
+/* Load Game Action
+ * Starts the load game screen
+ */
 int load_game_action(Widget* widget, game_state* state) {
+	// Allocating space and adding the last state to the state stack
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
-	if (state == NULL) {
-		return ERROR_NO_STATE;
-	}
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
@@ -63,18 +91,22 @@ int load_game_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+/* Starts saving screen */
 int save_game_action(Widget* widget, game_state* state) {
-	Game* game = state->game;
-	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
+		fprintf(stderr, "Error: save_game_action given NULL pointer")
 		return ERROR_NO_STATE;
 	}
+	Game* game = state->game;
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	state->previous_state = old_state;
 	
+	// Check if world is valid for saving:
 	if (!(game->cat_x < BOARD_SIZE && game->cat_x >= 0) || !(game->cat_y < BOARD_SIZE && game->cat_y >= 0)) {
 		state->number = CAT_IS_MISSING_IND;
 		state->type = ERROR_DIALOG;
@@ -86,7 +118,6 @@ int save_game_action(Widget* widget, game_state* state) {
 		state->type = ERROR_DIALOG;
 	} else { // world is valid
 		state->type = SAVE_GAME;
-		
 		if (state->world_id == 0) {
 			state->world_id = DEFAULT_WORLD_INDEX;
 		}
@@ -96,102 +127,95 @@ int save_game_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+/* Starts reonconfigure state */
 int reconf_action(Widget* widget, game_state* state) {
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
+		fprintf(stderr, "Error: reconf_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
-	// TODO free previous game?
-	//state->game = game_malloc(); // TODO should be function that loads some world
 	state->previous_state = old_state;
-	state->focused = 0; // set?
+	state->focused = 0; 
 	
 	if (widget->id == RECONF_MOUSE_B) {
 		state->catormouse = MOUSE;
-		if (state->game->num_steps_mouse == 0) {
-			// TODO set focus to human button
-			// state->focused = 0;
-			// Already done..
+		if (state->game->num_steps_mouse == 0) { // human
+			// state->focused = 0; // set at the top - human button
 			state->type = CHOOSE_PLAYER;
 		} else { // machine
 			state->type = CHOOSE_PLAYER;
 			state->focused = 1; // machine is focused
+			// now we start another window on the stack, before showing the first one
 			old_state = (game_state*) malloc (sizeof(game_state));
-			if (state == NULL) {
-				return ERROR_NO_STATE;
-			}
 			if (old_state == NULL) {
+				fprintf(stderr, "Error: malloc failed\n");
 				return ERROR_MALLOC_FAILED;
 			}
 			memcpy(old_state, state, sizeof(game_state));
 			state->previous_state = old_state;
-			
 			state->focused = 0;
 			state->type = CHOOSE_SKILL;
 			state->number = state->game->num_steps_mouse;
 		}
-		// maybe prior set to focus / number! TODO
 	} else { // widget->id == RECONF_CAT_B
 		state->catormouse = CAT;
-		if (state->game->num_steps_cat == 0) {
-			// state->focused = 0; // human
-			// TODO set focus to human button
+		if (state->game->num_steps_cat == 0) { // human
+			// state->focused = 0; // already set - human button
 			state->type = CHOOSE_PLAYER;
 		} else { // machine
 			state->type = CHOOSE_PLAYER;
 			state->focused = 1; // machine is focused
+			// now we start another window on the stack, before showing the first one
 			old_state = (game_state*) malloc (sizeof(game_state));
-			if (state == NULL) {
-				return ERROR_NO_STATE;
-			}
 			if (old_state == NULL) {
+				fprintf(stderr, "Error: malloc failed\n");
 				return ERROR_MALLOC_FAILED;
 			}
 			memcpy(old_state, state, sizeof(game_state));
 			state->previous_state = old_state;
-			
 			state->focused = 0;
 			state->type = CHOOSE_SKILL;
 			state->number = state->game->num_steps_cat;
 		}
 	}
-
 	return 0;
 }
 
+/* Action to be called when Done is pressed in either SAVE_GAME, LOAD_WORLD, EDIT_GAME, CHOOSE_SKILL, CHOOSE_PLAYER */
 int choose_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: choose_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	game_state* old_state;
-	if (state->type == SAVE_GAME) {
+	if (state->type == SAVE_GAME) { // we don't have to start a new window, so we handle SAVE_GAME first
 		old_state = state->previous_state;
 		old_state->world_id = state->number;
-		// TODO test world validity
+		// world validity already tested
 		// save the world to file
 		if (save_world(old_state->world_id, old_state->game) != 0) {
-			//TODO error code
-			return 2;
+			fprintf(stderr, "Error: save_world failed\n");
+			return ERROR_SAVE_WORLD_FAILED;
 		}
-		// free this state
+		// free this state and go back to game editing
 		memcpy(state, old_state, sizeof(game_state));
 		free(old_state);
 		return 0;
 	}
-
+	
 	old_state = (game_state*) malloc (sizeof(game_state));
-	if (state == NULL) {
-		return ERROR_NO_STATE;
-	}
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
 	state->previous_state = old_state;
-
-	state->focused = 0;
-
+	state->focused = 0; // set focused for some of the windows
 	if (state->type == CHOOSE_PLAYER) {
 		if (state->catormouse == CAT) {
 			if (widget->id == HUMAN_B) {
@@ -203,7 +227,6 @@ int choose_action(Widget* widget, game_state* state) {
 					state->catormouse = MOUSE;
 				}
 				state->game->num_steps_cat = 0; // HUMAN is 0 steps
-				// assuming state is OK?
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
@@ -247,16 +270,25 @@ int choose_action(Widget* widget, game_state* state) {
 	} else if (state->type == LOAD_GAME) {
 		state->world_id = state->number;
 		Game* game = load_world(state->world_id);
+		if (game == NULL) {
+			fprintf(stderr, "Error: load_world failed. world_id=%d\n",state->world_id);
+			return ERROR_LOAD_WORLD_FAILED;
+		}
 		state->game = game;
 		return start_game_action(widget, state);
 	} else if (state->type == EDIT_GAME) {
 		state->type = GAME_EDIT;
 		state->world_id = state->number;
 		state->game = load_world(state->world_id);
+		if (state->game == NULL) {
+			fprintf(stderr, "Error: load_world failed. world_id=%d\n",state->world_id);
+			return ERROR_LOAD_WORLD_FAILED;
+		}
 	}
 	return 0;
 }
 
+/* Instructive */
 int do_nothing_action(Widget* widget, game_state* state) {
 	return 0;
 }
