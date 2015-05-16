@@ -8,7 +8,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	Widget* text = new_panel(id, main_pos, NULL);
 	SDL_Rect zero_dims;
 	SDL_Rect dims;
-	SDL_Rect pos = zeros; // TODO
+	SDL_Rect pos = zeros;
 	SDL_Rect offset_rect;
 	Widget* temp_widget;
 	int digit,width,height;
@@ -59,7 +59,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 
 	while (number != 0) {
 		digit = number % 10;
-		dims = zero_dims; // TODO memcpy?
+		dims = zero_dims;
 		dims.x += offset_rect.x * digit;
 		if ((temp_widget = new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
 			fprintf(stderr, "Error: new_graphic failed\n");
@@ -130,7 +130,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	SDL_Rect arrow_dims = {UP_ARROW_B_X, UP_ARROW_B_Y, UP_ARROW_B_W, UP_ARROW_B_H};
 	SDL_Rect world_t_dims = {TITLES_T_X_START, TITLES_T_Y_START - WL_T_H, WL_T_W, WL_T_H};
 	SDL_Rect arrow_pos = zeros;
-	SDL_Rect text_dims = bg_dims; // TODO??
+	SDL_Rect text_dims = bg_dims; 
 	SDL_Rect pos = zeros;
 	// text_dims is the area that includes the number or "World "+number
 	text_dims.w -= arrow_dims.w;
@@ -141,7 +141,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		return NULL;
 	}
 
-	chooser = new_button(id, main_pos, main_pos, NULL, do_nothing_action); // TODO do_nothing
+	chooser = new_button(id, main_pos, main_pos, NULL, do_nothing_action); 
 	if (chooser == NULL) {
 		fprintf(stderr, "Error: new_button failed\n");
 		freeWidget(chooser);
@@ -187,7 +187,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 			return NULL;
 		}
 		// pos is zeros
-		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER + world_t_dims.w; // TODO get rid of
+		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER + world_t_dims.w; 
 		if ((number = number_to_graphic(UNFOCUSABLE, pos, state->number, TEXT_SIZE_MEDIUM, text)) == NULL){
 			fprintf(stderr, "Error: number_to_graphic failed\n");
 			freeWidget(chooser);
@@ -230,7 +230,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		freeWidget(chooser);
 		return NULL;
 	}
-	// TODO error
+
 	down_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, down);
 	if (down_arrow == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
@@ -376,9 +376,9 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	}
 	if (state->type == GAME_EDIT) {
 		//cursor
-		tile_pos.x = GET_X(state->focused) * tile_dims.w - 2; // TODO magic number
+		tile_pos.x = GET_X(state->focused) * tile_dims.w - 2; // Fixing location
 		tile_pos.y = GET_Y(state->focused) * tile_dims.h - 2;
-		tile_dims.w += 6; // TODO magic number
+		tile_dims.w += 6; // fixing size
 		tile_dims.h += 6;
 		obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, tiles, grid);
 		if (obj == NULL) {
@@ -401,7 +401,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
  	if (state->catormouse == PLAYING || state->catormouse == PAUSED) {
  		dims = (SDL_Rect) {G_TITLES_X_START, G_TITLES_Y_START, G_TITLES_W, G_TITLES_H}; // "Mouse's move"
 		pos = get_center(title_panel->dims, dims);
-		offset = pos.y = 50; // TODO top margin
+		offset = pos.y = 50; // top margin
 		if (state->game->player == CAT) {
 			dims.y += dims.h; // now "Cat's move"
 		} 
@@ -604,15 +604,14 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 			fprintf(stderr, "Error: appending world heading failed\n");
 			return ERROR_APPEND_FAILED;
 		}
-		//offset = dims.w;
-		//pos.x = dims.w;
+		
 		widget = number_to_graphic(UNFOCUSABLE, pos, state->world_id, TEXT_SIZE_LARGE, title_panel); // world number
 		if (widget == NULL) {
 			fprintf(stderr, "Error: number_to_graphic failed\n");
 			return ERROR_NO_WIDGET;
 		}
 		pos = get_center(title_panel->pos, widget->pos); //widget->pos updated with w,h
-		pos.x += dims.w / 8; // TODO FIXME
+		pos.x += dims.w / 8; // Positioning of the number
 		pos.y -= 1;
 		widget->pos = pos;
 		if (append(title_panel->children, widget) == NULL) {
@@ -620,9 +619,6 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 			freeWidget(widget);
 			return ERROR_APPEND_FAILED;
 		}
-		/*offset += widget->pos.w; //FIXME
-		dims = (SDL_Rect) {0,0,offset,title_panel->pos.h};
-		title_text->pos = get_center(title_panel->pos, dims);*/ //FIXME
 	} else { //world_id == 0		
 		dims.y += dims.h;
 		pos = get_center(title_panel->pos, dims);
@@ -646,7 +642,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 		return ERROR_APPEND_FAILED;
 	}
 
-	pos.x -= button_dims.w * 1.7; // FIXME magic number
+	pos.x -= button_dims.w * 1.7;
 	text_dims.y += text_dims.h;
 	widget = build_text_button(SAVE_WORLD_B, pos, button_dims, text_dims, top_buttons, save_game_action);
 	if (widget == NULL) {
@@ -785,7 +781,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 		}
 	} else {
 		fprintf(stderr, "Error: bad state->type\n");
-		return -1; //TODO
+		return ERROR_BAD_STATE_TYPE;
 	}
 
 	/* Grid Panel */
@@ -806,7 +802,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	//create the title Cat & Mouse logo
 	logo_dims = (SDL_Rect) {0,0,LOGO_W,LOGO_H};
 	title_pos = get_center(window->dims, logo_dims);	
-	title_pos.y = 0.3*WL_BUTTON_H; // TODO magic number
+	title_pos.y = 0.3*WL_BUTTON_H;
 	if (new_graphic(UNFOCUSABLE, logo_dims, title_pos, logo_surface, window) == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
 		return ERROR_APPEND_FAILED;
@@ -976,8 +972,8 @@ int build_choose(Widget* window, game_state* state) {
 		text_dims.x = TITLES_T_X_START;
 		text_dims.y = TITLES_T_Y_START + 2*WL_T_H;
 	} else {
-		// TODO error
-		return -1;
+		fprintf(stderr, "Error: bad state type: %d, given to build_choose\n", state->type);
+		return ERROR_BAD_STATE_TYPE;
 	}
 
 	title_pos = get_center(window->dims, text_dims);
