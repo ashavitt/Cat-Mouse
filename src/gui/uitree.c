@@ -403,6 +403,10 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 
 		pos.x += dims.w; // pos for number to the right of title
 		widget = number_to_graphic(UNFOCUSABLE, pos, state->game->turns, TEXT_SIZE_SMALL, title_panel); //number of turns left, with small size and ()
+		if (widget == NULL) {
+			fprintf(stderr, "Error: number_to_graphic failed\n");
+			return ERROR_NO_WIDGET;
+		}
 		if (append(title_panel->children, widget) == NULL) {
 			fprintf(stderr, "Error: appending title widget failed\n");
 			freeWidget(widget);
@@ -437,6 +441,10 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 			} else { // machine is now playing, dims is ok
 			}
 			widget = build_text_button(PAUSE_B, pos, button_dims, dims, top_buttons, pause_resume_action);
+			if (widget == NULL) {
+				fprintf(stderr, "Error: build_text_button failed\n");
+				return ERROR_NO_WIDGET;
+			}
 			if (append(top_buttons->children, widget) == NULL) {
 				fprintf(stderr, "Error: appending title button widget failed\n");
 				freeWidget(widget);
@@ -503,6 +511,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	button_dims = (SDL_Rect) {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = (SDL_Rect) {0,0,NL_T_W,NL_T_H};
 	menu = create_menu(button_dims, left_panel);
 	if (menu == NULL) {
+		fprintf(stderr, "Error: create_menu failed\n");
 		return ERROR_NO_WIDGET;
 	}
 	//onclickp choose_action2 = choose_action; // local<-global // useless
@@ -517,6 +526,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 
 	if (append_menu(menu, RECONF_MOUSE_B, text_dims, reconf_action2, state) != 0) {
 		fprintf(stderr, "Error: appending button failed\n");
+		freeWidget(menu);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -566,36 +576,34 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
  }
  
 int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
- 	Widget *widget, *menu;//, *title_text;
+ 	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
  	SDL_Rect pos = get_center(title_panel->pos, rect);
  	SDL_Rect dims = rect, button_dims = {0,WL_BUTTON_H * 4, WS_BUTTON_W, WS_BUTTON_H}, text_dims;
  	/* Title Panel */
  	if (state->world_id != 0) {
-	 	/*title_text = new_panel(UNFOCUSABLE, pos, title_panel); // BAD POS! Edited later..
-	 	if (append(title_panel->children, title_text) == NULL) {
-			fprintf(stderr, "Error: appending title_text\n");
-			return ERROR_APPEND_FAILED;
-		}*/
-
 		// Dims for 'World' sprite
 		dims.x += 2*dims.w;
 		dims.y += dims.h;
 		pos = get_center(title_panel->pos, dims);
-		widget = new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel); // 'World'
-		if (append(title_panel->children, widget) == NULL) {
+		if (new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel) == NULL) { // 'World'
 			fprintf(stderr, "Error: appending world heading failed\n");
 			return ERROR_APPEND_FAILED;
 		}
 		//offset = dims.w;
 		//pos.x = dims.w;
 		widget = number_to_graphic(UNFOCUSABLE, pos, state->world_id, TEXT_SIZE_LARGE, title_panel); // world number
+		if (widget == NULL) {
+			fprintf(stderr, "Error: number_to_graphic failed\n");
+			return ERROR_NO_WIDGET;
+		}
 		pos = get_center(title_panel->pos, widget->pos); //widget->pos updated with w,h
 		pos.x += dims.w / 8; // TODO FIXME
 		pos.y -= 1;
 		widget->pos = pos;
 		if (append(title_panel->children, widget) == NULL) {
 			fprintf(stderr, "Error: appending world number failed\n");
+			freeWidget(widget);
 			return ERROR_APPEND_FAILED;
 		}
 		/*offset += widget->pos.w; //FIXME
@@ -604,8 +612,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	} else { //world_id == 0		
 		dims.y += dims.h;
 		pos = get_center(title_panel->pos, dims);
-		widget = new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel); // 'New World'
-		if (append(title_panel->children, widget) == NULL) { 
+		if (new_graphic(UNFOCUSABLE, dims, pos, texts, title_panel) == NULL) { // 'New World'
 			fprintf(stderr, "Error: appending world heading failed\n");
 			return ERROR_APPEND_FAILED;
 		}
@@ -615,16 +622,26 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	text_dims.x = 5*text_dims.w;
 	pos = get_center(top_buttons->pos, button_dims);
 	widget = build_text_button(GOTO_MAIN_MENU_B, pos, button_dims, text_dims, top_buttons, goto_main_menu_action);
+	if (widget == NULL) {
+		fprintf(stderr, "Error: build_text_button failed\n");
+		return ERROR_NO_WIDGET;
+	}
 	if (append(top_buttons->children, widget) == NULL) { 
 		fprintf(stderr, "Error: appending GOTO_MAIN_MENU_B failed\n");
+		freeWidget(widget);
 		return ERROR_APPEND_FAILED;
 	}
 
 	pos.x -= button_dims.w * 1.7; // FIXME magic number
 	text_dims.y += text_dims.h;
 	widget = build_text_button(SAVE_WORLD_B, pos, button_dims, text_dims, top_buttons, save_game_action);
+	if (widget == NULL) {
+		fprintf(stderr, "Error: build_text_button failed\n");
+		return ERROR_NO_WIDGET;
+	}
 	if (append(top_buttons->children, widget) == NULL) { 
 		fprintf(stderr, "Error: appending SAVE_WORLD_B failed\n");
+		freeWidget(widget);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -632,8 +649,13 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	text_dims.y -= text_dims.h;
 	text_dims.x -= text_dims.w;
 	widget = build_text_button(QUIT_B, pos, button_dims, text_dims, top_buttons, quit_action);
+	if (widget == NULL) {
+		fprintf(stderr, "Error: build_text_button failed\n");
+		return ERROR_NO_WIDGET;
+	}
 	if (append(top_buttons->children, widget) == NULL) { 
 		fprintf(stderr, "Error: appending QUIT_B failed\n");
+		freeWidget(widget);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -641,7 +663,13 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	button_dims = (SDL_Rect) {0,0,NL_BUTTON_W,NL_BUTTON_H}, text_dims = (SDL_Rect) {0,NL_T_H,NL_T_W,NL_T_H};
 	menu = create_menu(button_dims, left_panel);
 	if (menu == NULL) {
+		fprintf(stderr, "Error: create_menu failed\n");
 		return ERROR_NO_WIDGET;
+	}
+	if (append(left_panel->children, menu) == NULL) {
+		fprintf(stderr, "Error: appending build_grid failed\n");
+		freeWidget(menu);
+		return ERROR_APPEND_FAILED;
 	}
 	
 	if (append_menu(menu, PLACE_MOUSE_B, text_dims, place_mouse_action, state) != 0) {
@@ -674,10 +702,6 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	}
 
 	menu->pos = get_center(left_panel->dims,menu->pos);
-	if (append(left_panel->children, menu) == NULL) {
-		fprintf(stderr, "Error: appending build_grid failed\n");
-		return ERROR_APPEND_FAILED;
-	}
 	return 0;
 }
  
