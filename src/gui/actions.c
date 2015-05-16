@@ -240,7 +240,11 @@ int choose_action(Widget* widget, game_state* state) {
 				free_prev_states(state); // frees previous states before entering game
 				state->game->num_steps_mouse = 0; // human is 0 steps
 				state->type = IN_GAME;
-				state->catormouse = PLAYING; // TODO FIXME!!!!!!!
+				if (old_state->previous_state->previous_state->type == IN_GAME) {
+					state->catormouse = PAUSED; // According to the forum
+				} else {
+					state->catormouse = PLAYING;
+				}
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
@@ -265,7 +269,12 @@ int choose_action(Widget* widget, game_state* state) {
 			free_prev_states(state); // frees previous states before entering game
 			state->game->num_steps_mouse = state->number;
 			state->type = IN_GAME;
-			state->catormouse = PLAYING;  // TODO FIXME!!!!!!!
+			if (old_state->previous_state->previous_state->type == IN_GAME) {
+				state->catormouse = PAUSED; // According to the forum
+			} else {
+				state->catormouse = PLAYING;
+			}
+			
 		}
 	} else if (state->type == LOAD_GAME) {
 		state->world_id = state->number;
