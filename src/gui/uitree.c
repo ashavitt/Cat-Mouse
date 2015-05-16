@@ -531,11 +531,15 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	//onclickp choose_action2 = choose_action; // local<-global // useless
 	onclickp quit_action2 = quit_action;	// local<-global
 	onclickp reconf_action2 = reconf_action;
+	onclickp restart_game_action2 = restart_game_action;
+	onclickp goto_main_menu_action2 = goto_main_menu_action;
 	if (state->catormouse == PLAYING) {
 		//choose_action2 = do_nothing_action;
 		quit_action2 = do_nothing_action;
 		reconf_action2 = do_nothing_action;
 		// all other actions
+		restart_game_action2 = do_nothing_action;
+		goto_main_menu_action2 = do_nothing_action;
 	}
 
 	if (append_menu(menu, RECONF_MOUSE_B, text_dims, reconf_action2, state) != 0) {
@@ -551,19 +555,19 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	}
 
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, RESTART_GAME_B, text_dims, restart_game_action, state) != 0) {
+	if (append_menu(menu, RESTART_GAME_B, text_dims, restart_game_action2, state) != 0) {
 		fprintf(stderr, "Error: appending button failed\n");
 		return ERROR_APPEND_FAILED;
 	}
 
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, GOTO_MAIN_MENU_B, text_dims, goto_main_menu_action, state) != 0) {
+	if (append_menu(menu, GOTO_MAIN_MENU_B, text_dims, goto_main_menu_action2, state) != 0) {
 		fprintf(stderr, "Error: appending button failed\n");
 		return ERROR_APPEND_FAILED;
 	}
 
 	text_dims.x += NL_T_W;
-	if (append_menu(menu, QUIT_B, text_dims, quit_action2, state) != 0) { // TODO segfault on exit
+	if (append_menu(menu, QUIT_B, text_dims, quit_action2, state) != 0) {
 		fprintf(stderr, "Error: appending button failed\n");
 		return ERROR_APPEND_FAILED;
 	}
