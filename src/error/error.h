@@ -26,6 +26,7 @@
 #define ERROR_FOCUSED_ID 14
 
 /** UITree **/
+#define ERROR_BAD_STATE_TYPE 24
 
 /* build_ui */
 #define ERROR_APPEND_FAILED 20
