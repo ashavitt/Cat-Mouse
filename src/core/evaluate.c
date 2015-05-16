@@ -92,6 +92,8 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	return INFTY;
 }
 
+/** returns the number of walls (counting the board boundries)
+  * this is used as a tie breaker for the mouse move */
 int get_num_of_walls(struct board* board, byte x, byte y) {
 	int count = 0;
 	if (x + 1 == BOARD_SIZE) {
@@ -117,6 +119,7 @@ int get_num_of_walls(struct board* board, byte x, byte y) {
 	return count;
 }
 
+/** returns euclidean dist between two points */
 int get_euclidean_dist(byte x1, byte y1, byte x2, byte y2) {
 	return (int)sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 }
