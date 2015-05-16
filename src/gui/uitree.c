@@ -158,6 +158,7 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
 	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
+	Widget *temp_widget;
 	SDL_Rect zeros = {0,0,0,0};
 	SDL_Rect arrow_dims = {UP_ARROW_B_X, UP_ARROW_B_Y, UP_ARROW_B_W, UP_ARROW_B_H};
 	SDL_Rect world_t_dims = {TITLES_T_X_START, TITLES_T_Y_START - WL_T_H, WL_T_W, WL_T_H};
@@ -178,6 +179,12 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 
 	if (chooser == NULL || bg == NULL) {
 		fprintf(stderr, "Error: widget is NULL\n");
+		freeWidget(bg);
+		freeWidget(chooser);
+		return NULL;
+	}
+	if (append(chooser->children, bg) == NULL) {
+		fprintf(stderr, "Error: appending bg failed\n");
 		return NULL;
 	}
 
@@ -187,20 +194,41 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		text = number_to_graphic(UNFOCUSABLE, zeros, state->number, TEXT_SIZE_MEDIUM, bg);
 		if (text == NULL) {
 			fprintf(stderr, "Error: text widget is NULL\n");
+			freeWidget(chooser);
 			return NULL;
 		}
 		text->pos = get_center(text_dims, text->dims);
+		if (append(bg->children, text) == NULL) {
+			fprintf(stderr, "Error: appending text failed\n");
+			freeWidget(chooser);
+			freeWidget(text);
+			return NULL;
+		}
 	} else if (state->type == EDIT_GAME || state->type == LOAD_GAME || state->type == SAVE_GAME) {
 		// "World " + number
 		text = new_panel(UNFOCUSABLE, text_dims, bg);
 		if (text == NULL) {
 			// TODO is this error enough
 			fprintf(stderr, "Error: panel widget is NULL\n");
+			freeWidget(chooser);
+			return NULL;
+		}
+		if (append(bg->children, text) == NULL) {
+			fprintf(stderr, "Error: appending text failed\n");
+			freeWidget(chooser);
+			freeWidget(text);
 			return NULL;
 		}
 		// adds the "World "
-		if (append(text->children, new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
+		if ((temp_widget = new_graphic(UNFOCUSABLE, world_t_dims, zeros, texts, text)) == NULL) {
+			fprintf(stderr, "Error: new_graphic failed\n");
+			freeWidget(chooser);
+			return NULL;
+		}
+		if (append(text->children, temp_widget) == NULL) {
 			fprintf(stderr, "Error: append failed\n");
+			freeWidget(chooser);
+			freeWidget(temp_widget);
 			return NULL;
 		}
 		// pos is zeros
@@ -208,6 +236,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		pos.x += SPACE_BETWEEN_WORLD_AND_NUMBER + world_t_dims.w; // TODO get rid of
 		if ((number = number_to_graphic(UNFOCUSABLE, pos, state->number, TEXT_SIZE_MEDIUM, text)) == NULL){
 			fprintf(stderr, "Error: number_to_graphic failed\n");
+			freeWidget(chooser);
 			return NULL;
 		}
 		pos = get_center(world_t_dims, number->pos);
@@ -217,6 +246,8 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		// adds number
 		if (append(text->children, number) == NULL) {
 			fprintf(stderr, "Error: append failed\n");
+			freeWidget(chooser);
+			freeWidget(number);
 			return NULL;
 		}
 		text->dims.w = world_t_dims.w + number->dims.w + SPACE_BETWEEN_WORLD_AND_NUMBER;
@@ -224,47 +255,59 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		text->pos = get_center(text_dims, text->dims);
 	}
 
-	if (text == NULL) {
-		fprintf(stderr, "Error: text widget is NULL\n");
-		return NULL;
-	}
-
 	arrow_pos.x = text_dims.w;
 	up = new_button(LEVEL_UP_B, arrow_dims, arrow_pos, bg, arrow_action);
-	// TODO error
+	if (up == NULL) {
+		fprintf(stderr, "Error: new_button failed\n");
+		freeWidget(chooser);
+		return NULL;
+	}
+	if (append(bg->children, up) == NULL) {
+		fprintf(stderr, "Error: appending up failed\n");
+		freeWidget(chooser);
+		freeWidget(up);
+		return NULL;
+	}
 	up_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, up);
+	if (up_arrow == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		freeWidget(chooser);
+		return NULL;
+	}
 	if (append(up->children, up_arrow) == NULL) {
 		fprintf(stderr, "Error: appending up_arrow failed\n");
+		freeWidget(chooser);
+		freeWidget(up_arrow);
 		return NULL;
 	}
 	// Move to down arrow
 	arrow_pos.y += arrow_dims.h;
 	arrow_dims.y += arrow_dims.h;
 	down = new_button(LEVEL_DN_B, arrow_dims, arrow_pos, bg, arrow_action);
-	// TODO error
-	down_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, down);
-	if (append(down->children, down_arrow) == NULL) {
-		fprintf(stderr, "Error: appending down_arrow failed\n");
-		return NULL;
-	}
-
-	if (append(chooser->children, bg) == NULL) {
-		fprintf(stderr, "Error: appending bg failed\n");
-		return NULL;
-	}
-	if (append(bg->children, text) == NULL) {
-		fprintf(stderr, "Error: appending text failed\n");
-		return NULL;
-	}
-	if (append(bg->children, up) == NULL) {
-		fprintf(stderr, "Error: appending up failed\n");
+	if (down == NULL) {
+		fprintf(stderr, "Error: new_button failed\n");
+		freeWidget(chooser);
 		return NULL;
 	}
 	if (append(bg->children, down) == NULL) {
-		fprintf(stderr, "Error: appending down failed\n");
+		fprintf(stderr, "Error: appending up failed\n");
+		freeWidget(chooser);
+		freeWidget(down);
 		return NULL;
 	}
-
+	// TODO error
+	down_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, down);
+	if (up_arrow == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		freeWidget(chooser);
+		return NULL;
+	}
+	if (append(down->children, down_arrow) == NULL) {
+		fprintf(stderr, "Error: appending down_arrow failed\n");
+		freeWidget(chooser);
+		freeWidget(down_arrow);
+		return NULL;
+	}
 	return chooser;
 }
 
