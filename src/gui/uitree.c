@@ -123,19 +123,34 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 
 	//create the widgets
 	clickable = new_button(id, main_pos, main_pos, parent, onClick);
+	if (clickable == NULL) {
+		fprintf(stderr, "Error: new_button failed\n");
+		return NULL;
+	}
 	bg = new_graphic(UNFOCUSABLE, bg_dims, zeros, buttons, clickable);
-	text = new_graphic(UNFOCUSABLE, text_dims, text_pos, texts, bg);
-	//check everything worked
-	if (clickable == NULL || bg == NULL || text == NULL) {
-		//TODO print error
+	if (bg == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		freeWidget(clickable);
 		return NULL;
 	}
-
-	//add the widgets to the list of childrens
+	//add the widget to the list of childrens
 	if (append(clickable->children, bg) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(clickable);
+		freeWidget(bg);
 		return NULL;
 	}
+	text = new_graphic(UNFOCUSABLE, text_dims, text_pos, texts, bg);
+	if (text == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		freeWidget(clickable);
+		return NULL;
+	}
+	//add the widget to the list of childrens
 	if (append(bg->children, text) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(clickable);
+		freeWidget(text);
 		return NULL;
 	}
 	return clickable;
