@@ -311,11 +311,13 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	return chooser;
 }
 
+/** creates a menu template to be filled later with append_menu */
 Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
 	SDL_Rect pos = {0,0,0,0};
 	pos.w = button_dims.w;
 	Widget* menu = new_panel(UNFOCUSABLE, pos, parent);
 	if (menu == NULL) {
+		fprintf(stderr, "Error: new_panel failed\n");
 		return NULL;
 	}
 	//set the panel dims as the button dims for later usage
@@ -348,13 +350,19 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 		button = build_chooser(id, main_pos, bg_dims, menu, state);
 	}
 	//add the button to the menu children list
+	if (button == NULL) {
+		fprintf(stderr, "Error: button creation failed\n");
+		return NULL;
 	if (append(menu->children, button) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(button);
 		return ERROR_APPEND_FAILED;
 	}
 		
 	return 0;
 }
 
+/** updates the color of the selected widget*/
 int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 	Widget* button;
 	if ((button = find_widget_by_id(window, focused)) == NULL) {
@@ -364,19 +372,33 @@ int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 	return 0;
 }
 
+/** builds the grid and all the widgets inside it */
 Widget* build_grid(int id, Widget* parent, game_state* state) {
 	Widget *grid, *grid_button, *obj;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
 	SDL_Rect pos = get_center(parent->dims, dims);
 
+	// build the clickable widget
 	if (state->type == GAME_EDIT) {
 		grid_button = new_button(GRID_B, dims, pos, parent, grid_edit_mouse_action);
 	} else {
 		grid_button = new_button(GRID_B, dims, pos, parent, grid_mouse_action);
 	}
-
+	if (grid_button == NULL) {
+		fprintf(stderr, "Error: new_button failed\n");
+		return NULL;
+	}
+	//build the graphic of the grid
 	grid = new_graphic(UNFOCUSABLE, dims, dims, grid_surface, grid_button);
+	if (grid == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		freeWidget(grid_button);
+		return NULL;
+	}
 	if (append(grid_button->children, grid) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(grid_button);
+		freeWidget(grid);
 		return NULL;
 	}
 	SDL_Rect tile_dims = {0,0,GRID_W/7,GRID_H/7};
@@ -388,21 +410,42 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	tile_pos.x = game->cat_x * tile_dims.w;
 	tile_pos.y = game->cat_y * tile_dims.h;
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cat, grid);
+	if (obj == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		return NULL;
+	}
 	if (append(grid->children, obj) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(grid_button);
+		freeWidget(obj);
 		return NULL;
 	}
 	//mouse
 	tile_pos.x = game->mouse_x * tile_dims.w;
 	tile_pos.y = game->mouse_y * tile_dims.h;
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, mouse, grid);
+	if (obj == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		return NULL;
+	}
 	if (append(grid->children, obj) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(grid_button);
+		freeWidget(obj);
 		return NULL;
 	}
 	//cheese
 	tile_pos.x = game->cheese_x * tile_dims.w;
 	tile_pos.y = game->cheese_y * tile_dims.h;
 	obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, cheese, grid);
+	if (obj == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		return NULL;
+	}
 	if (append(grid->children, obj) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(grid_button);
+		freeWidget(obj);
 		return NULL;
 	}
 	//walls
@@ -412,7 +455,14 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 				tile_pos.x = j * tile_dims.w;
 				tile_pos.y = i * tile_dims.h;
 				obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, bricks, grid);
+				if (obj == NULL) {
+					fprintf(stderr, "Error: new_graphic failed\n");
+					return NULL;
+				}
 				if (append(grid->children, obj) == NULL) {
+					fprintf(stderr, "Error: append failed\n");
+					freeWidget(grid_button);
+					freeWidget(obj);
 					return NULL;
 				}
 			}
@@ -425,8 +475,14 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 		tile_dims.w += 6; // TODO magic number
 		tile_dims.h += 6;
 		obj = new_graphic(UNFOCUSABLE, tile_dims, tile_pos, tiles, grid);
+		if (obj == NULL) {
+			fprintf(stderr, "Error: new_graphic failed\n");
+			return NULL;
+		}
 		if (append(grid->children, obj) == NULL) {
-			fprintf(stderr, "Error: appending cursor failed\n");
+			fprintf(stderr, "Error: append failed\n");
+			freeWidget(grid_button);
+			freeWidget(obj);
 			return NULL;
 		}
 	}
