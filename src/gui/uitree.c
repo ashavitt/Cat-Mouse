@@ -556,7 +556,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 
 	menu->pos = get_center(left_panel->dims,menu->pos);
 	if (append(left_panel->children, menu) == NULL) {
-		fprintf(stderr, "Error: appending build_grid failed\n");
+		fprintf(stderr, "Error: appending menu failed\n");
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -667,7 +667,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 		return ERROR_NO_WIDGET;
 	}
 	if (append(left_panel->children, menu) == NULL) {
-		fprintf(stderr, "Error: appending build_grid failed\n");
+		fprintf(stderr, "Error: appending menu failed\n");
 		freeWidget(menu);
 		return ERROR_APPEND_FAILED;
 	}
@@ -706,7 +706,7 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 }
  
 int build_game_scheme(Widget* window, game_state* state) {  
-	Widget *title_panel, *top_buttons, *left_panel, *grid_panel;
+	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *grid_widget;
 	//int y_offset;
 	int err;
 	SDL_Rect dims;
@@ -715,19 +715,31 @@ int build_game_scheme(Widget* window, game_state* state) {
 	pos.x = pos.y = 0;
 	pos.h = S_NUM_T_H * 4;
 	title_panel = new_panel(UNFOCUSABLE, pos, window);
+	if (title_panel == NULL) {
+		fprintf(stderr, "Error: new_panel failed\n");
+		return ERROR_NO_WIDGET;
+	}
 
 	pos.y += pos.h;
 	pos.h = NL_BUTTON_H*1.5;
 	top_buttons = new_panel(UNFOCUSABLE, pos, window);
+	if (top_buttons == NULL) {
+		fprintf(stderr, "Error: new_panel failed\n");
+		return ERROR_NO_WIDGET;
+	}
 
 	pos.y += pos.h;
 	pos.h = window->dims.h - pos.y;
 	pos.w = NL_BUTTON_W*1.15;
 	left_panel = new_panel(UNFOCUSABLE, pos, window);
+	if (left_panel == NULL) {
+		fprintf(stderr, "Error: new_panel failed\n");
+		return ERROR_NO_WIDGET;
+	}
 	
 	dims = pos;
 	dims.x = dims.y = 0;
-	if (append(left_panel->children, new_graphic(UNFOCUSABLE, dims, dims, red_surface, left_panel)) == 0) {
+	if (new_graphic(UNFOCUSABLE, dims, dims, red_surface, left_panel) == NULL) {
 		fprintf(stderr, "Error: Appending bg to left_panel failed\n");
 		return ERROR_APPEND_FAILED;
 	}
@@ -735,16 +747,15 @@ int build_game_scheme(Widget* window, game_state* state) {
 	pos.x += pos.w;
 	pos.w = window->dims.w - pos.x;
 	grid_panel = new_panel(UNFOCUSABLE, pos, window);
+	if (grid_panel == NULL) {
+		fprintf(stderr, "Error: new_panel failed\n");
+		return ERROR_NO_WIDGET;
+	}
 	dims = pos;
 	dims.x = dims.y = 0;
-	if (append(grid_panel->children, new_graphic(UNFOCUSABLE, dims, dims, red_surface, grid_panel)) == 0) {
+	if (new_graphic(UNFOCUSABLE, dims, dims, red_surface, grid_panel) == NULL) {
 		fprintf(stderr, "Error: Appending bg to left_panel failed\n");
 		return ERROR_APPEND_FAILED;
-	}
-
-	if (grid_panel == NULL || title_panel == NULL || top_buttons == NULL || left_panel == NULL) {
-		fprintf(stderr, "Error: Some panel is null\n");
-		return ERROR_NO_WIDGET;
 	}
 
 	/* Top panel, buttons and left panel */
@@ -764,32 +775,11 @@ int build_game_scheme(Widget* window, game_state* state) {
 	}
 
 	/* Grid Panel */
-	if (append(grid_panel->children,build_grid(UNFOCUSABLE, grid_panel, state)) == 0) {
+	grid_widget = build_grid(UNFOCUSABLE, grid_panel, state);
+	if (append(grid_panel->children, grid_widget) == NULL) {
 		fprintf(stderr, "Error: appending build_grid failed\n");
 		return ERROR_APPEND_FAILED;
 	}
-
-	/* Append panels to window */
-	if (append(window->children, title_panel) == 0) {
-		fprintf(stderr, "Error: appending title_panel failed\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, top_buttons) == 0) {
-		fprintf(stderr, "Error: appending top_buttons failed\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, left_panel) == 0) {
-		fprintf(stderr, "Error: appending left_panel\n");
-		return ERROR_APPEND_FAILED;
-	}
-
-	if (append(window->children, grid_panel) == 0) {
-		fprintf(stderr, "Error: appending grid_panel\n");
-		return ERROR_APPEND_FAILED;
-	}
-
 	return 0;
 }
 
