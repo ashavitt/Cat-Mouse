@@ -68,7 +68,7 @@ int load_game(Game* gamep, FILE* file) {
 		return 1;
 	}
 	if (buffer[0] == 'q') {
-		return 10;
+		return CONSOLE_QUIT_CODE;
 	}
 	// get the first line
 	error = sscanf(buffer, "%hhu", &(gamep->turns)); //load the number of turns left
