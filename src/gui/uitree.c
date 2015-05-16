@@ -784,27 +784,18 @@ int build_game_scheme(Widget* window, game_state* state) {
 }
 
 int build_main_menu(Widget* window, game_state* state) {
-	Widget *panel, *title;
+	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims, logo_dims, title_pos;
-
-	//ListRef children;
-	//if ((children = window->children) != NULL) {
-	//	destroyList(children, &freeWidget);
-	//}
-
-	//children = newList(NULL);
-	//window->children = children;
-	ListRef children= window->children;
 
 	//create the title Cat & Mouse logo
 	logo_dims = (SDL_Rect) {0,0,LOGO_W,LOGO_H};
 	title_pos = get_center(window->dims, logo_dims);	
 	title_pos.y = 0.3*WL_BUTTON_H; // TODO magic number
-	title = new_graphic(UNFOCUSABLE, logo_dims, title_pos, logo_surface, window);
-	//if (append(children, title) == NULL) {
-	//	return ERROR_APPEND_FAILED;
-	//}
+	if (new_graphic(UNFOCUSABLE, logo_dims, title_pos, logo_surface, window) == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
+		return ERROR_APPEND_FAILED;
+	}
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
@@ -815,7 +806,13 @@ int build_main_menu(Widget* window, game_state* state) {
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
 	panel = create_menu(button_dims, window);
-	if (append(children, panel) == NULL) {
+	if (panel == NULL) {
+		fprintf(stderr, "Error: create_menu failed\n");
+		return ERROR_NO_WIDGET;
+	}
+	if (append(window->children, panel) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(panel);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -866,17 +863,10 @@ int build_main_menu(Widget* window, game_state* state) {
 }
 
 int build_choose_player(Widget* window, game_state* state) {
-	Widget *panel, *title;
+	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
-
-	ListRef children;
-	if ((children = window->children) != NULL) {
-		destroyList(children, &freeWidget);
-	}
-
-	children = newList(NULL);
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
@@ -891,8 +881,8 @@ int build_choose_player(Widget* window, game_state* state) {
 	}
 	title_pos = get_center(window->dims, text_dims);
 	title_pos.y = WL_BUTTON_H;
-	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
-	if (append(children, title) == NULL) {
+	if (new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window) == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -900,7 +890,13 @@ int build_choose_player(Widget* window, game_state* state) {
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
 	panel = create_menu(button_dims, window);
-	if (append(children, panel) == NULL) {
+	if (panel == NULL) {
+		fprintf(stderr, "Error: create_menu failed\n");
+		return ERROR_NO_WIDGET;
+	}
+	if (append(window->children, panel) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(panel);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -930,7 +926,6 @@ int build_choose_player(Widget* window, game_state* state) {
 
 	//change the background color of the focused button
 	button_dims.y += WL_BUTTON_H;
-	window->children = children;
 
 	if (set_focus_bg(window, button_dims, choose_player_ids[state->focused]) != 0) {
 		return ERROR_NO_FOCUS;
