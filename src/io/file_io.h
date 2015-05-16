@@ -8,10 +8,11 @@
 #include <stdlib.h>
 
 /* Defines */
-#define BFLEN 10
+// Buffer Length
+#define BFLEN 16
+#define CONSOLE_QUIT_CODE 10
 
 /* Macros */
-
 #define CHECK(num) if((num)<0) {return (num);}
 
 /* Functions */
