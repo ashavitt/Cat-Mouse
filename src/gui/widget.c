@@ -182,6 +182,13 @@ Widget* new_graphic(int id,  SDL_Rect dims, SDL_Rect pos, SDL_Surface* imgsrc, W
 		fprintf(stderr, "Error: graphicFactory failed.\n");
 		return NULL;
 	}
+	if (parent != NULL) {
+		if (append(parent->children, widget) == NULL) {
+			fprintf(stderr, "Error: append failed.\n");
+			freeWidget(widget);
+			return NULL;
+		}
+	}
 	return widget;
 }
 
@@ -206,6 +213,13 @@ Widget* new_button(int id, SDL_Rect dims, SDL_Rect pos, Widget* parent, onclick*
 		fprintf(stderr, "Error: buttonFactory failed.\n");
 		return NULL;
 	}
+	if (parent != NULL) {
+		if (append(parent->children, widget) == NULL) {
+			fprintf(stderr, "Error: append failed.\n");
+			freeWidget(widget);
+			return NULL;
+		}
+	}
 	return widget;
 }
 
@@ -218,6 +232,13 @@ Widget* new_panel(int id, SDL_Rect pos, Widget* parent) {
 	if (panelFactory(widget, id, pos, parent, NULL, 0, 1) != 0) {
 		fprintf(stderr, "Error: panelFactory failed.\n");
 		return NULL;
+	}
+	if (parent != NULL) {
+		if (append(parent->children, widget) == NULL) {
+			fprintf(stderr, "Error: append failed.\n");
+			freeWidget(widget);
+			return NULL;
+		}
 	}
 	return widget;
 }
