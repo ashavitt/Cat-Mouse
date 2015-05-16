@@ -352,7 +352,8 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 	//add the button to the menu children list
 	if (button == NULL) {
 		fprintf(stderr, "Error: button creation failed\n");
-		return NULL;
+		return ERROR_MALLOC_FAILED;
+	}
 	if (append(menu->children, button) == NULL) {
 		fprintf(stderr, "Error: append failed\n");
 		freeWidget(button);
