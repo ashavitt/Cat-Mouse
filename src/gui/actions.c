@@ -293,73 +293,96 @@ int do_nothing_action(Widget* widget, game_state* state) {
 	return 0;
 }
 
+/* Restart the game */
 int restart_game_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: restart_game_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	// saves current config of the game
 	int num_steps_cat = state->game->num_steps_cat, num_steps_mouse = state->game->num_steps_mouse;
-	game_free(state->game);
-	state->game = load_world(state->world_id);
-	state->catormouse = PLAYING;
-	state->game->num_steps_cat = num_steps_cat;
-	state->game->num_steps_mouse = num_steps_mouse;
+	game_free(state->game); // frees the game
+	state->game = load_world(state->world_id); // reloads the game from file
 	if (state->game == NULL) {
 		printf("Failed loading world number: %d\n", state->world_id);
 		return 1; // TODO ERROR
 	}
+	state->catormouse = PLAYING;
+	state->game->num_steps_cat = num_steps_cat; // sets the config like before
+	state->game->num_steps_mouse = num_steps_mouse;
 	return 0;
 }
 
+/* Go to main menu */
 int goto_main_menu_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: goto_main_menu_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	free_state(*state); // frees previous states
+	/* set up a new main_menu state */
 	state->type = MAIN_MENU;
 	state->focused = 0;
 	state->previous_state = NULL;
-	game_free(state->game);
-	/*state->game = load_world(state->world_id); // FIXME
-	if (state->game == NULL) {
-		printf("Failed loading world number: %d\n", state->world_id);
-		return 1; // TODO ERROR
-	}*/
+	game_free(state->game); // frees the game
 	return 0;
 }
 
+/* Arrow clicked in chooser widget */
 int arrow_action(Widget* widget, game_state* state) {
-	if (widget->id == LEVEL_UP_B) {
+	if (state == NULL || widget == NULL) {
+		fprintf(stderr, "Error: arrow_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	if (widget->id == LEVEL_UP_B) { // if the found widget is the up button
 		if (state->type == CHOOSE_SKILL) {
-			if (state->number >= NUM_OF_LEVELS) {
+			if (state->number >= NUM_OF_LEVELS) { // do not exceed max number of levels allowd
 				return 0;
 			}
 		} else if (state->type == LOAD_GAME || state->type == SAVE_GAME || state->type == EDIT_GAME) {
-			if (state->number >= NUM_OF_WORLDS){
+			if (state->number >= NUM_OF_WORLDS){ // same for worlds
 				return 0;
 			}
 		}
-		state->number++;
-	} else if (widget->id == LEVEL_DN_B) {
-		if (state->number <= 1) {
+		state->number++; // increase number
+	} else if (widget->id == LEVEL_DN_B) { // if the found widget is the down button
+		if (state->number <= 1) { // min is 1
 			return 0;
 		}
-		state->number--;
+		state->number--; // decrease number
 	}
 	return 0;
 }
 
+/* Helper fuction - make a move */
 int play_turn(int dir, game_state* state) {
-	if (dir_is_valid(state->game, dir)) {
-		move_obj(state->game, state->game->player, dir);
-		state->game->player = SWITCH(state->game->player);
-		state->game->turns--;
+	if (state == NULL) {
+		fprintf(stderr, "Error: play_turn given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	if (dir_is_valid(state->game, dir)) { // given a direction (defined in /core), tests if it a valid move
+		move_obj(state->game, state->game->player, dir); // makes the move
+		state->game->player = SWITCH(state->game->player); // switches the player
+		state->game->turns--; // decreases number of turns left
 	}
 	return 0;
 }
 
+/* Helper function - make a move in_game */
 int in_game_action(game_state* state, SDLKey key) {
-	if (state->catormouse != PLAYING) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: in_game_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	if (state->catormouse != PLAYING) { // if PAUSED or WIN do nothing
 		return 0;
 	}
 	int dir;
 	if (!((state->game->player == CAT && state->game->num_steps_cat == 0) || (state->game->player == MOUSE && state->game->num_steps_mouse == 0))) {
+		// if not a human move, do nothing
 		return 0;
 	}
-	switch (key) {
+	switch (key) { // possible key inputs
 		case SDLK_UP:
 			dir = UP;
 			break;
@@ -373,13 +396,20 @@ int in_game_action(game_state* state, SDLKey key) {
 			dir = LEFT;
 			break;
 		default:
-			//TODO error code
-			return 1;
+			fprintf(stderr, "Error: invalid key: %d; needs arrow keys\n", (int) key);
+			return ERROR_INVALID_KEY;
 	}
-	return play_turn(dir, state);
+	return play_turn(dir, state); // TRY to make the move
 }
 
+/* Helper function - make a move (of the cursor) game_edit
+ * Moves the editing cursor according to key given
+ */
 int game_editing_action(game_state* state, SDLKey key) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: game_editing_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	switch (key) {
 		case SDLK_UP:
 			if (GET_Y(state->focused) != 0) {
@@ -402,14 +432,22 @@ int game_editing_action(game_state* state, SDLKey key) {
 			}
 			break;
 		default:
-			//TODO error code
-			return 1;
+			fprintf(stderr, "Error: invalid key: %d; needs arrow keys\n", (int) key);
+			return ERROR_INVALID_KEY;
 	}
 	return 0;
 }
 
+/*  Handle mouse input in grid window: IN_GAME
+ * fake_widget is a widget used to pass ONLY the mouse position data to the action,
+ * without altering the action header. fake_widget->pos holds the mouse position, relative to board.
+ */
 int grid_mouse_action(Widget* fake_widget, game_state* state) {
-	if (state->catormouse != PLAYING) {
+	if (state == NULL || fake_widget == NULL) {
+		fprintf(stderr, "Error: grid_mouse_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	if (state->catormouse != PLAYING) { // if game is PAUSED or WIN do nothing
 		return 0;
 	}
 	SDL_Rect mouse_pos = fake_widget->pos; // mouse position, relative to board
@@ -419,6 +457,7 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 	x = mouse_pos.x / (GRID_W / 7);
 	y = mouse_pos.y / (GRID_H / 7);
 	for (int i=0; i<4; ++i) {
+		// for every possible direction, test if it a possible move
 		if (state->game->player == CAT && state->game->num_steps_cat == 0){
 			if (state->game->cat_x + dx[i] == x && state->game->cat_y + dy[i] == y) {
 				return play_turn(i, state);
@@ -429,74 +468,93 @@ int grid_mouse_action(Widget* fake_widget, game_state* state) {
 			}
 		}
 	}
-
-	return 0; // nothing happens
-}
-
-int grid_edit_mouse_action(Widget* fake_widget, game_state* state) {
-	SDL_Rect mouse_pos = fake_widget->pos; // mouse position, relative to board
-	int x = mouse_pos.x / (GRID_W / 7);
-	int y = mouse_pos.y / (GRID_H / 7);
-	state->focused = 10*x+y;
 	return 0;
 }
 
-int create_game_action(Widget* widget, game_state* state) {
-	game_state* old_state = (game_state*) malloc (sizeof(game_state));
+/*  Handle mouse input in grid window: GAME_EDIT
+ * fake_widget is a widget used to pass ONLY the mouse position data to the action,
+ * without altering the action header. 
+ */
+int grid_edit_mouse_action(Widget* fake_widget, game_state* state) {
 	if (state == NULL) {
+		fprintf(stderr, "Error: grid_edit_mouse_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
+	SDL_Rect mouse_pos = fake_widget->pos; // mouse position, relative to board
+	int x = mouse_pos.x / (GRID_W / 7);
+	int y = mouse_pos.y / (GRID_H / 7);
+	state->focused = 10*x+y; // cursor location is held as xy in state->focused
+	return 0;
+}
+
+/* Start a new game creation state */
+int create_game_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: create_game_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
-	// TODO free previous game?
+	// there is no allocated game in the main menu state so no need to free old_state->game
 	state->previous_state = old_state;
 	state->type = GAME_EDIT;
 	state->focused = 0;
 
-	Game* game = game_malloc();
+	Game* game = game_malloc(); // allocated memory for the new game
 	if (game == NULL) {
-		//TODO print error
-		return 1;
+		fprintf(stderr, "Error: game_malloc failed\n");
+		return ERROR_MALLOC_FAILED;
 	}
+	state->game = game;
+	// set up the new board as empty
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
 			game->board->board[i][j] = EMPTY;
 		}
 	}
+	// put cat, mouse and cheese off the board
 	game->cat_x = BOARD_SIZE;
 	game->cat_y = BOARD_SIZE;
 	game->mouse_x = BOARD_SIZE;
 	game->mouse_y = BOARD_SIZE;
 	game->cheese_x = BOARD_SIZE;
 	game->cheese_y = BOARD_SIZE;
-	//TODO magic number
-	state->game = game;
-	state->game->turns = 20;
-	state->world_id = 0;
+	game->turns = DEFAULT_NUMBER_OF_TURNS; // 20
+	state->world_id = 0; // used to determine its a new world and not editing an old one
 	return 0;
 }
 
+/* Start a new game editing SELECTION state */
 int edit_game_action(Widget* widget, game_state* state) {
-	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
+		fprintf(stderr, "Error: edit_game_action given NULL pointer");
 		return ERROR_NO_STATE;
 	}
+	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (old_state == NULL) {
+		fprintf(stderr, "Error: malloc failed\n");
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
-	// TODO free previous game?
-	//state->game = game_malloc(); // TODO should be function that loads some world
+	// there is no allocated game in the main menu state so no need to free old_state->game
 	state->previous_state = old_state;
-	state->type = EDIT_GAME;
-	state->focused = 0;
+	state->type = EDIT_GAME; // this is the "select world to edit" state
+	state->focused = 0; // default focus is always first focusable widget
 	state->number = DEFAULT_WORLD_INDEX;
 	return 0;
 }
 
+/** Game editing actions **/
+/* Helper function - remove object from game editing grid */
 int empty_place(game_state* state, int x, int y) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: empty_place given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	if (state->game->cat_x == x && state->game->cat_y == y) {
 		state->game->cat_x = BOARD_SIZE;
 		state->game->cat_y = BOARD_SIZE;
@@ -512,42 +570,62 @@ int empty_place(game_state* state, int x, int y) {
 	return 0;
 }
 
+/* Place a wall action */
 int place_wall_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: place_wall_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = WALL;
 	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
 	return 0;
 }
 
+/* Remove object action */
 int place_empty_action(Widget* widget, game_state* state) {
+	if (state == NULL) {
+		fprintf(stderr, "Error: place_empty_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	state->game->board->board[GET_X(state->focused)][GET_Y(state->focused)] = EMPTY;
-	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
+	empty_place(state, GET_X(state->focused), GET_Y(state->focused)); // remove something else from the place
 	return 0;
 }
 
+/* Place cat action (and remove previous cat) */
 int place_cat_action(Widget* widget, game_state* state) {
-	//state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
+	if (state == NULL) {
+		fprintf(stderr, "Error: place_cat_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
 	state->game->cat_x = GET_X(state->focused);
 	state->game->cat_y = GET_Y(state->focused);
 	state->game->board->board[state->game->cat_x][state->game->cat_y] = EMPTY;
-	//set the first player
-	state->game->player = CAT;
+	state->game->player = CAT; // set the first player
 	return 0;
 }
 
+/* Place mouse action (and remove previous mouse) */
 int place_mouse_action(Widget* widget, game_state* state) {
-	//state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
+	if (state == NULL) {
+		fprintf(stderr, "Error: place_mouse_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
 	state->game->mouse_x = GET_X(state->focused);
 	state->game->mouse_y = GET_Y(state->focused);
 	state->game->board->board[state->game->mouse_x][state->game->mouse_y] = EMPTY;
-	//set the first player
-	state->game->player = MOUSE;
+	state->game->player = MOUSE; // set the first player
 	return 0;
 }
 
+/* Place cheese action (and remove previous cheese) */
 int place_cheese_action(Widget* widget, game_state* state) {
-	//state->game->board->board[state->game->cheese_x][state->game->cheese_y] = EMPTY;
+	if (state == NULL) {
+		fprintf(stderr, "Error: place_cheese_action given NULL pointer");
+		return ERROR_NO_STATE;
+	}
 	empty_place(state, GET_X(state->focused), GET_Y(state->focused));
 	state->game->cheese_x = GET_X(state->focused);
 	state->game->cheese_y = GET_Y(state->focused);
