@@ -64,7 +64,7 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 		for (int i = 0; i < 4; i++) {
 			temp2 = (coord*) malloc (sizeof(coord));
 			if (temp2 == NULL) {
-				printf("Error: malloc failed.\n");
+				fprintf(stderr, "Error: malloc failed.\n");
 				destroyList(queue, free);
 				free(temp1);
 				return -1;
