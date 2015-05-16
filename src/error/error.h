@@ -4,6 +4,7 @@
 
 /*** IO ***/
 #define ERROR_LOAD_WORLD_FAILED 200
+#define ERROR_SAVE_WORLD_FAILED 201
 
 /*** GUI ***/
 /** Widget **/
