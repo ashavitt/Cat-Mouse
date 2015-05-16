@@ -62,7 +62,7 @@ MiniMax             ListUtils
   |                     +                                                
   |                   board                                              
   |        +------------+---------------------+                          
-  |                     |                     |                          
+  |        |            |                     |                          
   |        +            +                     +                          
   |    evaluate        shared                 io            game_settings
   |    +                 +                     +    +------------+       
