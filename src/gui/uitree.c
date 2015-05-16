@@ -10,6 +10,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	SDL_Rect dims;
 	SDL_Rect pos = zeros; // TODO
 	SDL_Rect offset_rect;
+	Widget* temp_widget;
 	int digit,width,height;
 	int n;
 	ListRef digits;
@@ -33,6 +34,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 			break;
 		default:
 			fprintf(stderr, "Error: bad size\n");
+			freeWidget(text);
 			return NULL;
 	}
 
@@ -48,8 +50,15 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= S_NUM_T_W; // ')'
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
-			fprintf(stderr, "Error: in append\n");
+		if ((temp_widget = new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			fprintf(stderr, "Error: new_graphic failed\n");
+			freeWidget(text);
+			return NULL;
+		}
+		if (append(digits, temp_widget) == NULL) {
+			fprintf(stderr, "Error: append failed\n");
+			freeWidget(temp_widget);
+			freeWidget(text);
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -59,8 +68,15 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 		digit = number % 10;
 		dims = zero_dims; // TODO memcpy?
 		dims.x += offset_rect.x * digit;
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+		if ((temp_widget = new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			fprintf(stderr, "Error: new_graphic failed\n");
+			freeWidget(text);
+			return NULL;
+		}
+		if (append(digits, temp_widget) == NULL) {
 			fprintf(stderr, "Error: append failed\n");
+			freeWidget(temp_widget);
+			freeWidget(text);
 			return NULL;
 		}
 		//add_rect(&pos, &offset_rect);
@@ -71,8 +87,15 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	if (size == TEXT_SIZE_SMALL) {
 		dims = zero_dims;
 		dims.x -= 2*S_NUM_T_W; // '('
-		if (append(digits, new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+		if ((temp_widget = new_graphic(UNFOCUSABLE, dims, pos, texts, text)) == NULL) {
+			fprintf(stderr, "Error: new_graphic failed\n");
+			freeWidget(text);
+			return NULL;
+		}
+		if (append(digits, temp_widget) == NULL) {
 			fprintf(stderr, "Error: append failed\n");
+			freeWidget(temp_widget);
+			freeWidget(text);
 			return NULL;
 		}
 		pos.x -= offset_rect.x;
@@ -82,7 +105,7 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	height = offset_rect.y;
 
 	add_rect(&(text->pos), &offset_rect); // fix for negative coordinates offset
-	text->dims.w = (text->pos.w = width); // DANGER
+	text->dims.w = (text->pos.w = width);
 	text->dims.h = (text->pos.h = height);
 
 	return text;
