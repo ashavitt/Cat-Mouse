@@ -42,6 +42,7 @@
 /** actions **/
 #define ERROR_NO_STATE 40
 #define ERROR_NO_GAME 41
+#define ERROR_INVALID_KEY 42
 
 /*** General ***/
 #define ERROR_MALLOC_FAILED 100
