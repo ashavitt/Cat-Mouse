@@ -1,7 +1,11 @@
 #include "uitree.h"
 
-// can only print positive numbers
-// character spacing?
+/** Number Generator
+ * Generates a graphic representing the given number
+ * Number must be positive. There is no upper bound except MAX_INT
+ * Size must be TEXT_SIZE_SMALL, TEXT_SIZE_MEDIUM or TEXT_SIZE_LARGE
+ * Note TEXT_SIZE_SMALL comes with braces () surrounding it.
+ */
 #define SPACE_BETWEEN_WORLD_AND_NUMBER (50)
 Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widget* parent) {
 	SDL_Rect zeros = {0,0,0,0};
@@ -92,6 +96,12 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	return text;
 }
 
+/** Builds a button with text over it
+ * main_pos is the position and defines by w,h the whole clickable area
+ * bg_dims is the background button location in the sprite 'buttons'
+ * text_dims is the button text location in the sprite 'texts'
+ * onClick is the pointer to the click handler
+ */
 Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect text_dims, Widget* parent, onclick* onClick) {
 	Widget* clickable;
 	Widget* bg;
@@ -124,6 +134,11 @@ Widget* build_text_button(int id, SDL_Rect main_pos, SDL_Rect bg_dims, SDL_Rect 
 	return clickable;
 }
 
+/** Builds a number chooser for CHOOSE_SKILL, LOAD_GAME, EDIT_GAME, SAVE_GAME
+ * with up down arrows. Some properties from state are used (i.e. not a generic builder)
+ * main_pos is the position and defines by w,h the whole clickable area
+ * bg_dims is the background button location in the sprite 'buttons'
+ */
 Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* parent, game_state* state) {
 	Widget *chooser, *bg, *text, *number, *up, *up_arrow, *down, *down_arrow;
 	SDL_Rect zeros = {0,0,0,0};
@@ -156,7 +171,6 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 		return NULL;
 	}
 
-	//text = new_panel(UNFOCUSABLE, text_dims, bg); // text_pos = zeros
 	if (state->type == CHOOSE_SKILL) {
 		// numbers
 		text = number_to_graphic(UNFOCUSABLE, zeros, state->number, TEXT_SIZE_MEDIUM, bg);
@@ -240,7 +254,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	return chooser;
 }
 
-/** creates a menu template to be filled later with append_menu */
+/** Creates a menu template to be filled later with append_menu */
 Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
 	SDL_Rect pos = {0,0,0,0};
 	pos.w = button_dims.w;
@@ -255,7 +269,7 @@ Widget* create_menu(SDL_Rect button_dims, Widget* parent) {
 	return menu;
 }
 
-/** appends a button to the menu */
+/** Appends a button to the menu */
 int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game_state* state) {
 	SDL_Rect main_pos = {0,0,0,0};
 	Widget* button;
@@ -293,7 +307,7 @@ int append_menu(Widget* menu, int id, SDL_Rect text_dims, onclick* onClick, game
 	return 0;
 }
 
-/** updates the color of the selected widget*/
+/** Updates the color of the selected (focused) widget*/
 int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 	Widget* button;
 	if ((button = find_widget_by_id(window, focused)) == NULL) {
@@ -303,7 +317,7 @@ int set_focus_bg(Widget* window, SDL_Rect new_button_dims, int focused) {
 	return 0;
 }
 
-/** builds the grid and all the widgets inside it */
+/** Builds the grid and all the widgets inside it */
 Widget* build_grid(int id, Widget* parent, game_state* state) {
 	Widget *grid, *grid_button, *obj;
 	SDL_Rect dims = {0,0,GRID_W,GRID_H};
@@ -390,7 +404,7 @@ Widget* build_grid(int id, Widget* parent, game_state* state) {
 	return grid_button;
 }
 
-/** build the buttons and texts in the IN_GAME state */
+/** Build all parts of the IN_GAME state*/
 int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
  	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
@@ -528,7 +542,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		freeWidget(menu);
 		return ERROR_APPEND_FAILED;
 	}
-	//onclickp choose_action2 = choose_action; // local<-global // useless
+	
 	onclickp quit_action2 = quit_action;	// local<-global
 	onclickp reconf_action2 = reconf_action;
 	onclickp restart_game_action2 = restart_game_action;
@@ -589,6 +603,7 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	return 0;
  }
  
+ /** Build all parts of the GAME_EDIT state */
 int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* left_panel, game_state* state) {
  	Widget *widget, *menu;
  	SDL_Rect rect = {TITLES_T_X_START,TITLES_T_Y_START,WL_T_W,WL_T_H};
@@ -714,10 +729,15 @@ int build_panels_game_edit(Widget* title_panel, Widget* top_buttons, Widget* lef
 	menu->pos = get_center(left_panel->dims,menu->pos);
 	return 0;
 }
- 
+
+/** Builds a general game scheme for both IN_GAME and GAME_EDIT
+ * This game scheme includes the following panels:
+ ** title_panel
+ ** left_panel
+ ** grid_panel
+ */
 int build_game_scheme(Widget* window, game_state* state) {  
 	Widget *title_panel, *top_buttons, *left_panel, *grid_panel, *grid_widget;
-	//int y_offset;
 	int err;
 	SDL_Rect dims;
 	SDL_Rect pos = window->dims;
@@ -794,6 +814,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 	return 0;
 }
 
+/** Build Main Menu UI **/
 int build_main_menu(Widget* window, game_state* state) {
 	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
@@ -873,6 +894,7 @@ int build_main_menu(Widget* window, game_state* state) {
 	return 0;
 }
 
+/** Build CHOOSE_PLAYER UI **/
 int build_choose_player(Widget* window, game_state* state) {
 	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
@@ -944,6 +966,7 @@ int build_choose_player(Widget* window, game_state* state) {
 	return 0;
 }
 
+/** Build CHOOSE_SKILL or LOAD_GAME/SAVE_GAME/EDIT_GAME window **/
 int build_choose(Widget* window, game_state* state) {
 	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
@@ -1029,7 +1052,6 @@ int build_choose(Widget* window, game_state* state) {
 	}
 
 	panel->pos = get_center(window->dims, panel->pos);
-
 	//change the background color of the focused widget
 	button_dims.y += WL_BUTTON_H;
 
@@ -1045,6 +1067,7 @@ int build_choose(Widget* window, game_state* state) {
 	return 0;
 }
 
+/** Build ERROR_DIALOG window for invalidity **/
 int build_error_dialog(Widget* window, game_state* state) {
 	Widget *panel, *button;
 	SDL_Rect pos = {0,0,0,0};
@@ -1083,6 +1106,7 @@ int build_error_dialog(Widget* window, game_state* state) {
 	return 0;
 }
 
+/** Call the right UI building function for the state **/
 int build_ui(Widget* window, game_state* state) {
 	ListRef children;
 	if ((children = window->children) != NULL) {
