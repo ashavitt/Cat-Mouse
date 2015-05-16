@@ -13,4 +13,6 @@
 #define SCREEN_HEIGHT 800
 #define BPP 32 //bits per pixel
 
+#define WAIT_TIME_MACHINE_MOVE 1000
+
 int run_gui();
