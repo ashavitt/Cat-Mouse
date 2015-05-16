@@ -1,2 +1,3 @@
 #define NUM_OF_WORLDS 5
 #define NUM_OF_LEVELS 110
+#define DEFAULT_NUMBER_OF_TURNS 20
