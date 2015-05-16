@@ -1,83 +1,88 @@
 CFLAGS=-Wall -g -std=c99 -pedantic-errors -lm
-O_FILES=MiniMax.o ListUtils.o
+LINKER=gcc -o $@ $^ $(CFLAGS)
+GUI_LINKER=gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
+COMPILER=gcc -c $(CFLAGS) $<
+GUI_COMPILER=gcc -c $(CFLAGS) $< `sdl-config --cflags`
+O_FILES=MiniMax.o ListUtils.o main.o widget.o uitree.o handlers.o actions.o board.o file_io.o ai.o evaluate.o shared.o CatAndMouse.o
+TEST_O_FILES=ListUtilsDemo.o MiniMaxDemo.o file_io_test.o getChildren_test.o gui_main_test.o
 H_FILES=ListUtils.h MiniMax.h
-VPATH = test/io/:src/io/:src/main/:src/structs/:src/core/:src/gui/:src/error/:test/core/:test/gui/
+VPATH = test/io/:src/io/:src/main/:src/core/:src/gui/:src/error/:test/core/:test/gui/
 
-all: ListUtilsDemo MiniMaxDemo 
+all: ListUtilsDemo MiniMaxDemo CatAndMouse test
 
 clean:
-	rm -f $(O_FILES) ListUtilsDemo.o MiniMaxDemo.o GameUtils.o board.o ai.o evaluate.o file_io.o main.o uitree.o handlers.o actions.o file_io_test.o widget.o getChildren_test.o ListUtilsDemo MiniMaxDemo file_io_test getChildren_test shared.o
+	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test
 
 ListUtilsDemo: ListUtilsDemo.o ListUtils.o
-	gcc -o $@ $^ $(CFLAGS)
+	$(LINKER)
                
 MiniMaxDemo: MiniMaxDemo.o $(O_FILES)
-	gcc -o $@ $^ $(CFLAGS)
+	$(LINKER)
 
 test: file_io_test getChildren_test gui_main_test
 
 gui_main_test: main_test.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
-	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
+	$(GUI_LINKER)
 
 file_io_test: file_io_test.o file_io.o board.o ListUtils.o
-	gcc -o $@ $^ $(CFLAGS)
+	$(LINKER)
 
 getChildren_test: getChildren_test.o file_io.o board.o ListUtils.o
-	gcc -o $@ $^ $(CFLAGS)
+	$(LINKER)
 
 CatAndMouse: CatAndMouse.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
-	gcc -o $@ $^ $(CFLAGS) `sdl-config --libs`
+	$(GUI_LINKER)
 
 CatAndMouse.o: CatAndMouse.c CatAndMouse.h main.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 ListUtilsDemo.o: ListUtilsDemo.c  ListUtils.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 MiniMaxDemo.o: MiniMaxDemo.c MiniMax.h ListUtils.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 MiniMax.o: MiniMax.c MiniMax.h ListUtils.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 ListUtils.o: ListUtils.c ListUtils.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 file_io_test.o: file_io_test.c
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 file_io.o: file_io.c file_io.h board.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 board.o: board.c board.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 ai.o: ai.c ai.h board.h MiniMax.h evaluate.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 evaluate.o: evaluate.c evaluate.h board.h
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 getChildren_test.o: getChildren_test.c
-	gcc -c $(CFLAGS) $<
+	$(COMPILER)
 
 main_test.o: main_test.c
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 main.o: main.c main.h shared.h widget.h uitree.h handlers.h error.h board.h ListUtils.h file_io.h ai.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 widget.o: widget.c widget.h shared.h ListUtils.h error.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 uitree.o: uitree.c uitree.h shared.h widget.h ListUtils.h error.h actions.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 handlers.o: handlers.c shared.h widget.h ListUtils.h error.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 actions.o: actions.c shared.h widget.h ListUtils.h error.h game_settings.h file_io.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
 
 shared.o: shared.c shared.h board.h
-	gcc -c $(CFLAGS) $< `sdl-config --cflags`
+	$(GUI_COMPILER)
