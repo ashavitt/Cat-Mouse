@@ -1,5 +1,5 @@
 # Cat-Mouse - Software Project - TAU 2015
-C final project
+README.txt | C final project
 ###### Partners: Amir Shavitt and Nitzan Pomerantz
 
 ## Introduction
@@ -22,7 +22,11 @@ asdasdasd asd
 #### Button
 ##### Onclick
 
-## List of files
+## Error Handling
+
+## Dependency Tree
+
+## Directory Hierarchy
 
 ## Utility evaluation function:
 	high level description - 
