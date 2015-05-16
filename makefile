@@ -8,19 +8,29 @@ TEST_O_FILES=ListUtilsDemo.o MiniMaxDemo.o file_io_test.o getChildren_test.o gui
 H_FILES=ListUtils.h MiniMax.h
 VPATH = test/io/:src/io/:src/main/:src/core/:src/gui/:src/error/:test/core/:test/gui/
 
+# General Rules
 all: ListUtilsDemo MiniMaxDemo CatAndMouse test
+
+test: file_io_test getChildren_test gui_main_test
 
 clean:
 	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test gui_main_test CatAndMouse
 
-test: file_io_test getChildren_test gui_main_test
-
+# Demos
 ListUtilsDemo: ListUtilsDemo.o ListUtils.o
 	$(LINKER)
                
 MiniMaxDemo: MiniMaxDemo.o ListUtils.o MiniMax.o
 	$(LINKER)
 
+ListUtilsDemo.o: ListUtilsDemo.c  ListUtils.h
+	$(COMPILER)
+
+MiniMaxDemo.o: MiniMaxDemo.c MiniMax.h ListUtils.h
+	$(COMPILER)
+
+
+# Tests
 gui_main_test: main_test.o main.o widget.o uitree.o handlers.o actions.o board.o ListUtils.o file_io.o ai.o evaluate.o MiniMax.o shared.o
 	$(GUI_LINKER)
 
@@ -30,30 +40,35 @@ file_io_test: file_io_test.o file_io.o board.o ListUtils.o
 getChildren_test: getChildren_test.o file_io.o board.o ListUtils.o
 	$(LINKER)
 
+getChildren_test.o: getChildren_test.c
+	$(COMPILER)
+
+main_test.o: main_test.c
+	$(GUI_COMPILER)
+	
+
+# Main Game Executable
 CatAndMouse: $(O_FILES)
 	$(GUI_LINKER)
 
 CatAndMouse.o: CatAndMouse.c CatAndMouse.h main.h
 	$(GUI_COMPILER)
 
-ListUtilsDemo.o: ListUtilsDemo.c  ListUtils.h
-	$(COMPILER)
-
-MiniMaxDemo.o: MiniMaxDemo.c MiniMax.h ListUtils.h
-	$(COMPILER)
-
+# MiniMax and ListUtils
 MiniMax.o: MiniMax.c MiniMax.h ListUtils.h
 	$(COMPILER)
 
 ListUtils.o: ListUtils.c ListUtils.h
 	$(COMPILER)
 
+# IO
 file_io_test.o: file_io_test.c
 	$(COMPILER)
 
 file_io.o: file_io.c file_io.h board.h
 	$(COMPILER)
 
+# Core
 board.o: board.c board.h
 	$(COMPILER)
 
@@ -62,13 +77,8 @@ ai.o: ai.c ai.h board.h MiniMax.h evaluate.h
 
 evaluate.o: evaluate.c evaluate.h board.h
 	$(COMPILER)
-
-getChildren_test.o: getChildren_test.c
-	$(COMPILER)
-
-main_test.o: main_test.c
-	$(GUI_COMPILER)
-
+	
+# GUI
 main.o: main.c main.h shared.h widget.h uitree.h handlers.h error.h board.h ListUtils.h file_io.h ai.h
 	$(GUI_COMPILER)
 
