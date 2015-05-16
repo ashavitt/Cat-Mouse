@@ -13,14 +13,12 @@ Widget* number_to_graphic(int id, SDL_Rect main_pos, int number, int size, Widge
 	Widget* temp_widget;
 	int digit,width,height;
 	int n;
-	ListRef digits;
 
 	if (text == NULL) {
 		fprintf(stderr, "Error: text is null\n");
 		return NULL;
 	}
 	text->parent = parent;
-	digits = text->children;
 
 	switch (size) { // "Load" data from defines
 		case TEXT_SIZE_SMALL:
@@ -223,7 +221,7 @@ Widget* build_chooser(int id, SDL_Rect main_pos, SDL_Rect bg_dims, Widget* paren
 	}
 	// TODO error
 	down_arrow = new_graphic(UNFOCUSABLE, arrow_dims, zeros, buttons, down);
-	if (up_arrow == NULL) {
+	if (down_arrow == NULL) {
 		fprintf(stderr, "Error: new_graphic failed\n");
 		freeWidget(chooser);
 		return NULL;
@@ -514,6 +512,11 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 		fprintf(stderr, "Error: create_menu failed\n");
 		return ERROR_NO_WIDGET;
 	}
+	if (append(left_panel->children, menu) == NULL) {
+		fprintf(stderr, "Error: appending menu failed\n");
+		freeWidget(menu);
+		return ERROR_APPEND_FAILED;
+	}
 	//onclickp choose_action2 = choose_action; // local<-global // useless
 	onclickp quit_action2 = quit_action;	// local<-global
 	onclickp reconf_action2 = reconf_action;
@@ -555,10 +558,6 @@ int build_panels_in_game(Widget* title_panel, Widget* top_buttons, Widget* left_
 	}
 
 	menu->pos = get_center(left_panel->dims,menu->pos);
-	if (append(left_panel->children, menu) == NULL) {
-		fprintf(stderr, "Error: appending menu failed\n");
-		return ERROR_APPEND_FAILED;
-	}
 
 	if (state->catormouse == PLAYING) {
 		rect = left_panel->pos;
@@ -778,6 +777,7 @@ int build_game_scheme(Widget* window, game_state* state) {
 	grid_widget = build_grid(UNFOCUSABLE, grid_panel, state);
 	if (append(grid_panel->children, grid_widget) == NULL) {
 		fprintf(stderr, "Error: appending build_grid failed\n");
+		freeWidget(grid_widget);
 		return ERROR_APPEND_FAILED;
 	}
 	return 0;
@@ -934,17 +934,10 @@ int build_choose_player(Widget* window, game_state* state) {
 }
 
 int build_choose(Widget* window, game_state* state) {
-	Widget *panel, *title;
+	Widget *panel;
 	SDL_Rect button_dims = {0, 0, WL_BUTTON_W, WL_BUTTON_H};
 	SDL_Rect text_dims;
 	SDL_Rect title_pos;
-
-	ListRef children;
-	if ((children = window->children) != NULL) {
-		destroyList(children, &freeWidget);
-	}
-
-	children = newList(NULL);
 
 	text_dims.w = WL_T_W;
 	text_dims.h = WL_T_H;
@@ -974,8 +967,8 @@ int build_choose(Widget* window, game_state* state) {
 
 	title_pos = get_center(window->dims, text_dims);
 	title_pos.y = WL_BUTTON_H;
-	title = new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window);
-	if (append(children, title) == NULL) {
+	if (new_graphic(UNFOCUSABLE, text_dims, title_pos, texts, window) == NULL) {
+		fprintf(stderr, "Error: new_graphic failed\n");
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -983,7 +976,13 @@ int build_choose(Widget* window, game_state* state) {
 	button_dims.x = 0;
 	button_dims.y = WL_BUTTON_H;
 	panel = create_menu(button_dims, window);
-	if (append(children, panel) == NULL) {
+	if (panel == NULL) {
+		fprintf(stderr, "Error: create_menu failed\n");
+		return ERROR_NO_WIDGET;
+	}
+	if (append(window->children, panel) == NULL) {
+		fprintf(stderr, "Error: append failed\n");
+		freeWidget(panel);
 		return ERROR_APPEND_FAILED;
 	}
 
@@ -1022,7 +1021,6 @@ int build_choose(Widget* window, game_state* state) {
 
 	//change the background color of the focused widget
 	button_dims.y += WL_BUTTON_H;
-	window->children = children;
 
 	if (state->type == CHOOSE_SKILL) {
 		if (set_focus_bg(window, button_dims, choose_skill_ids[state->focused]) != 0) {
@@ -1047,12 +1045,12 @@ int build_error_dialog(Widget* window, game_state* state) {
 	// We set real pos later
 	panel = new_panel(UNFOCUSABLE, pos, window);
 	if (panel == NULL) {
-		fprintf(stderr, "Error: new_panel() failed\n");
+		fprintf(stderr, "Error: new_panel failed\n");
 		return ERROR_NO_WIDGET;
 	}
 	
 	dims.y += state->number * ERR_T_H; // in state->number we save the error number in the sprite
-	if (append(panel->children, new_graphic(UNFOCUSABLE, dims, pos, texts, panel)) == 0) {
+	if (new_graphic(UNFOCUSABLE, dims, pos, texts, panel) == NULL) {
 		fprintf(stderr, "Error: appending invalid world message\n");
 		return ERROR_APPEND_FAILED;
 	}
@@ -1065,18 +1063,12 @@ int build_error_dialog(Widget* window, game_state* state) {
 		fprintf(stderr, "Error: creating button failed\n");
 		return ERROR_NO_WIDGET;
 	}
-	if (append(panel->children, button) == 0) {
+	if (append(panel->children, button) == NULL) {
 		fprintf(stderr, "Error: appending back button failed\n");
+		freeWidget(button);
 		return ERROR_APPEND_FAILED;
 	}
-	
 	panel->pos = get_center(window->dims, panel->pos); // fix position for whole panel
-	
-	if (append(window->children, panel) == 0) {
-		fprintf(stderr, "Error: appending panel failed\n");
-		return ERROR_APPEND_FAILED;
-	}
-			
 	return 0;
 }
 
