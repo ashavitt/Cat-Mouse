@@ -304,7 +304,7 @@ int restart_game_action(Widget* widget, game_state* state) {
 	game_free(state->game); // frees the game
 	state->game = load_world(state->world_id); // reloads the game from file
 	if (state->game == NULL) {
-		printf("Failed loading world number: %d\n", state->world_id);
+		fprintf(stderr, "Failed loading world number: %d\n", state->world_id);
 		return 1; // TODO ERROR
 	}
 	state->catormouse = PLAYING;
