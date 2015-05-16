@@ -7,6 +7,7 @@
 
 #define FREE -1
 #define INFTY 100
+#define MAGIC_NUMBER 100001
 
 #ifndef __BYTE__
 #define __BYTE__

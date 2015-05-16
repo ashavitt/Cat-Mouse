@@ -67,6 +67,9 @@ int load_game(Game* gamep, FILE* file) {
 		fprintf(stderr, "Error: reading the world file failed\n");
 		return 1;
 	}
+	if (buffer[0] == 'q') {
+		return 10;
+	}
 	// get the first line
 	error = sscanf(buffer, "%hhu", &(gamep->turns)); //load the number of turns left
 	CHECK(error)
@@ -79,8 +82,9 @@ int load_game(Game* gamep, FILE* file) {
 	gamep->player = (strstr(buffer, "cat") == NULL) ? MOUSE : CAT; //set the next player
 
 	// get the next lines
-	checker = fgets(buffer, BFLEN, file);
 	for (int i = 0; i < BOARD_SIZE; i++) { // Y coordinate
+		//we move to the next line of the board
+		checker = fgets(buffer, BFLEN, file);
 		if (checker == NULL) { //this SHOULDN'T happen, we assume validity
 			fprintf(stderr, "Error: world file is not valid\n");
 			return 1;
@@ -88,8 +92,6 @@ int load_game(Game* gamep, FILE* file) {
 		for (int j = 0; j < BOARD_SIZE; j++) { // X coordinate
 			gamep->board->board[j][i] = buffer[j];
 		}
-		//we move to the next line of the board
-		checker = fgets(buffer, BFLEN, file);
 	}
 		
 	//now we will look for the mouse, cat, and cheese in the board

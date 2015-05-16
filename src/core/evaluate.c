@@ -37,6 +37,10 @@ int bfs(struct board* board, byte start_x, byte start_y, byte dest_x, byte dest_
 	char sign[BOARD_SIZE][BOARD_SIZE];
 	char depth = 0;
 	coord *start = (coord*) malloc (sizeof(coord));
+	if (start == NULL) {
+		fprintf(stderr, "Error: malloc failed.\n");
+		return -1;
+	}
 	coord *temp1, *temp2;
 	ListRef queue = newList(start);
 	ListRef temp_queue;
@@ -149,6 +153,10 @@ int evaluateGame(void* gamep) {
 	mouse_cheese = bfs(game->board, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y, BOARD_SIZE, BOARD_SIZE);
 	cat_cheese = bfs(game->board, game->cat_x, game->cat_y, game->cheese_x, game->cheese_y, BOARD_SIZE, BOARD_SIZE);
 	cat_mouse = bfs(game->board, game->cat_x, game->cat_y, game->mouse_x, game->mouse_y, game->cheese_x, game->cheese_y);
+	if (mouse_cheese == -1 || cat_cheese == -1 || cat_mouse == -1) {
+		printf("Error: bfs failed.\n");
+		return MAGIC_NUMBER; // this magically indicates that an error occured, (mainly malloc)
+	}
 	int num_of_walls = get_num_of_walls(game->board, game->mouse_x, game->mouse_y);
 	int euclidean_dist = get_euclidean_dist(game->cat_x, game->cat_y, game->mouse_x, game->mouse_y);
 	// check if the mouse can get to the cheese
