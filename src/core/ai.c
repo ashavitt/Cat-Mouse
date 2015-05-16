@@ -1,11 +1,13 @@
 #include "ai.h"
 
+/** calls the MiniMax algorithm and returns the direction of the best move */
 int get_best_move(Game* game, int num_steps) {
 	int is_max_player = (game->player == CAT) ? 1 : 0;
 
 	//TODO check if getBestChild failed
 	int result_index = getBestChild(game, num_steps, getChildren, free, evaluateGame, is_max_player).index;
 
+	//fix the index returned by the minimax (ignoring invalid directions)
 	int i;
 	for (i = 0; result_index >= 0; i++) {
 		if (dir_is_valid(game,i)) {
@@ -15,6 +17,7 @@ int get_best_move(Game* game, int num_steps) {
 	return --i;
 }
 
+/** checks if AI should play and play the move */
 int ai_move(Game* game) {
 	int move = -1;
 	if (game->player == CAT && game->num_steps_cat != 0) {

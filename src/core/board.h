@@ -43,10 +43,10 @@ typedef unsigned char byte;
 struct board {
 	/** Constant 7*7 size
 	 ____________
-	|[0,6]	[6,6]|
-	|	     |
-	|	     |
 	|[0,0]	[6,0]|
+	|	     |
+	|	     |
+	|[0,6]	[6,6]|
 	 ------------
 	*/
 	char board[BOARD_SIZE][BOARD_SIZE];

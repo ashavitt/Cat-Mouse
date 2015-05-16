@@ -18,6 +18,8 @@ void game_free(Game* game) {
 	free(game);
 }
 
+/** partial check if the direction is valid
+  * checking out of bounds, walls, and cheese */
 int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y, struct board* boardp) {
 	switch (dir) {
 		case DOWN:
@@ -68,6 +70,8 @@ int check_bounds_walls_cheese(int dir, int x, int y, int cheese_x, int cheese_y,
 	return 1;
 }
 
+/** checks if the direction is valid 
+  * we take the move 'dir' and assume the current player plays it */
 int dir_is_valid(Game* gamep, int dir) {
 	if (gamep->player == CAT) {
 		//check if we are out of bounds or cell is a wall or cell is cheese
@@ -134,6 +138,9 @@ int dir_is_valid(Game* gamep, int dir) {
 	}
 }
 
+/** returns a list of the children of the game
+  * if the game is ended, it returns an empty list 
+  * if an error occured, return NULL */
 ListRef getChildren(void* gameVoid) {
 	Game* gamep = (Game*) gameVoid;
 	ListRef children = newList(NULL); // Creates an empty list
@@ -222,6 +229,8 @@ ListRef getChildren(void* gameVoid) {
 	return children;
 }
 
+/** plays a move (not updating turns left)
+  * obj can be MOUSE or CAT */
 void move_obj(Game* game, byte player, int dir) {
 	int dx[] = {0,1,0,-1};
 	int dy[] = {-1,0,1,0};
@@ -240,16 +249,16 @@ void move_obj(Game* game, byte player, int dir) {
 int check_end_game(Game* gamep) {
 	int dx[] = {0,1,0,-1};
 	int dy[] = {-1,0,1,0};
+	//check if cat won
 	for (int i = 0; i < 4; i++) {
-		//check if cat won
 		if (gamep->cat_x + dx[i] == gamep->mouse_x) {
 			if (gamep->cat_y + dy[i] == gamep->mouse_y) {
 				return CAT_WIN;
 			}
 		}
 	}
+	//check if mouse won
 	for (int i = 0; i < 4; i++) {
-		//check if mouse won
 		if (gamep->cheese_x + dx[i] == gamep->mouse_x) {
 			if (gamep->cheese_y + dy[i] == gamep->mouse_y) {
 				return MOUSE_WIN;
