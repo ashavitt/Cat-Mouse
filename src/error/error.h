@@ -1,7 +1,8 @@
 #ifndef __ERROR__
 #define __ERROR__
 
-
+/*** Utils ***/
+#define ERROR_NEWLIST_FAILED 300
 /*** IO ***/
 #define ERROR_LOAD_WORLD_FAILED 200
 #define ERROR_SAVE_WORLD_FAILED 201
