@@ -20,8 +20,7 @@ int save_game(Game* gamep, FILE* file) {
 			error = fprintf(file, "%c", tempboard.board[j][i]);
 			CHECK(error)
 		}
-		//TODO should it be linux new line or windows new line?
-		error = fprintf(file, (i != (BOARD_SIZE - 1) ? "\r\n" : ""));
+		error = fprintf(file, (i != (BOARD_SIZE - 1) ? "\n" : ""));
 		CHECK(error)
 	}
 	return 0;
