@@ -46,5 +46,6 @@
 
 /*** General ***/
 #define ERROR_MALLOC_FAILED 100
+#define ERROR_SDL 101
 
 #endif
