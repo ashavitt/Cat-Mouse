@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 		if (!strcmp(argv[1], "-console")) {
 			Game* game = game_malloc();
 			while (quit) {
-				if (load_game(game, stdin) == 10) {
+				if (load_game(game, stdin) == CONSOLE_QUIT_CODE) {
 					//fprintf(stderr, "Error: load_game failed.\n");
 					break;
 				}
