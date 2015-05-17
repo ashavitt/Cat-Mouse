@@ -30,8 +30,9 @@ int pause_resume_action(Widget* widget, game_state* state) {
 
 /* Start game helper function
  * Not called from outside
+ * starts choose_player
  */
-int start_game_action(Widget* widget, game_state* state) { // TODO main menu freeing?
+int start_game_action(Widget* widget, game_state* state) {
 	// Allocating space and adding the last state to the state stack
 	game_state* old_state = (game_state*) malloc (sizeof(game_state));
 	if (state == NULL) {
@@ -43,12 +44,11 @@ int start_game_action(Widget* widget, game_state* state) { // TODO main menu fre
 		return ERROR_MALLOC_FAILED;
 	}
 	memcpy(old_state, state, sizeof(game_state));
-	// TODO free previous game?
 	// we've already loaded the world in the function calling this
 	state->previous_state = old_state;
 	state->type = CHOOSE_PLAYER;
 	state->focused = 0;
-	state->catormouse = CAT; // TODO
+	state->catormouse = CAT;
 	return 0;
 }
 
@@ -230,7 +230,7 @@ int choose_action(Widget* widget, game_state* state) {
 			} else { // machine_b
 				state->type = CHOOSE_SKILL;
 				state->number = DEFAULT_SKILL_LEVEL; //start skill level choosing at 5
-				if (old_state->previous_state->type == IN_GAME && state->game->num_steps_cat != 0) { // TODO if setting default_skill_level in new game than this can change..
+				if (old_state->previous_state->type == IN_GAME && state->game->num_steps_cat != 0) {
 					state->number = state->game->num_steps_cat;
 				}
 				// still cat
@@ -313,7 +313,7 @@ int restart_game_action(Widget* widget, game_state* state) {
 	state->game = load_world(state->world_id); // reloads the game from file
 	if (state->game == NULL) {
 		fprintf(stderr, "Failed loading world number: %d\n", state->world_id);
-		return 1; // TODO ERROR
+		return ERROR_LOAD_WORLD_FAILED;
 	}
 	state->catormouse = PLAYING;
 	state->game->num_steps_cat = num_steps_cat; // sets the config like before
