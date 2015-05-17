@@ -102,6 +102,9 @@ MiniMax             ListUtils
 - high level description - Our evaluation function consists of 3 main parts regarding 3 different situations.
   - default case: In the default case we take into consideration the distance between both cat and mouse, cat and cheese, and mouse and cheese. We define some parameters for each of these distances according to logical precedence. The cat should try to minimize the distance to the cheese and to the mouse (minimize the distance between the mouse and the cheese), but with larger weights towards the cheese. The mouse should maximize the distance towards the cheese and minimize the rest.
   - cat is closer to the cheese than the mouse: If the cat is closer by more than 2 steps to the cheese than the mouse it can safely do a move towards the mouse with considering the cheese because it can still outrun the mouse. In this situation we ignore the distances towards the cheese because the mouse can't get to the cheese before the cat.
-  - mouse can't get to the cheese: If the mouse can't get to the cheese in the number of turns left for him, it shouldn't try to get to the cheese and instead only try to run away from the cat
+  - mouse can't get to the cheese: If the mouse can't get to the cheese in the number of turns left for him, it shouldn't try to get to the cheese and instead only try to run away from the cat.
+- tie breakers: When two different states should appear the same regarding the distances discussed above a tie breaker should come into effect. We have two tie breakers:
+  - mouse: If two states appear the same, the mouse will choose the one with the less obstacles (walls, board boundries), meaning the mouse will try to avoid corners and dead ends.
+  - cat: If two states appear the same, the cat will choose the one with the euclidean distance between itself the mouse minimized. This is used to 'trap' the mouse in the corner. Example figure:
 - reasoning -
 - running time - 
