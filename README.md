@@ -4,6 +4,8 @@ README.txt | C final project | Tip: read with line wrapping.
 git repository: https://github.com/ashavitt/Cat-Mouse
 ###### Partners: Amir Shavitt and Nitzan Pomerantz
 
+ *We deeply appreciate Maor Freedman's help with our graphic design.*
+
 ## Introduction
 In this project we were required to build a GUI application using SDL for a board game of Cat & Mouse with optional AI players (based on ex3) for both characters. We have also implemented AI evaluation function to compete in the class tournament.
 
