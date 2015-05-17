@@ -106,5 +106,10 @@ MiniMax             ListUtils
 - tie breakers: When two different states should appear the same regarding the distances discussed above a tie breaker should come into effect. We have two tie breakers:
   - mouse: If two states appear the same, the mouse will choose the one with the less obstacles (walls, board boundries), meaning the mouse will try to avoid corners and dead ends.
   - cat: If two states appear the same, the cat will choose the one with the euclidean distance between itself the mouse minimized. This is used to 'trap' the mouse in the corner. Example figure:
+  ```
+  |##C        |#C#   |###
+  |M##  --->  |M##   |M#C
+  +---        +--- , +---
+  ```
 - reasoning -
 - running time - Our running time is O(n^3). To calculate the distances we use the BFS algorithm, which runs in O(|V|+|E|) = O(n^2 + n^2) = O(n^2). To calculate the euclidean distance we use the formula sqrt((x1-x2)^2 - (y1-y2)^2) which runs in O(1).
