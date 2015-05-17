@@ -5,17 +5,18 @@ int get_best_move(Game* game, int num_steps) {
 	int is_max_player = (game->player == CAT) ? 1 : 0;
 	int result_index = getBestChild(game, num_steps, getChildren, free, evaluateGame, is_max_player).index;
 
+	// if minimax failed
+	if (result_index < 0) {
+		fprintf(stderr, "Error: getBestChild failed.\n");
+		return -2;
+	}
+
 	//fix the index returned by the minimax (ignoring invalid directions)
 	int i;
 	for (i = 0; result_index >= 0; i++) {
 		if (dir_is_valid(game,i)) {
 			result_index--;
 		}
-	}
-	// in case minimax failed we return index 0
-	if (i <= 0) {
-		//TODO print error message?
-		i = 1;
 	}
 	return --i;
 }
@@ -32,6 +33,12 @@ int ai_move(Game* game) {
 	if (move == -1) {
 		return 0;
 	}
+	//if minimax failed
+	if (move == -2) {
+		fprintf(stderr, "Error: ai_move failed.\n");
+		return -1;
+	}
+	// in case minimax failed we return index 0
 	//update the turns left
 	game->turns--;
 	//commit the computer move

@@ -164,7 +164,7 @@ int run_gui() {
 	//variables declaration
 	SDL_Surface* screen;
 	SDL_Event* event = (SDL_Event*) malloc(sizeof(SDL_Event));
-	int quit = 0, while_flag = 0;
+	int quit = 0, while_flag = 0, move_val;
 	game_state state;
 	Widget* window = (Widget*) malloc(sizeof(Widget));
 	SDL_Rect window_rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -229,10 +229,16 @@ int run_gui() {
 				if (check_end_game(state.game) != -1) {
 					// set the end game value (tie or win)
 					state.catormouse = check_end_game(state.game);
-				} else if (ai_move(state.game) == 1) {
-					//if the ai played, we delay the game by half a second
-					state.catormouse = check_end_game(state.game);
-					SDL_Delay(WAIT_TIME_MACHINE_MOVE);
+				} else {
+					move_val = ai_move(state.game);
+					if (move_val == 1) {
+						//if the ai played, we delay the game by half a second
+						state.catormouse = check_end_game(state.game);
+						SDL_Delay(WAIT_TIME_MACHINE_MOVE);
+					} else if (move_val < 0) {
+						fprintf(stderr, "Error: ai_move failed.\n");
+						quit = 26;
+					}
 				}
 			}
 		}
