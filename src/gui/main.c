@@ -101,7 +101,7 @@ int load_images() {
 		fprintf(stderr, "Error: %s\n", SDL_GetError());
 		return ERROR_SDL;
 	}
-	// TODO tidy up	
+	// set the color key for all the images
 	text_colorkey = SDL_MapRGB(texts->format, 0x66, 0x66, 0x66);
 	if (SDL_SetColorKey(texts,SDL_SRCCOLORKEY, text_colorkey) != 0) {
 		fprintf(stderr, "Error: SDL_SetColorKey failed: %s\n", SDL_GetError());
