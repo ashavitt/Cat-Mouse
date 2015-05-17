@@ -1,3 +1,6 @@
+#ifndef _EVALUATE_H_
+#define _EVALUATE_H_
+
 #include <stdlib.h>
 #include "../main/ListUtils.h"
 #include "../core/board.h"
@@ -20,3 +23,5 @@ typedef struct coord {
 } coord;
 
 int evaluateGame(void* game);
+
+#endif

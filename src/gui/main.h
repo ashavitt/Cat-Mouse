@@ -1,3 +1,6 @@
+#ifndef _MAIN_GUI_H_
+#define _MAIN_GUI_H_
+
 #include "SDL.h"
 #include "../main/ListUtils.h"
 #include "../core/ai.h"
@@ -16,3 +19,5 @@
 #define WAIT_TIME_MACHINE_MOVE 1000
 
 int run_gui();
+
+#endif
