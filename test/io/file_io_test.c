@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
 	FILE* testfile;
 	char* dest_file_name;
-	game* game_test = (game*) malloc (sizeof(game));
+	Game* game_test = (Game*) malloc (sizeof(Game));
 	struct board* board_test = (struct board*) malloc (sizeof(struct board));
 	game_test->board = board_test;
 	if (game_test == NULL) {

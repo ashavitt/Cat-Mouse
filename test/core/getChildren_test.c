@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 	ListRef children;
 	FILE* testfile;
 	char* dest_file_name;
-	game* game_test = (game*) malloc (sizeof(game));
+	Game* game_test = (Game*) malloc (sizeof(Game));
 	struct board* board_test = (struct board*) malloc (sizeof(struct board));
 	game_test->board = board_test;
 	if (game_test == NULL) {
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 				perror("Error: fopen failed.\n");
 				return 2;
 			}
-			save_game((game*)headData(children), testfile);
+			save_game((Game*)headData(children), testfile);
 			if (fclose(testfile) != 0) {
 				perror("Error: fclose failed.\n");
 				return 3;

@@ -14,7 +14,7 @@ all: ListUtilsDemo MiniMaxDemo CatAndMouse test
 test: file_io_test getChildren_test gui_main_test
 
 clean:
-	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test gui_main_test CatAndMouse
+	rm -f $(O_FILES) $(TEST_O_FILES) ListUtilsDemo MiniMaxDemo file_io_test getChildren_test gui_main_test CatAndMouse main_test.o
 
 # Demos
 ListUtilsDemo: ListUtilsDemo.o ListUtils.o
