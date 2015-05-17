@@ -68,17 +68,21 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 		best.value = MAX_EVALUATION;
 	}
 	ListRef originalChildren = (*getChildren) (state); //load state's children
-	if (originalChildren == NULL) {
+	if (originalChildren == NULL) { // on error, return MiniMaxResults with index=-1
 		return best;
 	}
 	ListRef children = originalChildren; //save ALL the state's children for later
 	
-	if (children == NULL || isEmpty(children)) {
+	if (isEmpty(originalChildren)) {
 		eval = (*evaluate) (state); //evaluation of the child
-		//overflow check, Probably useless
-		eval = eval > MAX_EVALUATION ? MAX_EVALUATION : eval;
-		eval = eval < MIN_EVALUATION ? MIN_EVALUATION : eval;
+		
+		if (eval > MAX_EVALUATION || eval < MIN_EVALUATION) { // error occured inside evaluate
+			best.index = -1;	
+			destroyList(originalChildren, freeState); // we know originalChildren is not NULL
+			return best;
+		}
 		best.value = eval;
+		best.index = 0; // -1 means error, so we change to 0
 	}
 
 	int index = 0; //counting how many children were inserted to childrenResults by now
@@ -88,9 +92,11 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 			bottomChildResult.index = index;
 
 			eval = (*evaluate) (headData(children)); //evaluation of the child
-			//overflow check, Probably useless
-			eval = eval > MAX_EVALUATION ? MAX_EVALUATION : eval;
-			eval = eval < MIN_EVALUATION ? MIN_EVALUATION : eval;
+			if (eval > MAX_EVALUATION || eval < MIN_EVALUATION) { // error occured inside evaluate
+				best.index = -1;
+				destroyList(originalChildren, freeState);
+				return best;
+			}
 			
 			bottomChildResult.value = eval;
 			best = getBetter(best,bottomChildResult,isMaxPlayer);
@@ -98,6 +104,10 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 			bestChild = getBestChildAlphaBeta(headData(children),
 				maxDepth - 1, getChildren, freeState, evaluate, !isMaxPlayer,
 				alpha, beta);
+			if (bestChild.index == -1) {
+				return bestChild;
+			}
+
 			bestChild.index = index;
 			best = getBetter(best,bestChild,isMaxPlayer);
 			
