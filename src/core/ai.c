@@ -35,7 +35,7 @@ int ai_move(Game* game) {
 	}
 	//if minimax failed
 	if (move == -2) {
-		fprintf(stderr, "Error: ai_move failed.\n");
+		fprintf(stderr, "Error: get_best_move failed.\n");
 		return -1;
 	}
 	// in case minimax failed we return index 0

@@ -223,7 +223,11 @@ ListRef getChildren(void* gameVoid) {
 			}
 			// Add child to the linked list
 			tempList = append(children, child);
-			LIFT(tempList); // malloc failed inside append()
+			if (tempList == NULL) {
+				destroyList(children, free);
+				return NULL;
+			}
+			//LIFT(tempList); // malloc failed inside append()
 		}
 	}
 	return children;

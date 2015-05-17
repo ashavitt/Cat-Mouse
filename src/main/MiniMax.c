@@ -105,6 +105,8 @@ MiniMaxResult getBestChildAlphaBeta(void* state,
 				maxDepth - 1, getChildren, freeState, evaluate, !isMaxPlayer,
 				alpha, beta);
 			if (bestChild.index == -1) {
+				//best.index = -1 // already set
+				destroyList(originalChildren, freeState);
 				return bestChild;
 			}
 

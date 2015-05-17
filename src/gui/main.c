@@ -265,7 +265,8 @@ int run_gui() {
 	free(event);
 	freeWidget(window);
 	SDL_FreeSurface(screen);
-	if (state.type == IN_GAME || state.type == GAME_EDIT || state.type == SAVE_GAME || state.type == ERROR_DIALOG) {
+	if (state.type == IN_GAME || state.type == GAME_EDIT || state.type == SAVE_GAME || state.type == ERROR_DIALOG
+		 || state.type == CHOOSE_PLAYER || state.type == CHOOSE_SKILL) {
 		game_free(state.game);
 	}
 	free_state(state);
